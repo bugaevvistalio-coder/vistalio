@@ -3,50 +3,279 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		4A511EFA33FFC9C2B9B129E8 /* Pods_Vistalio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F9044A2C1A96AD9B2258C85 /* Pods_Vistalio.framework */; };
+		C33F22942F80104100EF2A81 /* Vistalio.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C33F22922F80104100EF2A81 /* Vistalio.xcdatamodeld */; };
+		C33F22962F8011F000EF2A81 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22952F8011EC00EF2A81 /* CoreDataStack.swift */; };
+		C33F229E2F80134A00EF2A81 /* Mission.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F229C2F80134A00EF2A81 /* Mission.swift */; };
+		C33F22A12F80145B00EF2A81 /* FilesHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22A02F80145A00EF2A81 /* FilesHelper.swift */; };
+		C33F22A32F80147300EF2A81 /* String+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22A22F80147000EF2A81 /* String+Utils.swift */; };
+		C33F22A62F80251F00EF2A81 /* SelectActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22A52F80251300EF2A81 /* SelectActionViewController.swift */; };
+		C33F22A82F82376B00EF2A81 /* UIImage+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22A72F82376800EF2A81 /* UIImage+Utils.swift */; };
+		C33F22AA2F8238C600EF2A81 /* MissionsHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22A92F8238C100EF2A81 /* MissionsHolder.swift */; };
+		C33F22AC2F8299DB00EF2A81 /* MyMissionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22AB2F8299D800EF2A81 /* MyMissionCell.swift */; };
+		C33F22AE2F82A43E00EF2A81 /* UIImageView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22AD2F82A43A00EF2A81 /* UIImageView+Utils.swift */; };
+		C33F22B02F82CA7E00EF2A81 /* SegmentedControl.xib in Resources */ = {isa = PBXBuildFile; fileRef = C33F22AF2F82CA7E00EF2A81 /* SegmentedControl.xib */; };
+		C33F22B22F82CE7F00EF2A81 /* SegmentedControlTab.xib in Resources */ = {isa = PBXBuildFile; fileRef = C33F22B12F82CE7F00EF2A81 /* SegmentedControlTab.xib */; };
+		C33F22B52F83872100EF2A81 /* SegmentedControlTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22B42F83871B00EF2A81 /* SegmentedControlTab.swift */; };
+		C33F22B72F83893E00EF2A81 /* UIColor+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22B62F83893B00EF2A81 /* UIColor+Utils.swift */; };
+		C33F22B92F838A1200EF2A81 /* SegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22B82F838A0D00EF2A81 /* SegmentedControl.swift */; };
+		C33F22BB2F838D5800EF2A81 /* MissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22BA2F838D5300EF2A81 /* MissionViewController.swift */; };
+		C33F22BD2F83F48C00EF2A81 /* UILabel+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22BC2F83F48800EF2A81 /* UILabel+Utils.swift */; };
+		C33F22BF2F84C37B00EF2A81 /* UIApplication+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22BE2F84C37600EF2A81 /* UIApplication+Utils.swift */; };
+		C33F22C22F84C6D700EF2A81 /* MenuItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C33F22C12F84C6D700EF2A81 /* MenuItemView.xib */; };
+		C33F22C42F84C75300EF2A81 /* MenuItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22C32F84C74F00EF2A81 /* MenuItemView.swift */; };
+		C33F22C82F84C86500EF2A81 /* MenuView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C33F22C72F84C86500EF2A81 /* MenuView.xib */; };
+		C33F22CA2F84C8B400EF2A81 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22C92F84C8B000EF2A81 /* MenuView.swift */; };
+		C34665B72F783741008648C8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C34665AA2F783741008648C8 /* LaunchScreen.storyboard */; };
+		C34665B82F783741008648C8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C34665AC2F783741008648C8 /* Main.storyboard */; };
+		C34665B92F783741008648C8 /* Map.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C34665AD2F783741008648C8 /* Map.storyboard */; };
+		C34665BA2F783741008648C8 /* Me.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C34665AE2F783741008648C8 /* Me.storyboard */; };
+		C34665BB2F783741008648C8 /* Missions.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C34665AF2F783741008648C8 /* Missions.storyboard */; };
+		C34665BC2F783741008648C8 /* MyDay.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C34665B02F783741008648C8 /* MyDay.storyboard */; };
+		C34665BD2F783741008648C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C34665B32F783741008648C8 /* Assets.xcassets */; };
+		C34665BF2F783741008648C8 /* CustomTabItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C346659A2F783741008648C8 /* CustomTabItem.swift */; };
+		C34665C02F783741008648C8 /* GrowingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C346659B2F783741008648C8 /* GrowingTextView.swift */; };
+		C34665C12F783741008648C8 /* RoundedControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = C346659C2F783741008648C8 /* RoundedControls.swift */; };
+		C34665C22F783741008648C8 /* StyledControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = C346659D2F783741008648C8 /* StyledControls.swift */; };
+		C34665C32F783741008648C8 /* UITableView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C346659F2F783741008648C8 /* UITableView+Utils.swift */; };
+		C34665C42F783741008648C8 /* UITextField+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34665A02F783741008648C8 /* UITextField+Utils.swift */; };
+		C34665C52F783741008648C8 /* UIView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34665A12F783741008648C8 /* UIView+Utils.swift */; };
+		C34665C62F783741008648C8 /* CreateMissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34665A32F783741008648C8 /* CreateMissionViewController.swift */; };
+		C34665C72F783741008648C8 /* MissionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34665A42F783741008648C8 /* MissionsViewController.swift */; };
+		C34665C82F783741008648C8 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34665A62F783741008648C8 /* MainViewController.swift */; };
+		C34665C92F783741008648C8 /* StyledNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34665A72F783741008648C8 /* StyledNavigationController.swift */; };
+		C34665CA2F783741008648C8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34665B22F783741008648C8 /* AppDelegate.swift */; };
+		C34665CB2F783741008648C8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34665B52F783741008648C8 /* SceneDelegate.swift */; };
+		C3CF26EE2F7929120008718D /* CoverCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CF26ED2F79290F0008718D /* CoverCell.swift */; };
+		C3CF26F02F7929C00008718D /* CoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CF26EF2F7929B70008718D /* CoverViewController.swift */; };
+		C3CF26F22F7936E20008718D /* UIViewController+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CF26F12F7936DD0008718D /* UIViewController+Utils.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		13F426B1D31B72DB7E095C10 /* Pods-Vistalio.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Vistalio.debug.xcconfig"; path = "Target Support Files/Pods-Vistalio/Pods-Vistalio.debug.xcconfig"; sourceTree = "<group>"; };
+		3F9044A2C1A96AD9B2258C85 /* Pods_Vistalio.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Vistalio.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4ACEA687D8838AB39DBDACD0 /* Pods-Vistalio.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Vistalio.release.xcconfig"; path = "Target Support Files/Pods-Vistalio/Pods-Vistalio.release.xcconfig"; sourceTree = "<group>"; };
+		C33F22932F80104100EF2A81 /* Vistalio.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Vistalio.xcdatamodel; sourceTree = "<group>"; };
+		C33F22952F8011EC00EF2A81 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		C33F229C2F80134A00EF2A81 /* Mission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mission.swift; sourceTree = "<group>"; };
+		C33F22A02F80145A00EF2A81 /* FilesHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesHelper.swift; sourceTree = "<group>"; };
+		C33F22A22F80147000EF2A81 /* String+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Utils.swift"; sourceTree = "<group>"; };
+		C33F22A52F80251300EF2A81 /* SelectActionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectActionViewController.swift; sourceTree = "<group>"; };
+		C33F22A72F82376800EF2A81 /* UIImage+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Utils.swift"; sourceTree = "<group>"; };
+		C33F22A92F8238C100EF2A81 /* MissionsHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionsHolder.swift; sourceTree = "<group>"; };
+		C33F22AB2F8299D800EF2A81 /* MyMissionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMissionCell.swift; sourceTree = "<group>"; };
+		C33F22AD2F82A43A00EF2A81 /* UIImageView+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Utils.swift"; sourceTree = "<group>"; };
+		C33F22AF2F82CA7E00EF2A81 /* SegmentedControl.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SegmentedControl.xib; sourceTree = "<group>"; };
+		C33F22B12F82CE7F00EF2A81 /* SegmentedControlTab.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SegmentedControlTab.xib; sourceTree = "<group>"; };
+		C33F22B42F83871B00EF2A81 /* SegmentedControlTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControlTab.swift; sourceTree = "<group>"; };
+		C33F22B62F83893B00EF2A81 /* UIColor+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Utils.swift"; sourceTree = "<group>"; };
+		C33F22B82F838A0D00EF2A81 /* SegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControl.swift; sourceTree = "<group>"; };
+		C33F22BA2F838D5300EF2A81 /* MissionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionViewController.swift; sourceTree = "<group>"; };
+		C33F22BC2F83F48800EF2A81 /* UILabel+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Utils.swift"; sourceTree = "<group>"; };
+		C33F22BE2F84C37600EF2A81 /* UIApplication+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Utils.swift"; sourceTree = "<group>"; };
+		C33F22C12F84C6D700EF2A81 /* MenuItemView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MenuItemView.xib; sourceTree = "<group>"; };
+		C33F22C32F84C74F00EF2A81 /* MenuItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemView.swift; sourceTree = "<group>"; };
+		C33F22C72F84C86500EF2A81 /* MenuView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MenuView.xib; sourceTree = "<group>"; };
+		C33F22C92F84C8B000EF2A81 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
+		C346659A2F783741008648C8 /* CustomTabItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabItem.swift; sourceTree = "<group>"; };
+		C346659B2F783741008648C8 /* GrowingTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowingTextView.swift; sourceTree = "<group>"; };
+		C346659C2F783741008648C8 /* RoundedControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedControls.swift; sourceTree = "<group>"; };
+		C346659D2F783741008648C8 /* StyledControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyledControls.swift; sourceTree = "<group>"; };
+		C346659F2F783741008648C8 /* UITableView+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Utils.swift"; sourceTree = "<group>"; };
+		C34665A02F783741008648C8 /* UITextField+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Utils.swift"; sourceTree = "<group>"; };
+		C34665A12F783741008648C8 /* UIView+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Utils.swift"; sourceTree = "<group>"; };
+		C34665A32F783741008648C8 /* CreateMissionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMissionViewController.swift; sourceTree = "<group>"; };
+		C34665A42F783741008648C8 /* MissionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionsViewController.swift; sourceTree = "<group>"; };
+		C34665A62F783741008648C8 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		C34665A72F783741008648C8 /* StyledNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyledNavigationController.swift; sourceTree = "<group>"; };
+		C34665A92F783741008648C8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		C34665AB2F783741008648C8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		C34665AD2F783741008648C8 /* Map.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Map.storyboard; sourceTree = "<group>"; };
+		C34665AE2F783741008648C8 /* Me.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Me.storyboard; sourceTree = "<group>"; };
+		C34665AF2F783741008648C8 /* Missions.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Missions.storyboard; sourceTree = "<group>"; };
+		C34665B02F783741008648C8 /* MyDay.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MyDay.storyboard; sourceTree = "<group>"; };
+		C34665B22F783741008648C8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		C34665B32F783741008648C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C34665B42F783741008648C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C34665B52F783741008648C8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		C3CF26ED2F79290F0008718D /* CoverCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverCell.swift; sourceTree = "<group>"; };
+		C3CF26EF2F7929B70008718D /* CoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverViewController.swift; sourceTree = "<group>"; };
+		C3CF26F12F7936DD0008718D /* UIViewController+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Utils.swift"; sourceTree = "<group>"; };
 		C3E34DB82F6D4B2A003ACBA4 /* Vistalio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Vistalio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		C3E34DCA2F6D4B2B003ACBA4 /* Exceptions for "Vistalio" folder in "Vistalio" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = C3E34DB72F6D4B2A003ACBA4 /* Vistalio */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		C3E34DBA2F6D4B2A003ACBA4 /* Vistalio */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				C3E34DCA2F6D4B2B003ACBA4 /* Exceptions for "Vistalio" folder in "Vistalio" target */,
-			);
-			path = Vistalio;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		C3E34DB52F6D4B2A003ACBA4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A511EFA33FFC9C2B9B129E8 /* Pods_Vistalio.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C33F22972F80127500EF2A81 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				C33F22982F80128600EF2A81 /* Model */,
+				C33F22952F8011EC00EF2A81 /* CoreDataStack.swift */,
+				C33F22A92F8238C100EF2A81 /* MissionsHolder.swift */,
+				C33F22922F80104100EF2A81 /* Vistalio.xcdatamodeld */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		C33F22982F80128600EF2A81 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				C33F229C2F80134A00EF2A81 /* Mission.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		C33F229F2F8013B500EF2A81 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				C33F22A02F80145A00EF2A81 /* FilesHelper.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		C33F22A42F80250F00EF2A81 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				C33F22A52F80251300EF2A81 /* SelectActionViewController.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		C33F22B32F82CE9800EF2A81 /* SegmentedControl */ = {
+			isa = PBXGroup;
+			children = (
+				C33F22AF2F82CA7E00EF2A81 /* SegmentedControl.xib */,
+				C33F22B82F838A0D00EF2A81 /* SegmentedControl.swift */,
+				C33F22B12F82CE7F00EF2A81 /* SegmentedControlTab.xib */,
+				C33F22B42F83871B00EF2A81 /* SegmentedControlTab.swift */,
+			);
+			path = SegmentedControl;
+			sourceTree = "<group>";
+		};
+		C33F22C02F84C6C600EF2A81 /* Menu */ = {
+			isa = PBXGroup;
+			children = (
+				C33F22C12F84C6D700EF2A81 /* MenuItemView.xib */,
+				C33F22C32F84C74F00EF2A81 /* MenuItemView.swift */,
+				C33F22C72F84C86500EF2A81 /* MenuView.xib */,
+				C33F22C92F84C8B000EF2A81 /* MenuView.swift */,
+			);
+			path = Menu;
+			sourceTree = "<group>";
+		};
+		C346659E2F783741008648C8 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				C346659A2F783741008648C8 /* CustomTabItem.swift */,
+				C346659B2F783741008648C8 /* GrowingTextView.swift */,
+				C33F22C02F84C6C600EF2A81 /* Menu */,
+				C346659C2F783741008648C8 /* RoundedControls.swift */,
+				C33F22B32F82CE9800EF2A81 /* SegmentedControl */,
+				C346659D2F783741008648C8 /* StyledControls.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		C34665A22F783741008648C8 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				C33F22A22F80147000EF2A81 /* String+Utils.swift */,
+				C33F22BE2F84C37600EF2A81 /* UIApplication+Utils.swift */,
+				C33F22B62F83893B00EF2A81 /* UIColor+Utils.swift */,
+				C33F22A72F82376800EF2A81 /* UIImage+Utils.swift */,
+				C33F22AD2F82A43A00EF2A81 /* UIImageView+Utils.swift */,
+				C33F22BC2F83F48800EF2A81 /* UILabel+Utils.swift */,
+				C346659F2F783741008648C8 /* UITableView+Utils.swift */,
+				C34665A02F783741008648C8 /* UITextField+Utils.swift */,
+				C34665A12F783741008648C8 /* UIView+Utils.swift */,
+				C3CF26F12F7936DD0008718D /* UIViewController+Utils.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		C34665A52F783741008648C8 /* Missions */ = {
+			isa = PBXGroup;
+			children = (
+				C3CF26EC2F7929050008718D /* Cells */,
+				C3CF26EF2F7929B70008718D /* CoverViewController.swift */,
+				C34665A32F783741008648C8 /* CreateMissionViewController.swift */,
+				C33F22BA2F838D5300EF2A81 /* MissionViewController.swift */,
+				C34665A42F783741008648C8 /* MissionsViewController.swift */,
+			);
+			path = Missions;
+			sourceTree = "<group>";
+		};
+		C34665A82F783741008648C8 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				C33F22A42F80250F00EF2A81 /* Common */,
+				C34665A52F783741008648C8 /* Missions */,
+				C34665A62F783741008648C8 /* MainViewController.swift */,
+				C34665A72F783741008648C8 /* StyledNavigationController.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		C34665B12F783741008648C8 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				C34665AA2F783741008648C8 /* LaunchScreen.storyboard */,
+				C34665AC2F783741008648C8 /* Main.storyboard */,
+				C34665AD2F783741008648C8 /* Map.storyboard */,
+				C34665AE2F783741008648C8 /* Me.storyboard */,
+				C34665AF2F783741008648C8 /* Missions.storyboard */,
+				C34665B02F783741008648C8 /* MyDay.storyboard */,
+			);
+			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		C34665B62F783741008648C8 /* Vistalio */ = {
+			isa = PBXGroup;
+			children = (
+				C346659E2F783741008648C8 /* Components */,
+				C33F22972F80127500EF2A81 /* Data */,
+				C34665A22F783741008648C8 /* Extensions */,
+				C33F229F2F8013B500EF2A81 /* Helpers */,
+				C34665A82F783741008648C8 /* Screens */,
+				C34665B12F783741008648C8 /* Storyboards */,
+				C34665B22F783741008648C8 /* AppDelegate.swift */,
+				C34665B32F783741008648C8 /* Assets.xcassets */,
+				C34665B42F783741008648C8 /* Info.plist */,
+				C34665B52F783741008648C8 /* SceneDelegate.swift */,
+			);
+			path = Vistalio;
+			sourceTree = "<group>";
+		};
+		C3CF26EC2F7929050008718D /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				C33F22AB2F8299D800EF2A81 /* MyMissionCell.swift */,
+				C3CF26ED2F79290F0008718D /* CoverCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
 		C3E34DAF2F6D4B29003ACBA4 = {
 			isa = PBXGroup;
 			children = (
-				C3E34DBA2F6D4B2A003ACBA4 /* Vistalio */,
+				C34665B62F783741008648C8 /* Vistalio */,
 				C3E34DB92F6D4B2A003ACBA4 /* Products */,
+				FE38C6D2715D0F953660E757 /* Pods */,
+				EC51933630804151656D0D2A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,6 +287,23 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		EC51933630804151656D0D2A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3F9044A2C1A96AD9B2258C85 /* Pods_Vistalio.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FE38C6D2715D0F953660E757 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				13F426B1D31B72DB7E095C10 /* Pods-Vistalio.debug.xcconfig */,
+				4ACEA687D8838AB39DBDACD0 /* Pods-Vistalio.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -65,20 +311,17 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C3E34DCB2F6D4B2B003ACBA4 /* Build configuration list for PBXNativeTarget "Vistalio" */;
 			buildPhases = (
+				42E8E3EE042B5E85D8E4FD57 /* [CP] Check Pods Manifest.lock */,
 				C3E34DB42F6D4B2A003ACBA4 /* Sources */,
 				C3E34DB52F6D4B2A003ACBA4 /* Frameworks */,
 				C3E34DB62F6D4B2A003ACBA4 /* Resources */,
+				2BE4A7E5465720E5DDDE2CD5 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				C3E34DBA2F6D4B2A003ACBA4 /* Vistalio */,
-			);
 			name = Vistalio;
-			packageProductDependencies = (
-			);
 			productName = Vistalio;
 			productReference = C3E34DB82F6D4B2A003ACBA4 /* Vistalio.app */;
 			productType = "com.apple.product-type.application";
@@ -99,6 +342,7 @@
 				};
 			};
 			buildConfigurationList = C3E34DB32F6D4B29003ACBA4 /* Build configuration list for PBXProject "Vistalio" */;
+			compatibilityVersion = "Xcode 15.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -107,7 +351,6 @@
 			);
 			mainGroup = C3E34DAF2F6D4B29003ACBA4;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
 			productRefGroup = C3E34DB92F6D4B2A003ACBA4 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -122,24 +365,131 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C34665B72F783741008648C8 /* LaunchScreen.storyboard in Resources */,
+				C33F22C82F84C86500EF2A81 /* MenuView.xib in Resources */,
+				C34665B82F783741008648C8 /* Main.storyboard in Resources */,
+				C33F22B02F82CA7E00EF2A81 /* SegmentedControl.xib in Resources */,
+				C34665B92F783741008648C8 /* Map.storyboard in Resources */,
+				C33F22C22F84C6D700EF2A81 /* MenuItemView.xib in Resources */,
+				C33F22B22F82CE7F00EF2A81 /* SegmentedControlTab.xib in Resources */,
+				C34665BA2F783741008648C8 /* Me.storyboard in Resources */,
+				C34665BB2F783741008648C8 /* Missions.storyboard in Resources */,
+				C34665BC2F783741008648C8 /* MyDay.storyboard in Resources */,
+				C34665BD2F783741008648C8 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		2BE4A7E5465720E5DDDE2CD5 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Vistalio/Pods-Vistalio-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Vistalio/Pods-Vistalio-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Vistalio/Pods-Vistalio-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		42E8E3EE042B5E85D8E4FD57 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Vistalio-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C3E34DB42F6D4B2A003ACBA4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3CF26F22F7936E20008718D /* UIViewController+Utils.swift in Sources */,
+				C34665BF2F783741008648C8 /* CustomTabItem.swift in Sources */,
+				C33F22BF2F84C37B00EF2A81 /* UIApplication+Utils.swift in Sources */,
+				C3CF26EE2F7929120008718D /* CoverCell.swift in Sources */,
+				C33F22962F8011F000EF2A81 /* CoreDataStack.swift in Sources */,
+				C33F22B52F83872100EF2A81 /* SegmentedControlTab.swift in Sources */,
+				C33F22A62F80251F00EF2A81 /* SelectActionViewController.swift in Sources */,
+				C33F22CA2F84C8B400EF2A81 /* MenuView.swift in Sources */,
+				C34665C02F783741008648C8 /* GrowingTextView.swift in Sources */,
+				C33F22A32F80147300EF2A81 /* String+Utils.swift in Sources */,
+				C34665C12F783741008648C8 /* RoundedControls.swift in Sources */,
+				C33F22BB2F838D5800EF2A81 /* MissionViewController.swift in Sources */,
+				C34665C22F783741008648C8 /* StyledControls.swift in Sources */,
+				C34665C32F783741008648C8 /* UITableView+Utils.swift in Sources */,
+				C33F22C42F84C75300EF2A81 /* MenuItemView.swift in Sources */,
+				C33F22B92F838A1200EF2A81 /* SegmentedControl.swift in Sources */,
+				C33F22AA2F8238C600EF2A81 /* MissionsHolder.swift in Sources */,
+				C34665C42F783741008648C8 /* UITextField+Utils.swift in Sources */,
+				C33F22AE2F82A43E00EF2A81 /* UIImageView+Utils.swift in Sources */,
+				C34665C52F783741008648C8 /* UIView+Utils.swift in Sources */,
+				C33F22942F80104100EF2A81 /* Vistalio.xcdatamodeld in Sources */,
+				C33F22AC2F8299DB00EF2A81 /* MyMissionCell.swift in Sources */,
+				C33F22A12F80145B00EF2A81 /* FilesHelper.swift in Sources */,
+				C34665C62F783741008648C8 /* CreateMissionViewController.swift in Sources */,
+				C34665C72F783741008648C8 /* MissionsViewController.swift in Sources */,
+				C34665C82F783741008648C8 /* MainViewController.swift in Sources */,
+				C33F229E2F80134A00EF2A81 /* Mission.swift in Sources */,
+				C34665C92F783741008648C8 /* StyledNavigationController.swift in Sources */,
+				C33F22BD2F83F48C00EF2A81 /* UILabel+Utils.swift in Sources */,
+				C3CF26F02F7929C00008718D /* CoverViewController.swift in Sources */,
+				C33F22A82F82376B00EF2A81 /* UIImage+Utils.swift in Sources */,
+				C34665CA2F783741008648C8 /* AppDelegate.swift in Sources */,
+				C34665CB2F783741008648C8 /* SceneDelegate.swift in Sources */,
+				C33F22B72F83893E00EF2A81 /* UIColor+Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXVariantGroup section */
+		C34665AA2F783741008648C8 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C34665A92F783741008648C8 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		C34665AC2F783741008648C8 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C34665AB2F783741008648C8 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
 		C3E34DCC2F6D4B2B003ACBA4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 13F426B1D31B72DB7E095C10 /* Pods-Vistalio.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -151,8 +501,8 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -168,6 +518,7 @@
 		};
 		C3E34DCD2F6D4B2B003ACBA4 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4ACEA687D8838AB39DBDACD0 /* Pods-Vistalio.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -179,8 +530,8 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -335,6 +686,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		C33F22922F80104100EF2A81 /* Vistalio.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				C33F22932F80104100EF2A81 /* Vistalio.xcdatamodel */,
+			);
+			currentVersion = C33F22932F80104100EF2A81 /* Vistalio.xcdatamodel */;
+			path = Vistalio.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = C3E34DB02F6D4B29003ACBA4 /* Project object */;
 }
