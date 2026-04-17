@@ -30,13 +30,7 @@ class MissionViewController: UIViewController {
     @IBOutlet weak var missionInfoTop: NSLayoutConstraint!
     @IBOutlet weak var missionInfoCenterY: NSLayoutConstraint!
     
-    @IBOutlet weak var missionAddedView: UIView!
-    
-    @IBOutlet weak var menuUnderlayControl: UIControl!
-    var menuView: MenuView?
-    
     var mission: Mission!
-    var isNew = false
     
     private var hasNavBarShadow = false
     private var isHeaderExpanded = false
@@ -56,15 +50,6 @@ class MissionViewController: UIViewController {
         segmentedControl.tabs = [SegmentedTabData(text: "Шаги", image: .steps), SegmentedTabData(text: "Заметки", image: .notes)]
         
         displayMission()
-        
-        if isNew {
-            missionAddedView.setShadow(offset: CGSize(width: 0, height: 0), radius: 20, cornerRadius: 20, shadowOpacity: 0.22)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-                self?.missionAddedView.isHidden = true
-            }
-        } else {
-            missionAddedView.isHidden = true
-        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -95,14 +80,7 @@ class MissionViewController: UIViewController {
     }
     
     private func displayMission() {
-        if let path = mission.photoPath {
-            coverImageView.loadFromPath(path) { [weak self] in
-                return self?.mission.photoPath
-            }
-        } else if let categoryName = mission.category, let category = MissionCategory(rawValue: categoryName) {
-            coverImageView.image = UIImage(named: category.coverName)
-        }
-        
+        coverImageView.displayMissionCover(mission: mission)
         titleLabel.text = mission.name
         aboutLabel.text = mission.about
     }
@@ -147,37 +125,41 @@ class MissionViewController: UIViewController {
     }
     
     @IBAction func menuTapped(_ sender: Any) {
-        menuView = MenuView()
-        menuView!.items = [
-            MenuItemData(text: "Изменить", image: .edit, type: .normal, action: {
-                
+        guard let menuUnderlayControl = (UIApplication.shared.delegate as! AppDelegate).menuUnderlayControl else {
+            return
+        }
+        menuUnderlayControl.backgroundColor = .clear
+        
+        let menuView = MenuView()
+        menuView.items = [
+            MenuItemData(text: "Изменить", image: .edit, type: .normal, action: { [unowned self] in
+                openEditMission(mission) { [unowned self] mission in
+                    self.mission = mission
+                    self.displayMission()
+                }
             }),
-            MenuItemData(text: "Поделиться", image: .share, type: .normal, action: {
-                
+            MenuItemData(text: "Поделиться", image: .share, type: .normal, action: { [unowned self] in
+                openShareMission(mission)
             }),
-            MenuItemData(text: "В архив", image: .archive, type: .normal, action: {
-                
+            MenuItemData(text: mission.archived ? "Убрать из архива" : "В архив", image: mission.archived ? .unarchive : .archive, type: .normal, action: { [unowned self] in
+                openArchiveMission(mission)
             }),
-            MenuItemData(text: "Удалить", image: .trash, type: .red, action: {
-                
+            MenuItemData(text: "Удалить", image: .trash, type: .red, action: { [unowned self] in
+                openDeleteMission(mission)
             })
         ]
-        menuView!.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(menuView!)
+        menuView.translatesAutoresizingMaskIntoConstraints = false
+        menuUnderlayControl.addSubview(menuView)
         
         let constraints = [
-            menuView!.topAnchor.constraint(equalTo: menuButton.bottomAnchor, constant: 0),
-            menuView!.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
+            menuView.topAnchor.constraint(equalTo: menuButton.bottomAnchor, constant: 0),
+            menuView.rightAnchor.constraint(equalTo: menuUnderlayControl.rightAnchor, constant: -16),
         ]
         NSLayoutConstraint.activate(constraints)
         
+        menuView.setShadow(offset: CGSize(width: 0, height: 0), radius: 20, cornerRadius: 30, shadowOpacity: 0.22)
+        
         menuUnderlayControl.isHidden = false
-    }
-    
-    @IBAction func menuUnderlayTapped(_ sender: Any) {
-        menuView?.removeFromSuperview()
-        menuView = nil
-        menuUnderlayControl.isHidden = true
     }
 }
 

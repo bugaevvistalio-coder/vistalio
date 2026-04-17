@@ -9,6 +9,7 @@ import UIKit
 
 class CreateMissionViewController: UIViewController {
     
+    @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var closeButton: UIButton!
     
     @IBOutlet weak var coverImageView: UIImageView!
@@ -22,9 +23,12 @@ class CreateMissionViewController: UIViewController {
     @IBOutlet weak var continueButton: UIButton!
     
     private var coverImage: UIImage?
-    private var category: MissionCategory? = .location
+    private var category: MissionCategory?
+    private var defaultCategory = MissionCategory.allCases[0]
     
+    var mission: Mission?
     var onMissionCreated: ((Mission) -> ())?
+    var onMissionUpdated: ((Mission) -> ())?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,11 +42,26 @@ class CreateMissionViewController: UIViewController {
         continueButton.isEnabled = false
         setupBottomConstraint(continueButton)
         
+        if mission == nil {
+            if let categoryName = UserDefaults.standard.string(forKey: "DefaultMissionCategory"), let cat = MissionCategory(rawValue: categoryName), let index = MissionCategory.allCases.firstIndex(of: cat) {
+                if index >= MissionCategory.allCases.count - 1 {
+                    defaultCategory = MissionCategory.allCases[0]
+                } else {
+                    defaultCategory = MissionCategory.allCases[index + 1]
+                }
+            }
+            category = defaultCategory
+            coverImageView.image = UIImage(named: defaultCategory.coverName)
+            UserDefaults.standard.set(defaultCategory.rawValue, forKey: "DefaultMissionCategory")
+        }
+        displayMission()
+        
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidHide(notification:)), name: UIResponder.keyboardDidHideNotification, object: nil)
     }
     
     deinit {
+        print("Create mission deinit")
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardDidHideNotification, object: nil)
     }
@@ -60,8 +79,31 @@ class CreateMissionViewController: UIViewController {
         continueButton.isHidden = false
     }
     
+    private func displayMission() {
+        guard let mission = mission else {
+            return
+        }
+        titleLabel.text = "Изменить миссию"
+        continueButton.setTitle("Сохранить", for: .normal)
+        continueButton.isEnabled = true
+        
+        coverImageView.displayMissionCover(mission: mission)
+        nameTextView.text = mission.name
+        descriptionTextView.text = mission.about
+    }
+    
     @IBAction func closeTapped() {
-        if (nameTextView.text ?? "") != "" || (descriptionTextView.text ?? "") != "" {
+        var hasChanges = false
+        let name = nameTextView.text ?? ""
+        let about = descriptionTextView.text ?? ""
+        
+        if let mission = mission {
+            hasChanges = name != mission.name || about != mission.about || category != nil || coverImage != nil
+        } else {
+            hasChanges = !name.isEmpty || !about.isEmpty || category != defaultCategory || coverImage != nil
+        }
+        
+        if hasChanges {
             let sb = UIStoryboard(name: "Main", bundle: nil)
             let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
             vc.popupTitle = "Изменения не сохранены"
@@ -72,7 +114,7 @@ class CreateMissionViewController: UIViewController {
             ]
             presentBottomSheet(vc, height: 200)
         } else {
-            dismiss(animated: true)
+            navigationController?.dismiss(animated: true)
         }
     }
     
@@ -80,6 +122,11 @@ class CreateMissionViewController: UIViewController {
         view.endEditing(true)
         
         let vc = storyboard!.instantiateViewController(identifier: "CoverVC") as! CoverViewController
+        if let category = category {
+            vc.category = category
+        } else if let categoryName = mission?.category, let category = MissionCategory(rawValue: categoryName) {
+            vc.category = category
+        }
         vc.onImageSelected = { [unowned self] image in
             self.coverImage = image
             self.coverImageView.image = image
@@ -97,10 +144,22 @@ class CreateMissionViewController: UIViewController {
     @IBAction func continueTapped() {
         let name = nameTextView.text.trim()
         let about = descriptionTextView.text.trim()
-        MissionsHolder.shared.createMission(name: name, about: about, coverPath: coverImage?.saveToDocuments(), category: category) { [weak self] mission in
-            
-            self?.dismiss(animated: true) {
-                self?.onMissionCreated?(mission)
+        
+        if let mission = mission {
+            MissionsHolder.shared.updateMission(mission: mission, name: name, about: about, coverPath: coverImage?.saveToDocuments(), category: category) { [weak self] mission in
+                NotificationCenter.default.post(name: .missionUpdated, object: nil)
+                self?.dismiss(animated: true) {
+                    self?.onMissionUpdated?(mission)
+                    (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Миссия изменена")
+                }
+            }
+        } else {
+            MissionsHolder.shared.createMission(name: name, about: about, coverPath: coverImage?.saveToDocuments(), category: category) { [weak self] mission in
+                NotificationCenter.default.post(name: .missionUpdated, object: nil)
+                self?.dismiss(animated: true) {
+                    self?.onMissionCreated?(mission)
+                    (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Миссия добавлена")
+                }
             }
         }
     }

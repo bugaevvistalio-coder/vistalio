@@ -195,6 +195,19 @@
                                     <constraint firstItem="HLH-iQ-NZ5" firstAttribute="top" secondItem="Zqx-6h-gCP" secondAttribute="top" id="ncO-vy-KnF"/>
                                 </constraints>
                             </view>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="ldQ-zS-APq">
+                                <rect key="frame" x="10" y="59" width="373" height="0.0"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" priority="250" id="Ote-jm-f0y"/>
+                                </constraints>
+                            </stackView>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6kT-Xy-4ld" customClass="UIControl">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <action selector="menuUnderlayTapped:" destination="h0j-uh-UtZ" eventType="touchUpInside" id="h68-a0-EwT"/>
+                                </connections>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="3uy-Lg-c3p"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -202,9 +215,16 @@
                             <constraint firstItem="Fow-kc-7Tw" firstAttribute="top" secondItem="ntf-yh-41I" secondAttribute="top" id="3tq-X7-5at"/>
                             <constraint firstItem="3uy-Lg-c3p" firstAttribute="trailing" secondItem="Zqx-6h-gCP" secondAttribute="trailing" id="6dz-Ol-AkO"/>
                             <constraint firstItem="Fow-kc-7Tw" firstAttribute="leading" secondItem="3uy-Lg-c3p" secondAttribute="leading" id="7St-fv-ZpN"/>
+                            <constraint firstItem="ldQ-zS-APq" firstAttribute="leading" secondItem="3uy-Lg-c3p" secondAttribute="leading" constant="10" id="ARz-jW-ivx"/>
+                            <constraint firstItem="ldQ-zS-APq" firstAttribute="top" secondItem="3uy-Lg-c3p" secondAttribute="top" id="Af4-Vi-EJO"/>
+                            <constraint firstItem="6kT-Xy-4ld" firstAttribute="top" secondItem="ntf-yh-41I" secondAttribute="top" id="Bet-iR-aR8"/>
+                            <constraint firstItem="6kT-Xy-4ld" firstAttribute="leading" secondItem="3uy-Lg-c3p" secondAttribute="leading" id="JKB-No-KGh"/>
                             <constraint firstItem="Zqx-6h-gCP" firstAttribute="top" secondItem="Fow-kc-7Tw" secondAttribute="bottom" constant="-30" id="SDD-Ug-zb3"/>
                             <constraint firstItem="3uy-Lg-c3p" firstAttribute="trailing" secondItem="Fow-kc-7Tw" secondAttribute="trailing" id="W60-Ac-bkx"/>
+                            <constraint firstItem="3uy-Lg-c3p" firstAttribute="trailing" secondItem="6kT-Xy-4ld" secondAttribute="trailing" id="ZPG-5D-eIF"/>
+                            <constraint firstItem="3uy-Lg-c3p" firstAttribute="trailing" secondItem="ldQ-zS-APq" secondAttribute="trailing" constant="10" id="a8T-By-bqd"/>
                             <constraint firstItem="Zqx-6h-gCP" firstAttribute="leading" secondItem="3uy-Lg-c3p" secondAttribute="leading" id="if6-Cz-eks"/>
+                            <constraint firstAttribute="bottom" secondItem="6kT-Xy-4ld" secondAttribute="bottom" id="r0x-U6-3wm"/>
                             <constraint firstItem="Zqx-6h-gCP" firstAttribute="bottom" secondItem="ntf-yh-41I" secondAttribute="bottom" id="vNq-Pm-qoX"/>
                         </constraints>
                     </view>
@@ -212,8 +232,10 @@
                         <outlet property="containerView" destination="Fow-kc-7Tw" id="czC-wI-gAQ"/>
                         <outlet property="mapTab" destination="NYQ-e1-SUE" id="723-R5-BZ6"/>
                         <outlet property="meTab" destination="E1f-Kv-Log" id="QiU-mg-ckT"/>
+                        <outlet property="menuUnderlayControl" destination="6kT-Xy-4ld" id="N4v-T3-9aS"/>
                         <outlet property="missionsTab" destination="dvF-Rm-hdj" id="l3P-zN-Ic1"/>
                         <outlet property="myDayTab" destination="6BR-PJ-YEL" id="Txh-8T-TtQ"/>
+                        <outlet property="notificationsStackView" destination="ldQ-zS-APq" id="XPq-P6-ww5"/>
                         <outlet property="tabBar" destination="Zqx-6h-gCP" id="tj4-hs-bKf"/>
                         <outlet property="tabBarBottom" destination="vNq-Pm-qoX" id="ufv-v4-gme"/>
                     </connections>

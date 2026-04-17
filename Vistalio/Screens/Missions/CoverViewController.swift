@@ -21,6 +21,7 @@ class CoverViewController: UIViewController, UICollectionViewDataSource, UIColle
     private var selectionIndex = 0
     private var categories = MissionCategory.allCases
     
+    var category: MissionCategory?
     var onCategorySelected: ((MissionCategory) -> ())?
     var onImageSelected: ((UIImage) -> ())?
     
@@ -38,7 +39,15 @@ class CoverViewController: UIViewController, UICollectionViewDataSource, UIColle
             bottom = 20
         }
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70 + bottom, right: 0)
-        collectionView.selectItem(at: IndexPath(row: 0, section: 1), animated: false, scrollPosition: .left)
+        
+        if let category = category {
+            selectionIndex = categories.firstIndex(of: category) ?? 0
+        }
+        let indexPath = IndexPath(row: selectionIndex, section: 1)
+        collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .left)
+        DispatchQueue.main.async { [weak self] in
+            self?.collectionView.scrollToItem(at: indexPath, at: .top, animated: false)
+        }
     }
     
     override func viewDidLayoutSubviews() {

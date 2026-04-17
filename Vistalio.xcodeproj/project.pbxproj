@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4A511EFA33FFC9C2B9B129E8 /* Pods_Vistalio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F9044A2C1A96AD9B2258C85 /* Pods_Vistalio.framework */; };
+		C332CFCB2F8FB4A6002ABF15 /* MyMissionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C332CFCA2F8FB4A0002ABF15 /* MyMissionsViewController.swift */; };
 		C33F22942F80104100EF2A81 /* Vistalio.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C33F22922F80104100EF2A81 /* Vistalio.xcdatamodeld */; };
 		C33F22962F8011F000EF2A81 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22952F8011EC00EF2A81 /* CoreDataStack.swift */; };
 		C33F229E2F80134A00EF2A81 /* Mission.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F229C2F80134A00EF2A81 /* Mission.swift */; };
@@ -53,12 +54,18 @@
 		C3CF26EE2F7929120008718D /* CoverCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CF26ED2F79290F0008718D /* CoverCell.swift */; };
 		C3CF26F02F7929C00008718D /* CoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CF26EF2F7929B70008718D /* CoverViewController.swift */; };
 		C3CF26F22F7936E20008718D /* UIViewController+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CF26F12F7936DD0008718D /* UIViewController+Utils.swift */; };
+		C3D542562F9125370093D819 /* NotificationNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D542552F9125330093D819 /* NotificationNames.swift */; };
+		C3D542582F91F5FC0093D819 /* TooltipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D542572F91F5F90093D819 /* TooltipView.swift */; };
+		C3D5425A2F91F61E0093D819 /* TooltipView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3D542592F91F61E0093D819 /* TooltipView.xib */; };
+		C3D5425C2F928B350093D819 /* NotificationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3D5425B2F928B350093D819 /* NotificationView.xib */; };
+		C3D5425E2F928C4F0093D819 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D5425D2F928C4B0093D819 /* NotificationView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		13F426B1D31B72DB7E095C10 /* Pods-Vistalio.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Vistalio.debug.xcconfig"; path = "Target Support Files/Pods-Vistalio/Pods-Vistalio.debug.xcconfig"; sourceTree = "<group>"; };
 		3F9044A2C1A96AD9B2258C85 /* Pods_Vistalio.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Vistalio.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4ACEA687D8838AB39DBDACD0 /* Pods-Vistalio.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Vistalio.release.xcconfig"; path = "Target Support Files/Pods-Vistalio/Pods-Vistalio.release.xcconfig"; sourceTree = "<group>"; };
+		C332CFCA2F8FB4A0002ABF15 /* MyMissionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMissionsViewController.swift; sourceTree = "<group>"; };
 		C33F22932F80104100EF2A81 /* Vistalio.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Vistalio.xcdatamodel; sourceTree = "<group>"; };
 		C33F22952F8011EC00EF2A81 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		C33F229C2F80134A00EF2A81 /* Mission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mission.swift; sourceTree = "<group>"; };
@@ -105,6 +112,11 @@
 		C3CF26ED2F79290F0008718D /* CoverCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverCell.swift; sourceTree = "<group>"; };
 		C3CF26EF2F7929B70008718D /* CoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverViewController.swift; sourceTree = "<group>"; };
 		C3CF26F12F7936DD0008718D /* UIViewController+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Utils.swift"; sourceTree = "<group>"; };
+		C3D542552F9125330093D819 /* NotificationNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationNames.swift; sourceTree = "<group>"; };
+		C3D542572F91F5F90093D819 /* TooltipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipView.swift; sourceTree = "<group>"; };
+		C3D542592F91F61E0093D819 /* TooltipView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TooltipView.xib; sourceTree = "<group>"; };
+		C3D5425B2F928B350093D819 /* NotificationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotificationView.xib; sourceTree = "<group>"; };
+		C3D5425D2F928C4B0093D819 /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		C3E34DB82F6D4B2A003ACBA4 /* Vistalio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Vistalio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -186,6 +198,10 @@
 				C346659C2F783741008648C8 /* RoundedControls.swift */,
 				C33F22B32F82CE9800EF2A81 /* SegmentedControl */,
 				C346659D2F783741008648C8 /* StyledControls.swift */,
+				C3D542592F91F61E0093D819 /* TooltipView.xib */,
+				C3D542572F91F5F90093D819 /* TooltipView.swift */,
+				C3D5425B2F928B350093D819 /* NotificationView.xib */,
+				C3D5425D2F928C4B0093D819 /* NotificationView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -193,6 +209,7 @@
 		C34665A22F783741008648C8 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				C3D542552F9125330093D819 /* NotificationNames.swift */,
 				C33F22A22F80147000EF2A81 /* String+Utils.swift */,
 				C33F22BE2F84C37600EF2A81 /* UIApplication+Utils.swift */,
 				C33F22B62F83893B00EF2A81 /* UIColor+Utils.swift */,
@@ -215,6 +232,7 @@
 				C34665A32F783741008648C8 /* CreateMissionViewController.swift */,
 				C33F22BA2F838D5300EF2A81 /* MissionViewController.swift */,
 				C34665A42F783741008648C8 /* MissionsViewController.swift */,
+				C332CFCA2F8FB4A0002ABF15 /* MyMissionsViewController.swift */,
 			);
 			path = Missions;
 			sourceTree = "<group>";
@@ -253,9 +271,9 @@
 				C34665A82F783741008648C8 /* Screens */,
 				C34665B12F783741008648C8 /* Storyboards */,
 				C34665B22F783741008648C8 /* AppDelegate.swift */,
+				C34665B52F783741008648C8 /* SceneDelegate.swift */,
 				C34665B32F783741008648C8 /* Assets.xcassets */,
 				C34665B42F783741008648C8 /* Info.plist */,
-				C34665B52F783741008648C8 /* SceneDelegate.swift */,
 			);
 			path = Vistalio;
 			sourceTree = "<group>";
@@ -367,8 +385,10 @@
 			files = (
 				C34665B72F783741008648C8 /* LaunchScreen.storyboard in Resources */,
 				C33F22C82F84C86500EF2A81 /* MenuView.xib in Resources */,
+				C3D5425A2F91F61E0093D819 /* TooltipView.xib in Resources */,
 				C34665B82F783741008648C8 /* Main.storyboard in Resources */,
 				C33F22B02F82CA7E00EF2A81 /* SegmentedControl.xib in Resources */,
+				C3D5425C2F928B350093D819 /* NotificationView.xib in Resources */,
 				C34665B92F783741008648C8 /* Map.storyboard in Resources */,
 				C33F22C22F84C6D700EF2A81 /* MenuItemView.xib in Resources */,
 				C33F22B22F82CE7F00EF2A81 /* SegmentedControlTab.xib in Resources */,
@@ -428,6 +448,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3D542582F91F5FC0093D819 /* TooltipView.swift in Sources */,
 				C3CF26F22F7936E20008718D /* UIViewController+Utils.swift in Sources */,
 				C34665BF2F783741008648C8 /* CustomTabItem.swift in Sources */,
 				C33F22BF2F84C37B00EF2A81 /* UIApplication+Utils.swift in Sources */,
@@ -441,8 +462,10 @@
 				C34665C12F783741008648C8 /* RoundedControls.swift in Sources */,
 				C33F22BB2F838D5800EF2A81 /* MissionViewController.swift in Sources */,
 				C34665C22F783741008648C8 /* StyledControls.swift in Sources */,
+				C3D542562F9125370093D819 /* NotificationNames.swift in Sources */,
 				C34665C32F783741008648C8 /* UITableView+Utils.swift in Sources */,
 				C33F22C42F84C75300EF2A81 /* MenuItemView.swift in Sources */,
+				C3D5425E2F928C4F0093D819 /* NotificationView.swift in Sources */,
 				C33F22B92F838A1200EF2A81 /* SegmentedControl.swift in Sources */,
 				C33F22AA2F8238C600EF2A81 /* MissionsHolder.swift in Sources */,
 				C34665C42F783741008648C8 /* UITextField+Utils.swift in Sources */,
@@ -452,6 +475,7 @@
 				C33F22AC2F8299DB00EF2A81 /* MyMissionCell.swift in Sources */,
 				C33F22A12F80145B00EF2A81 /* FilesHelper.swift in Sources */,
 				C34665C62F783741008648C8 /* CreateMissionViewController.swift in Sources */,
+				C332CFCB2F8FB4A6002ABF15 /* MyMissionsViewController.swift in Sources */,
 				C34665C72F783741008648C8 /* MissionsViewController.swift in Sources */,
 				C34665C82F783741008648C8 /* MainViewController.swift in Sources */,
 				C33F229E2F80134A00EF2A81 /* Mission.swift in Sources */,

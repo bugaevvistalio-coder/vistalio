@@ -12,6 +12,7 @@ enum ActionButtonType {
     case primary
     case secondary
     case red
+    case blue
 }
 
 struct ActionButton {
@@ -36,6 +37,9 @@ struct ActionButton {
         case .red:
             button.backgroundColor = .textRed.withAlphaComponent(0.1)
             button.setTitleColor(.textRed, for: .normal)
+        case .blue:
+            button.backgroundColor = .brightBlue.withAlphaComponent(0.1)
+            button.setTitleColor(.brightBlue, for: .normal)
         }
         
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)

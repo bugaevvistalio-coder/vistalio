@@ -30,6 +30,12 @@ class MissionsViewController: UIViewController {
         addMissionButton.addDashedBorder(color: UIColor.textGrey30, dashPattern: [2, 2], cornerRadius: 18)
         
         updateMyMissions()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(onMissionUpdated(notification:)), name: .missionUpdated, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .missionUpdated, object: nil)
     }
     
     override func viewDidLayoutSubviews() {
@@ -39,26 +45,31 @@ class MissionsViewController: UIViewController {
     }
     
     private func updateMyMissions() {
-        myMissions = MissionsHolder.shared.getMissions()
+        myMissions = MissionsHolder.shared.getMyMissions().filter { !$0.archived }
         myMissionsCollectionView.reloadData()
         myMissionsCollectionView.isHidden = myMissions.isEmpty
         myMissionsSpacing.constant = myMissions.isEmpty ? 24 : 16
+    }
+    
+    private func openMission(_ mission: Mission) {
+        let vc = storyboard!.instantiateViewController(withIdentifier: "MissionVC") as! MissionViewController
+        vc.mission = mission
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     @IBAction func addMissionTapped(_ sender: Any) {
         let nc = storyboard!.instantiateViewController(identifier: "CreateMissionNC") as! UINavigationController
         let vc = nc.viewControllers.first as! CreateMissionViewController
         vc.onMissionCreated = { [unowned self] mission in
-            self.updateMyMissions()
-            
-            let vc = storyboard!.instantiateViewController(withIdentifier: "MissionVC") as! MissionViewController
-            vc.mission = mission
-            vc.isNew = true
-            self.navigationController?.pushViewController(vc, animated: true)
+            self.openMission(mission)
         }
         let window = UIApplication.shared.windows.first
         let top = (window?.safeAreaInsets.top ?? 20)
         presentBottomSheet(nc, height: UIScreen.main.bounds.height - top)
+    }
+    
+    @objc func onMissionUpdated(notification: Notification) {
+        updateMyMissions()
     }
 }
 
@@ -87,9 +98,6 @@ extension MissionsViewController: UICollectionViewDataSource {
 extension MissionsViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: false)
-        
-        let vc = storyboard!.instantiateViewController(withIdentifier: "MissionVC") as! MissionViewController
-        vc.mission = myMissions[indexPath.row]
-        navigationController?.pushViewController(vc, animated: true)
+        openMission(myMissions[indexPath.row])
     }
 }

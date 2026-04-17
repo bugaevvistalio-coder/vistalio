@@ -10,6 +10,7 @@ import UIKit
 struct SegmentedTabData {
     let text: String?
     let image: UIImage?
+    var tooltip: String?
 }
 
 class SegmentedControl: UIView {
@@ -18,12 +19,13 @@ class SegmentedControl: UIView {
     
     private var view: UIView!
     
+    var onTabSelected: ((Int) -> ())?
+    
     var tabs = [SegmentedTabData]() {
         didSet {
             for (i, data) in tabs.enumerated() {
                 let tabView = SegmentedControlTab()
-                tabView.text = data.text
-                tabView.image = data.image
+                tabView.data = data
                 if i == 0 {
                     tabView.position = .left
                 } else if i == tabs.count - 1 {
@@ -37,6 +39,7 @@ class SegmentedControl: UIView {
                     for v in self.stackView.arrangedSubviews {
                         (v as! SegmentedControlTab).isTabSelected = (v === t)
                     }
+                    onTabSelected?(i)
                 }
                 stackView.addArrangedSubview(tabView)
             }

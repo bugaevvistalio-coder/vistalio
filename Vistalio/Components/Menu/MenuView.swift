@@ -26,7 +26,7 @@ class MenuView: UIView {
     }
     
     func setup() {
-        setShadow(offset: CGSize(width: 0, height: 0), radius: 20, cornerRadius: 30, shadowOpacity: 0.22)
+        backgroundColor = .white
     }
     
     var items = [MenuItemData]() {
@@ -40,5 +40,9 @@ class MenuView: UIView {
                 stackView.addArrangedSubview(itemView)
             }
         }
+    }
+    
+    var height: Int {
+        return items.count * 40 + (items.count - 1) * 8 + 24
     }
 }

@@ -29,4 +29,14 @@ extension UIImageView {
             }
         }
     }
+    
+    func displayMissionCover(mission: Mission) {
+        if let path = mission.photoPath {
+            loadFromPath(path) { 
+                return mission.photoPath
+            }
+        } else if let categoryName = mission.category, let category = MissionCategory(rawValue: categoryName) {
+            image = UIImage(named: category.coverName)
+        }
+    }
 }

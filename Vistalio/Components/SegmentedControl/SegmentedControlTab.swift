@@ -21,6 +21,9 @@ class SegmentedControlTab: UIControl {
     @IBOutlet private weak var mediumView: RoundedView!
     @IBOutlet private weak var innerView: RoundedView!
     @IBOutlet private weak var shadowView: UIView!
+    @IBOutlet private weak var questionButton: UIButton!
+    @IBOutlet private weak var stackView: UIStackView!
+    @IBOutlet private weak var questionPlaceholder: UIView!
     
     private var view: UIView!
     
@@ -29,16 +32,15 @@ class SegmentedControlTab: UIControl {
     
     var onSelected: ((SegmentedControlTab) -> ())?
     
-    var image: UIImage? {
+    var data: SegmentedTabData? {
         didSet {
-            imageView.image = image
+            label.text = data?.text
+            imageView.image = data?.image
+            questionButton.isHidden = (data?.tooltip == nil)
+            questionPlaceholder.isHidden = questionButton.isHidden
         }
     }
-    var text: String? {
-        didSet {
-            label.text = text
-        }
-    }
+    
     var position = TabPosition.center {
         didSet {
             switch position {
@@ -77,6 +79,7 @@ class SegmentedControlTab: UIControl {
     
     func setup() {
         shadowView.setShadow(offset: CGSize(width: 0, height: 2), radius: 2, cornerRadius: 22, shadowOpacity: 0.18)
+        stackView.setCustomSpacing(0, after: label)
     }
     
     override func layoutSubviews() {
@@ -116,5 +119,34 @@ class SegmentedControlTab: UIControl {
     
     @IBAction func onTapped(_ sender: Any) {
         onSelected?(self)
+    }
+    
+    @IBAction func questionTapped(_ sender: Any) {
+        guard let menuUnderlayControl = (UIApplication.shared.delegate as! AppDelegate).menuUnderlayControl else {
+            return
+        }
+        menuUnderlayControl.backgroundColor = .clear
+        
+        let tooltipView = TooltipView()
+        tooltipView.translatesAutoresizingMaskIntoConstraints = false
+        menuUnderlayControl.addSubview(tooltipView)
+        
+        let location = superview!.convert(frame.origin, to: nil)
+        let horizontalConstraint: NSLayoutConstraint
+        if position == .right {
+            horizontalConstraint = tooltipView.rightAnchor.constraint(equalTo: menuUnderlayControl.rightAnchor, constant: location.x + frame.width + 4 - UIScreen.main.bounds.width)
+        } else {
+            horizontalConstraint = tooltipView.leftAnchor.constraint(equalTo: menuUnderlayControl.leftAnchor, constant: location.x - 4)
+        }
+        let constraints = [
+            horizontalConstraint,
+            tooltipView.topAnchor.constraint(equalTo: menuUnderlayControl.topAnchor, constant: location.y + frame.height + 4),
+            tooltipView.widthAnchor.constraint(equalToConstant: frame.width + 24)
+        ]
+        NSLayoutConstraint.activate(constraints)
+        
+        tooltipView.text = data?.tooltip
+        
+        menuUnderlayControl.isHidden = false
     }
 }

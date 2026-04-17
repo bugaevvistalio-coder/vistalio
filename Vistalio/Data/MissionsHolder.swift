@@ -21,7 +21,22 @@ class MissionsHolder {
         }
     }
     
-    func getMissions() -> [Mission] {
+    func updateMission(mission: Mission, name: String, about: String?, coverPath: String?, category: MissionCategory?, onUpdated: (Mission) -> ()) {
+        CoreDataStack.shared.performAndWait { context in
+            mission.name = name
+            mission.about = about
+            if let coverPath = coverPath {
+                mission.category = nil
+                mission.photoPath = coverPath
+            } else if let category = category {
+                mission.photoPath = nil
+                mission.category = category.rawValue
+            }
+        }
+        onUpdated(mission)
+    }
+    
+    func getMyMissions() -> [Mission] {
         let missionsRequest = Mission.missionFetchRequest()
         missionsRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         do {

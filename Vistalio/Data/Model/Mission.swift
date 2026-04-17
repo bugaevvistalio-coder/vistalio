@@ -75,6 +75,7 @@ public class Mission: NSManagedObject {
     public override func prepareForDeletion() {
         if let photoPath = photoPath {
             FilesHelper().deleteFile(path: photoPath)
+            print("Mission cover file deleted")
         }
     }
 }
@@ -92,4 +93,5 @@ extension Mission {
     @NSManaged public var about: String?
     @NSManaged public var category: String?
     @NSManaged public var templateId: Int
+    @NSManaged public var archived: Bool
 }

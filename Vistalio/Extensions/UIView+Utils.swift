@@ -42,22 +42,13 @@ extension UIView {
         layer.shadowOpacity = shadowOpacity
     }
     
-    func addDashedBorder(color: UIColor = .black, lineWidth: CGFloat = 1, dashPattern: [NSNumber]? = [4, 2], cornerRadius: CGFloat = 0) {
+    func addDashedBorder(color: UIColor = .black, lineWidth: CGFloat = 1, dashPattern: [NSNumber]? = [4, 2], cornerRadius: CGFloat = 0, fixedBounds: CGRect? = nil) {
         layer.sublayers?.filter({ $0.name == "DashedBorder" }).forEach({ $0.removeFromSuperlayer() })
 
         let shapeLayer = CAShapeLayer()
         shapeLayer.name = "DashedBorder"
         
-//        shapeLayer.lineWidth = lineWidth
-//        shapeLayer.strokeColor = color.cgColor
-//        shapeLayer.lineDashPattern = dashPattern
-//        shapeLayer.frame = bounds
-//        shapeLayer.fillColor = nil
-//        if cornerRadius > 0 {
-//            shapeLayer.path = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius).cgPath
-//        } else {
-//            shapeLayer.path = UIBezierPath(rect: bounds).cgPath
-//        }
+        let bounds = fixedBounds ?? bounds
         
         let path = CGMutablePath()
 
@@ -127,5 +118,12 @@ extension UIView {
         shapeLayer.lineCap = CAShapeLayerLineCap.round
         
         layer.addSublayer(shapeLayer)
+    }
+    
+    func toImage(rect: CGRect) -> UIImage {
+        let renderer = UIGraphicsImageRenderer(bounds: rect)
+        return renderer.image { ctx in
+            drawHierarchy(in: bounds, afterScreenUpdates: true)
+        }
     }
 }

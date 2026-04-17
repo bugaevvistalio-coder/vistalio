@@ -14,6 +14,9 @@ class MyMissionCell: UICollectionViewCell {
     @IBOutlet weak var coverImageView: RoundedImageView!
     @IBOutlet weak var nameLabel: UILabel!
     
+    private var longGestureRecognizer: UILongPressGestureRecognizer?
+    private var onLongGesture: ((UIImage, CGRect) -> ())?
+    
     var mission: Mission! {
         didSet {
             nameLabel.text = mission.name
@@ -30,10 +33,27 @@ class MyMissionCell: UICollectionViewCell {
         }
     }
     
-    override var isHighlighted: Bool {
-        didSet {
-            super.isSelected = isSelected
-            roundedView.backgroundColor = isHighlighted ? .textGrey20 : .white
+//    override var isHighlighted: Bool {
+//        didSet {
+//            super.isHighlighted = isHighlighted
+//            roundedView.backgroundColor = isHighlighted ? .textGrey20 : .white
+//        }
+//    }
+    
+    func addLongGesture(onLongGesture: ((UIImage, CGRect) -> ())?) {
+        if longGestureRecognizer == nil {
+            longGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
+            roundedView.addGestureRecognizer(longGestureRecognizer!)
+        }
+        self.onLongGesture = onLongGesture
+    }
+    
+    @objc private func handleLongPress(gestureRecognizer : UILongPressGestureRecognizer){
+        if gestureRecognizer.state == .began {
+            if let origin = roundedView.superview?.convert(roundedView.frame.origin, to: nil) {
+                roundedView.backgroundColor = .white
+                onLongGesture?(roundedView.toImage(rect: roundedView.bounds), CGRect(origin: origin, size: roundedView.frame.size))
+            }
         }
     }
 }
