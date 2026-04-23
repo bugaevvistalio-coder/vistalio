@@ -125,26 +125,29 @@ class MissionViewController: UIViewController {
     }
     
     @IBAction func menuTapped(_ sender: Any) {
-        guard let menuUnderlayControl = (UIApplication.shared.delegate as! AppDelegate).menuUnderlayControl else {
-            return
-        }
-        menuUnderlayControl.backgroundColor = .clear
+        let mainVC = (UIApplication.shared.keyWindow?.rootViewController as! MainViewController)
+        let menuUnderlayControl =  mainVC.addMenuUnderlayControl(color: .clear)
         
         let menuView = MenuView()
         menuView.items = [
             MenuItemData(text: "Изменить", image: .edit, type: .normal, action: { [unowned self] in
+                menuUnderlayControl.removeFromSuperview()
                 openEditMission(mission) { [unowned self] mission in
+                    menuUnderlayControl.removeFromSuperview()
                     self.mission = mission
                     self.displayMission()
                 }
             }),
             MenuItemData(text: "Поделиться", image: .share, type: .normal, action: { [unowned self] in
+                menuUnderlayControl.removeFromSuperview()
                 openShareMission(mission)
             }),
             MenuItemData(text: mission.archived ? "Убрать из архива" : "В архив", image: mission.archived ? .unarchive : .archive, type: .normal, action: { [unowned self] in
+                menuUnderlayControl.removeFromSuperview()
                 openArchiveMission(mission)
             }),
             MenuItemData(text: "Удалить", image: .trash, type: .red, action: { [unowned self] in
+                menuUnderlayControl.removeFromSuperview()
                 openDeleteMission(mission)
             })
         ]
@@ -158,8 +161,6 @@ class MissionViewController: UIViewController {
         NSLayoutConstraint.activate(constraints)
         
         menuView.setShadow(offset: CGSize(width: 0, height: 0), radius: 20, cornerRadius: 30, shadowOpacity: 0.22)
-        
-        menuUnderlayControl.isHidden = false
     }
 }
 

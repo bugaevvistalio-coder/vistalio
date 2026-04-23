@@ -22,9 +22,13 @@ class CreateMissionViewController: UIViewController {
     
     @IBOutlet weak var continueButton: UIButton!
     
-    private var coverImage: UIImage?
+    private var coverPath: String?
     private var category: MissionCategory?
     private var defaultCategory = MissionCategory.allCases[0]
+    
+    private var templates = [MissionTemplate]()
+    private var hiddenTemplates = [MissionTemplate]()
+    private var hiddenTemplatesExpanded = false
     
     var mission: Mission?
     var onMissionCreated: ((Mission) -> ())?
@@ -42,6 +46,9 @@ class CreateMissionViewController: UIViewController {
         continueButton.isEnabled = false
         setupBottomConstraint(continueButton)
         
+        tableView.estimatedRowHeight = 380.0
+        tableView.rowHeight = UITableView.automaticDimension
+        
         if mission == nil {
             if let categoryName = UserDefaults.standard.string(forKey: "DefaultMissionCategory"), let cat = MissionCategory(rawValue: categoryName), let index = MissionCategory.allCases.firstIndex(of: cat) {
                 if index >= MissionCategory.allCases.count - 1 {
@@ -56,19 +63,26 @@ class CreateMissionViewController: UIViewController {
         }
         displayMission()
         
+        templates = MissionsHolder.shared.templates.filter { $0.hiddenAt == nil }
+        hiddenTemplates = MissionsHolder.shared.templates.filter { $0.hiddenAt != nil }.sorted(by: { $0.hiddenAt! > $1.hiddenAt! })
+        
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidHide(notification:)), name: UIResponder.keyboardDidHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onTemplatesUpdated(notification:)), name: .templatesUpdated, object: nil)
     }
     
     deinit {
         print("Create mission deinit")
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardDidHideNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .templatesUpdated, object: nil)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.layoutHeader()
+        tableView.tableHeaderView?.setGradientLayer(colors: [.white, .bgGrey], startPoint: CGPoint(x: 0.5, y: 0.0), endPoint: CGPoint(x: 0.5, y: 1.0), cornerRadius: 0)
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: view.frame.height - continueButton.frame.minY + 20, right: 0)
     }
     
     @objc func keyboardWillShow(notification: Notification) {
@@ -77,6 +91,12 @@ class CreateMissionViewController: UIViewController {
     
     @objc func keyboardDidHide(notification: Notification) {
         continueButton.isHidden = false
+    }
+    
+    @objc func onTemplatesUpdated(notification: Notification) {
+        templates = MissionsHolder.shared.templates.filter { $0.hiddenAt == nil }
+        hiddenTemplates = MissionsHolder.shared.templates.filter { $0.hiddenAt != nil }.sorted(by: { $0.hiddenAt! > $1.hiddenAt! })
+        tableView.reloadData()
     }
     
     private func displayMission() {
@@ -98,9 +118,9 @@ class CreateMissionViewController: UIViewController {
         let about = descriptionTextView.text ?? ""
         
         if let mission = mission {
-            hasChanges = name != mission.name || about != mission.about || category != nil || coverImage != nil
+            hasChanges = name != mission.name || about != mission.about || category != nil || coverPath != nil
         } else {
-            hasChanges = !name.isEmpty || !about.isEmpty || category != defaultCategory || coverImage != nil
+            hasChanges = !name.isEmpty || !about.isEmpty || category != defaultCategory || coverPath != nil
         }
         
         if hasChanges {
@@ -122,18 +142,31 @@ class CreateMissionViewController: UIViewController {
         view.endEditing(true)
         
         let vc = storyboard!.instantiateViewController(identifier: "CoverVC") as! CoverViewController
-        if let category = category {
+        if let coverPath = coverPath {
+            vc.coverPath = coverPath
+        } else if let category = category {
             vc.category = category
         } else if let categoryName = mission?.category, let category = MissionCategory(rawValue: categoryName) {
             vc.category = category
         }
-        vc.onImageSelected = { [unowned self] image in
-            self.coverImage = image
-            self.coverImageView.image = image
+        vc.onImageSelected = { [unowned self] path in
+            self.category = nil
+            self.coverPath = path
+            self.coverImageView.loadFromPath(path) {
+                return path
+            }
         }
         vc.onCategorySelected = { [unowned self] category in
+            self.coverPath = nil
             self.category = category
             self.coverImageView.image = UIImage(named: category.coverName)
+        }
+        vc.onImageDeleted = { [unowned self] path in
+            if self.coverPath == path {
+                self.coverPath = nil
+                self.category = .location
+                self.coverImageView.image = UIImage(named: self.category!.coverName)
+            }
         }
         
         let window = UIApplication.shared.windows.first
@@ -145,8 +178,22 @@ class CreateMissionViewController: UIViewController {
         let name = nameTextView.text.trim()
         let about = descriptionTextView.text.trim()
         
+        var missionCoverPath: String? = nil
+        if let coverPath = coverPath {
+            missionCoverPath = FilesHelper().copyFile(at: coverPath, to: "missions")
+        }
+        
         if let mission = mission {
-            MissionsHolder.shared.updateMission(mission: mission, name: name, about: about, coverPath: coverImage?.saveToDocuments(), category: category) { [weak self] mission in
+            var updateCoverPath = mission.photoPath
+            var updateCategory = MissionCategory(rawValue: mission.category ?? "")
+            if missionCoverPath != nil {
+                updateCoverPath = missionCoverPath
+                updateCategory = nil
+            } else if category != nil {
+                updateCoverPath = nil
+                updateCategory = category
+            }
+            MissionsHolder.shared.updateMission(mission: mission, name: name, about: about, coverPath: updateCoverPath, category: updateCategory) { [weak self] mission in
                 NotificationCenter.default.post(name: .missionUpdated, object: nil)
                 self?.dismiss(animated: true) {
                     self?.onMissionUpdated?(mission)
@@ -154,7 +201,7 @@ class CreateMissionViewController: UIViewController {
                 }
             }
         } else {
-            MissionsHolder.shared.createMission(name: name, about: about, coverPath: coverImage?.saveToDocuments(), category: category) { [weak self] mission in
+            MissionsHolder.shared.createMission(name: name, about: about, coverPath: missionCoverPath, category: category) { [weak self] mission in
                 NotificationCenter.default.post(name: .missionUpdated, object: nil)
                 self?.dismiss(animated: true) {
                     self?.onMissionCreated?(mission)
@@ -162,6 +209,51 @@ class CreateMissionViewController: UIViewController {
                 }
             }
         }
+    }
+}
+
+extension CreateMissionViewController: UITableViewDataSource, UITableViewDelegate {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 3
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 0 {
+            return templates.count
+        } else if section == 2 {
+            return hiddenTemplatesExpanded ? hiddenTemplates.count : 0
+        }
+        return hiddenTemplates.isEmpty ? 0 : 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.section == 1 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "HiddenMissionsCell", for: indexPath)
+            cell.selectionStyle = .none
+            let arrow = cell.viewWithTag(1) as! UIImageView
+            arrow.transform = CGAffineTransform(rotationAngle: hiddenTemplatesExpanded ? .pi/2 : -.pi/2)
+            return cell
+        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TemplateCell", for: indexPath) as! TemplateCell
+        let templates = indexPath.section == 0 ? self.templates : hiddenTemplates
+        cell.template = templates[indexPath.row]
+        cell.selectionStyle = .none
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
+        hiddenTemplatesExpanded = !hiddenTemplatesExpanded
+        tableView.reloadSections(IndexSet(arrayLiteral: 1, 2), with: .automatic)
     }
 }
 

@@ -70,4 +70,11 @@ extension UIImage {
         let scaledImage = context.makeImage().flatMap { UIImage(cgImage: $0, scale: self.scale, orientation: self.imageOrientation) }
         return scaledImage ?? self
     }
+    
+    func cropped(to rect: CGRect) -> UIImage? {
+        guard let cgImage = self.cgImage?.cropping(to: rect) else {
+            return nil
+        }
+        return UIImage(cgImage: cgImage, scale: self.scale, orientation: self.imageOrientation)
+    }
 }

@@ -122,10 +122,8 @@ class SegmentedControlTab: UIControl {
     }
     
     @IBAction func questionTapped(_ sender: Any) {
-        guard let menuUnderlayControl = (UIApplication.shared.delegate as! AppDelegate).menuUnderlayControl else {
-            return
-        }
-        menuUnderlayControl.backgroundColor = .clear
+
+        let menuUnderlayControl = parentViewController!.addMenuUnderlayControl(color: .clear)
         
         let tooltipView = TooltipView()
         tooltipView.translatesAutoresizingMaskIntoConstraints = false
@@ -146,7 +144,5 @@ class SegmentedControlTab: UIControl {
         NSLayoutConstraint.activate(constraints)
         
         tooltipView.text = data?.tooltip
-        
-        menuUnderlayControl.isHidden = false
     }
 }

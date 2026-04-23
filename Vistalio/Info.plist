@@ -24,6 +24,8 @@
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Камера очень сильно нужна</string>
+	<string>Доступ к камере нужен, чтобы снимать фото и видео прямо из приложения.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Доступ к галерее нужен, чтобы добавлять фото и видео.</string>
 </dict>
 </plist>

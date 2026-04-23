@@ -9,5 +9,5 @@ import Foundation
 
 extension Notification.Name {
     static let missionUpdated = Notification.Name("missionUpdated")
-    static let dismissMenu = Notification.Name("dismissMenu")
+    static let templatesUpdated = Notification.Name("templatesUpdated")
 }

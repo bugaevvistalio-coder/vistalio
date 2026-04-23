@@ -7,6 +7,7 @@
 
 import UIKit
 import FittedSheets
+import PhotosUI
 
 extension UIViewController {
     
@@ -33,17 +34,21 @@ extension UIViewController {
             let imagePicker = UIImagePickerController()
             imagePicker.delegate = (self as? UIImagePickerControllerDelegate & UINavigationControllerDelegate)
             imagePicker.sourceType = .camera
-            imagePicker.allowsEditing = true
-            
-            let width = UIScreen.main.bounds.width
-            let overlayView = UIView(frame: imagePicker.view.frame)
-            let circlePath = UIBezierPath(ovalIn: CGRect(x: 0, y: (imagePicker.view.frame.height - width)/2, width: width, height: width))
-            imagePicker.cameraOverlayView = overlayView
-            
+            imagePicker.modalPresentationStyle = .overFullScreen
             present(imagePicker, animated: true, completion: nil)
         } else {
             print("Camera not available on this device/simulator.")
         }
+    }
+    
+    func openGallery() {
+        var configuration = PHPickerConfiguration()
+        configuration.filter = .images // Configure for images or videos
+        configuration.selectionLimit = 1 // Limit selection, 0 for unlimited
+        
+        let picker = PHPickerViewController(configuration: configuration)
+        picker.delegate = self as? PHPickerViewControllerDelegate
+        present(picker, animated: true)
     }
     
     func openEditMission(_ mission: Mission, onMissionUpdated: ((Mission) -> ())?) {
@@ -96,5 +101,74 @@ extension UIViewController {
             ActionButton(type: .secondary, title: "Отменить", action: { })
         ]
         presentBottomSheet(vc, height: 200)
+    }
+    
+    func openHideMissionTemplate(_ template: MissionTemplate) {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
+        vc.popupTitle = "Скрыть миссию?"
+        vc.popupText = "Перестанем её рекомендовать.\nМожно отменить в любой момент."
+        vc.showClose = true
+        vc.buttons = [
+            ActionButton(type: .red, title: "Скрыть", action: {
+                template.hiddenAt = Date()
+                CoreDataStack.shared.performAndWait { context in
+                    HiddenMissionTemplate.create(context: context, templateId: template.id)
+                }
+                NotificationCenter.default.post(name: .templatesUpdated, object: nil)
+            })
+        ]
+        presentBottomSheet(vc, height: 200)
+    }
+    
+    func openShowMissionTemplate(_ template: MissionTemplate) {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
+        vc.popupTitle = "Убрать миссию из скрытых?"
+        vc.popupText = "Снова будем её рекомендовать.\nМожно отменить в любой момент."
+        vc.showClose = true
+        vc.buttons = [
+            ActionButton(type: .primary, title: "Показать", action: {
+                template.hiddenAt = nil
+                CoreDataStack.shared.performAndWait { context in
+                    let request = HiddenMissionTemplate.hiddenMissionTemplateFetchRequest()
+                    request.predicate = NSPredicate(format: "templateId == %d", template.id)
+                    do {
+                        let objects = try context.fetch(request)
+                        for object in objects {
+                            context.delete(object)
+                        }
+                    } catch {
+                        print("Delete template failed: \(error)")
+                    }
+                }
+                NotificationCenter.default.post(name: .templatesUpdated, object: nil)
+            })
+        ]
+        presentBottomSheet(vc, height: 200)
+    }
+    
+    func addMenuUnderlayControl(color: UIColor) -> UIControl {
+        let control = UIControl()
+        control.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(control)
+        
+        let constraints = [
+            control.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
+            control.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
+            control.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+            control.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
+        ]
+        NSLayoutConstraint.activate(constraints)
+        
+        control.backgroundColor = color
+        control.addTarget(self, action: #selector(menuTappedOutside), for: .touchUpInside)
+        
+        return control
+    }
+    
+    @objc func menuTappedOutside(_ sender: Any) {
+        let menuUnderlayControl = sender as! UIControl
+        menuUnderlayControl.removeFromSuperview()
     }
 }

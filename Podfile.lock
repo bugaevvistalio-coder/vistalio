@@ -1,5 +1,6 @@
 PODS:
   - FittedSheets (2.7.1)
+  - ImageScrollView (1.9.3)
   - IQKeyboardCore (1.0.8)
   - IQKeyboardManagerSwift (8.0.1):
     - IQKeyboardManagerSwift/Appearance (= 8.0.1)
@@ -42,12 +43,14 @@ PODS:
 
 DEPENDENCIES:
   - FittedSheets
+  - ImageScrollView
   - IQKeyboardManagerSwift
   - Kingfisher (~> 8.0)
 
 SPEC REPOS:
   trunk:
     - FittedSheets
+    - ImageScrollView
     - IQKeyboardCore
     - IQKeyboardManagerSwift
     - IQKeyboardNotification
@@ -60,6 +63,7 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   FittedSheets: 38ec85129bf5c970f99d4dba4fbf48185c5fa98a
+  ImageScrollView: d3ce8371e0d44299b2b638410db45387e18aa83f
   IQKeyboardCore: 8652977ec919cf5351aa2977fedd1a6546476fbc
   IQKeyboardManagerSwift: 835fc9c6e4732398113406d84900ad2e8f141218
   IQKeyboardNotification: eb4910401f5a0e68f97e71c62f8a0c5b7e9d535c
@@ -70,6 +74,6 @@ SPEC CHECKSUMS:
   IQTextView: ae13b4922f22e6f027f62c557d9f4f236b19d5c7
   Kingfisher: b6c16059112dd6bdadf3d7ae01472ea1ef01a6b8
 
-PODFILE CHECKSUM: 53c2378a53ad420bcac2013caeb6d59972c24436
+PODFILE CHECKSUM: 0cd406fd05a16cefbe69ed081fde3b0d3af5a32f
 
 COCOAPODS: 1.15.2

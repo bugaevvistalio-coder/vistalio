@@ -62,7 +62,6 @@ class MenuItemView: UIControl {
     }
     
     @IBAction func onTapped(_ sender: Any) {
-        NotificationCenter.default.post(name: .dismissMenu, object: nil)
         action?()
     }
 }

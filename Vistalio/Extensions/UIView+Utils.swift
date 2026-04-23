@@ -42,6 +42,21 @@ extension UIView {
         layer.shadowOpacity = shadowOpacity
     }
     
+    func addShadow(offset:CGSize = CGSize(width: 0, height: 5), radius: CGFloat = 5, cornerRadius:CGFloat = 12, color: UIColor = UIColor.black, shadowOpacity:Float = 0.05, bounds: CGRect? = nil) {
+        layer.sublayers?.filter({ $0.name == "ShadowLayer" }).forEach({ $0.removeFromSuperlayer() })
+        
+        let shadowLayer = CAShapeLayer()
+        shadowLayer.name = "ShadowLayer"
+        
+        shadowLayer.cornerRadius = cornerRadius
+        shadowLayer.shadowColor = color.cgColor
+        shadowLayer.shadowRadius = radius
+        shadowLayer.shadowOffset = offset
+        shadowLayer.shadowOpacity = shadowOpacity
+        shadowLayer.bounds = bounds ?? self.bounds
+        layer.insertSublayer(shadowLayer, at: 0)
+    }
+    
     func addDashedBorder(color: UIColor = .black, lineWidth: CGFloat = 1, dashPattern: [NSNumber]? = [4, 2], cornerRadius: CGFloat = 0, fixedBounds: CGRect? = nil) {
         layer.sublayers?.filter({ $0.name == "DashedBorder" }).forEach({ $0.removeFromSuperlayer() })
 
@@ -125,5 +140,46 @@ extension UIView {
         return renderer.image { ctx in
             drawHierarchy(in: bounds, afterScreenUpdates: true)
         }
+    }
+    
+    func makeTransparentHole(at center: CGPoint, radius: CGFloat) {
+        let path = UIBezierPath(rect: self.bounds)
+        let holePath = UIBezierPath(arcCenter: center,
+                                    radius: radius,
+                                    startAngle: 0,
+                                    endAngle: 2 * .pi,
+                                    clockwise: true)
+        
+        path.append(holePath)
+        
+        let maskLayer = CAShapeLayer()
+        maskLayer.path = path.cgPath
+        maskLayer.fillRule = .evenOdd
+        
+        self.layer.mask = maskLayer
+    }
+    
+    var parentViewController: UIViewController? {
+        var parentResponder: UIResponder? = self
+        while parentResponder != nil {
+            parentResponder = parentResponder!.next
+            if let viewController = parentResponder as? UIViewController {
+                return viewController
+            }
+        }
+        return nil
+    }
+    
+    func setGradientLayer(colors: [UIColor], startPoint: CGPoint, endPoint: CGPoint, cornerRadius: CGFloat, bounds: CGRect? = nil) {
+        layer.sublayers?.filter({ $0.name == "GradientLayer" }).forEach({ $0.removeFromSuperlayer() })
+        
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.name = "GradientLayer"
+        gradientLayer.colors = colors.map({$0.cgColor})
+        gradientLayer.startPoint = startPoint
+        gradientLayer.endPoint = endPoint
+        gradientLayer.frame = bounds ?? self.bounds
+        gradientLayer.cornerRadius = cornerRadius
+        layer.insertSublayer(gradientLayer, at: 0)
     }
 }

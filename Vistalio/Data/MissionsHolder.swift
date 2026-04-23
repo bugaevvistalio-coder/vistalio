@@ -11,6 +11,8 @@ class MissionsHolder {
     
     static let shared = MissionsHolder()
     
+    private(set) var templates = [MissionTemplate]()
+    
     func createMission(name: String, about: String?, coverPath: String?, category: MissionCategory?, onCreated: (Mission) -> ()) {
         var mission: Mission? = nil
         CoreDataStack.shared.performAndWait { context in
@@ -45,5 +47,57 @@ class MissionsHolder {
             print("Failed to retrive missions and folders")
         }
         return [Mission]()
+    }
+    
+    func getCovers() -> [Cover] {
+        let coversRequest = Cover.coverFetchRequest()
+        coversRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        do {
+            return try CoreDataStack.shared.mainContext.fetch(coversRequest)
+        } catch {
+            print("Failed to retrive missions and folders")
+        }
+        return [Cover]()
+    }
+    
+    func saveCover(path: String) -> Cover? {
+        var cover: Cover? = nil
+        CoreDataStack.shared.performAndWait { context in
+            cover = Cover.create(context: context, path: path)
+        }
+        return cover
+    }
+    
+    func loadTemplates() {
+        DispatchQueue.global().async {
+            if let path = Bundle.main.path(forResource: "missions", ofType: "json") {
+                do {
+                    let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
+                    
+                    let decoder = JSONDecoder()
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "yyyy-MM-dd"
+                    decoder.dateDecodingStrategy = .formatted(dateFormatter)
+                    
+                    let templatesData = try decoder.decode(MissionTemplatesList.self, from: data)
+                    self.templates = templatesData.missions
+                    
+                    let request = HiddenMissionTemplate.hiddenMissionTemplateFetchRequest()
+                    var hiddenTemplates = try CoreDataStack.shared.backgroundContext.fetch(request)
+                    self.templates.forEach { t in
+                        if let hidden = hiddenTemplates.first(where: { $0.templateId == t.id }) {
+                            t.hiddenAt = hidden.date
+                        }
+                    }
+                    
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(name: .templatesUpdated, object: nil)
+                    }
+                    
+                } catch let error as NSError {
+                    print(error)
+                }
+            }
+        }
     }
 }

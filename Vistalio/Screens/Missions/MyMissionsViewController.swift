@@ -84,20 +84,22 @@ class MyMissionsViewController: UIViewController {
     }
     
     private func showMenu(mission: Mission, anchorRect: CGRect, image: UIImage) {
-        guard let menuUnderlayControl = (UIApplication.shared.delegate as! AppDelegate).menuUnderlayControl else {
-            return
-        }
-        menuUnderlayControl.backgroundColor = .black.withAlphaComponent(0.25)
+        
+        let mainVC = (UIApplication.shared.keyWindow?.rootViewController as! MainViewController)
+        let menuUnderlayControl = mainVC.addMenuUnderlayControl(color: .black.withAlphaComponent(0.25))
         
         let menuView = MenuView()
         menuView.items = [
             MenuItemData(text: "Изменить", image: .edit, type: .normal, action: { [unowned self] in
+                menuUnderlayControl.removeFromSuperview()
                 openEditMission(mission, onMissionUpdated: nil)
             }),
             MenuItemData(text: mission.archived ? "Убрать из архива" : "В архив", image: mission.archived ? .unarchive : .archive, type: .normal, action: { [unowned self] in
+                menuUnderlayControl.removeFromSuperview()
                 openArchiveMission(mission)
             }),
             MenuItemData(text: "Удалить", image: .trash, type: .red, action: { [unowned self] in
+                menuUnderlayControl.removeFromSuperview()
                 openDeleteMission(mission)
             })
         ]
@@ -118,16 +120,14 @@ class MyMissionsViewController: UIViewController {
         menuUnderlayControl.addSubview(highlightedItemImageView)
         
         let constraints = [
-            highlightedItemImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: anchorRect.minY),
-            highlightedItemImageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: anchorRect.minX),
+            highlightedItemImageView.topAnchor.constraint(equalTo: menuUnderlayControl.topAnchor, constant: anchorRect.minY),
+            highlightedItemImageView.leftAnchor.constraint(equalTo: menuUnderlayControl.leftAnchor, constant: anchorRect.minX),
             highlightedItemImageView.widthAnchor.constraint(equalToConstant: anchorRect.width),
             highlightedItemImageView.heightAnchor.constraint(equalToConstant: anchorRect.height),
         ]
         NSLayoutConstraint.activate(constraints)
         
         highlightedItemImageView.image = image
-        
-        menuUnderlayControl.isHidden = false
     }
 }
 

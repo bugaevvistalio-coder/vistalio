@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23507" systemVersion="24A348" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="Cover" representedClassName="Cover" syncable="YES">
+        <attribute name="creationDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="photoPath" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="HiddenMissionTemplate" representedClassName="HiddenMissionTemplate" syncable="YES">
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="templateId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
     <entity name="Mission" representedClassName="Mission" syncable="YES">
         <attribute name="about" optional="YES" attributeType="String"/>
         <attribute name="archived" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>

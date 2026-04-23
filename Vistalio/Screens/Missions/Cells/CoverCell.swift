@@ -12,6 +12,12 @@ class CoverCell: UICollectionViewCell {
     @IBOutlet weak var coverImageView: RoundedImageView!
     @IBOutlet weak var radioImageView: UIImageView!
     
+    private lazy var longGestureRecognizer: UILongPressGestureRecognizer = {
+        return UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
+    }()
+    
+    var onLongGesture: ((UIImage, CGRect) -> ())?
+    
     override var isSelected: Bool {
         didSet {
             if isSelected {
@@ -24,9 +30,32 @@ class CoverCell: UICollectionViewCell {
         }
     }
     
-    var image: UIImage! {
+    var image: UIImage? {
         didSet {
             coverImageView.image = image
+            coverImageView.removeGestureRecognizer(longGestureRecognizer)
+        }
+    }
+    
+    var path: String? {
+        didSet {
+            if let path = path {
+                let currentPath = path
+                coverImageView.loadFromPath(path) {
+                    return currentPath
+                }
+            }
+            if !(coverImageView.gestureRecognizers?.contains(longGestureRecognizer) ?? false) {
+                coverImageView.addGestureRecognizer(longGestureRecognizer)
+            }
+        }
+    }
+    
+    @objc private func handleLongPress(gestureRecognizer : UILongPressGestureRecognizer){
+        if gestureRecognizer.state == .began {
+            if let origin = contentView.superview?.convert(contentView.frame.origin, to: nil) {
+                onLongGesture?(contentView.toImage(rect: contentView.bounds), CGRect(origin: origin, size: contentView.frame.size))
+            }
         }
     }
 }

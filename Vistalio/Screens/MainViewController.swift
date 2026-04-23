@@ -19,7 +19,6 @@ class MainViewController: UIViewController {
     
     @IBOutlet weak var tabBarBottom: NSLayoutConstraint!
     
-    @IBOutlet weak var menuUnderlayControl: UIControl!
     @IBOutlet weak var notificationsStackView: UIStackView!
     
     var tabs = [CustomTabItem]()
@@ -41,12 +40,6 @@ class MainViewController: UIViewController {
         tabs = [myDayTab, missionsTab, mapTab, meTab]
         
         buildControllers()
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(dismissMenu), name: .dismissMenu, object: nil)
-    }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: .dismissMenu, object: nil)
     }
     
     private func buildControllers() {
@@ -74,16 +67,6 @@ class MainViewController: UIViewController {
                 childVC.didMove(toParent: self)
             }
         }
-    }
-    
-    @IBAction func menuUnderlayTapped(_ sender: Any) {
-        dismissMenu()
-    }
-    
-    @objc private func dismissMenu() {
-        let subviews = menuUnderlayControl.subviews
-        subviews.forEach { $0.removeFromSuperview() }
-        menuUnderlayControl.isHidden = true
     }
     
     func addNotification(text: String) {

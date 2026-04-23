@@ -54,10 +54,12 @@ class SelectActionViewController: UIViewController {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var textLabel: UILabel!
     @IBOutlet weak var buttonsStackView: UIStackView!
+    @IBOutlet weak var closeButton: UIButton!
     
     var popupTitle: String!
     var popupText: String?
     var buttons = [ActionButton]()
+    var showClose = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,6 +70,9 @@ class SelectActionViewController: UIViewController {
         } else {
             textLabel.isHidden = true
         }
+        
+        closeButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1)
+        closeButton.isHidden = !showClose
         
         for (i, b) in buttons.enumerated() {
             let button = b.create()
@@ -111,5 +116,9 @@ class SelectActionViewController: UIViewController {
         dismiss(animated: true) {
             action()
         }
+    }
+    
+    @IBAction func closeTapped(_ sender: UIButton) {
+        dismiss(animated: true)
     }
 }
