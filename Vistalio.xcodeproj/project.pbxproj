@@ -52,13 +52,32 @@
 		C34665CA2F783741008648C8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34665B22F783741008648C8 /* AppDelegate.swift */; };
 		C34665CB2F783741008648C8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34665B52F783741008648C8 /* SceneDelegate.swift */; };
 		C347A5842F98F4320068D5B3 /* HiddenMissionTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C347A5832F98F42E0068D5B3 /* HiddenMissionTemplate.swift */; };
-		C36B3D022F9692EA00976790 /* missions.json in Sources */ = {isa = PBXBuildFile; fileRef = C36B3D012F9692E400976790 /* missions.json */; };
+		C36B3D022F9692EA00976790 /* missions_list.json in Sources */ = {isa = PBXBuildFile; fileRef = C36B3D012F9692E400976790 /* missions_list.json */; };
 		C36B3D042F97A85100976790 /* MissionTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36B3D032F97A84D00976790 /* MissionTemplate.swift */; };
 		C36B3D062F97D71D00976790 /* TemplateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36B3D052F97D71900976790 /* TemplateCell.swift */; };
-		C36B3D072F97DC9100976790 /* missions.json in Resources */ = {isa = PBXBuildFile; fileRef = C36B3D012F9692E400976790 /* missions.json */; };
+		C36B3D072F97DC9100976790 /* missions_list.json in Resources */ = {isa = PBXBuildFile; fileRef = C36B3D012F9692E400976790 /* missions_list.json */; };
 		C36B3D092F9884F100976790 /* EmotionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36B3D082F9884EE00976790 /* EmotionCell.swift */; };
 		C3B7D71A2F94A55400562DC2 /* CropImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B7D7192F94A54E00562DC2 /* CropImageViewController.swift */; };
 		C3B7D71C2F95390200562DC2 /* Cover.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B7D71B2F9538FF00562DC2 /* Cover.swift */; };
+		C3BEABB02F9A38ED00359CB6 /* TemplateHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BEABAF2F9A38E900359CB6 /* TemplateHeaderCell.swift */; };
+		C3BEABB22F9A39C300359CB6 /* TemplateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BEABB12F9A39BF00359CB6 /* TemplateViewController.swift */; };
+		C3BEABB42F9BAFDD00359CB6 /* mission_1.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABB32F9BAFD600359CB6 /* mission_1.json */; };
+		C3BEABB62F9BB00A00359CB6 /* mission_2.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABB52F9BB00500359CB6 /* mission_2.json */; };
+		C3BEABB82F9BB03500359CB6 /* mission_3.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABB72F9BB02F00359CB6 /* mission_3.json */; };
+		C3BEABBA2F9BB05700359CB6 /* mission_4.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABB92F9BB05200359CB6 /* mission_4.json */; };
+		C3BEABBC2F9BB07400359CB6 /* mission_5.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABBB2F9BB06F00359CB6 /* mission_5.json */; };
+		C3BEABBE2F9BB0A600359CB6 /* mission_6.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABBD2F9BB0A000359CB6 /* mission_6.json */; };
+		C3BEABC02F9BB0C300359CB6 /* mission_7.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABBF2F9BB0BE00359CB6 /* mission_7.json */; };
+		C3BEABC22F9BB0DC00359CB6 /* mission_8.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABC12F9BB0D600359CB6 /* mission_8.json */; };
+		C3BEABC42F9BB0F200359CB6 /* mission_9.json in Sources */ = {isa = PBXBuildFile; fileRef = C3BEABC32F9BB0EF00359CB6 /* mission_9.json */; };
+		C3BEABC62F9BB10600359CB6 /* mission_10.json in Sources */ = {isa = PBXBuildFile; fileRef = C3BEABC52F9BB10300359CB6 /* mission_10.json */; };
+		C3BEABC82F9BB12700359CB6 /* mission_11.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABC72F9BB11F00359CB6 /* mission_11.json */; };
+		C3BEABCA2F9BB14300359CB6 /* mission_12.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABC92F9BB13D00359CB6 /* mission_12.json */; };
+		C3BEABCC2F9BB15A00359CB6 /* mission_13.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABCB2F9BB15500359CB6 /* mission_13.json */; };
+		C3BEABCE2F9BB23800359CB6 /* mission_14.json in Sources */ = {isa = PBXBuildFile; fileRef = C3BEABCD2F9BB23500359CB6 /* mission_14.json */; };
+		C3BEABD02F9BB35A00359CB6 /* mission_15.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABCF2F9BB35400359CB6 /* mission_15.json */; };
+		C3BEABD22F9BB50000359CB6 /* mission_16.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABD12F9BB4F800359CB6 /* mission_16.json */; };
+		C3BEABD42F9BB5FF00359CB6 /* mission_17.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABD32F9BB5FA00359CB6 /* mission_17.json */; };
 		C3CF26EE2F7929120008718D /* CoverCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CF26ED2F79290F0008718D /* CoverCell.swift */; };
 		C3CF26F02F7929C00008718D /* CoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CF26EF2F7929B70008718D /* CoverViewController.swift */; };
 		C3CF26F22F7936E20008718D /* UIViewController+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CF26F12F7936DD0008718D /* UIViewController+Utils.swift */; };
@@ -118,12 +137,31 @@
 		C34665B42F783741008648C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C34665B52F783741008648C8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		C347A5832F98F42E0068D5B3 /* HiddenMissionTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenMissionTemplate.swift; sourceTree = "<group>"; };
-		C36B3D012F9692E400976790 /* missions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = missions.json; sourceTree = "<group>"; };
+		C36B3D012F9692E400976790 /* missions_list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = missions_list.json; sourceTree = "<group>"; };
 		C36B3D032F97A84D00976790 /* MissionTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionTemplate.swift; sourceTree = "<group>"; };
 		C36B3D052F97D71900976790 /* TemplateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateCell.swift; sourceTree = "<group>"; };
 		C36B3D082F9884EE00976790 /* EmotionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmotionCell.swift; sourceTree = "<group>"; };
 		C3B7D7192F94A54E00562DC2 /* CropImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropImageViewController.swift; sourceTree = "<group>"; };
 		C3B7D71B2F9538FF00562DC2 /* Cover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cover.swift; sourceTree = "<group>"; };
+		C3BEABAF2F9A38E900359CB6 /* TemplateHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateHeaderCell.swift; sourceTree = "<group>"; };
+		C3BEABB12F9A39BF00359CB6 /* TemplateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateViewController.swift; sourceTree = "<group>"; };
+		C3BEABB32F9BAFD600359CB6 /* mission_1.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_1.json; sourceTree = "<group>"; };
+		C3BEABB52F9BB00500359CB6 /* mission_2.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_2.json; sourceTree = "<group>"; };
+		C3BEABB72F9BB02F00359CB6 /* mission_3.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_3.json; sourceTree = "<group>"; };
+		C3BEABB92F9BB05200359CB6 /* mission_4.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_4.json; sourceTree = "<group>"; };
+		C3BEABBB2F9BB06F00359CB6 /* mission_5.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_5.json; sourceTree = "<group>"; };
+		C3BEABBD2F9BB0A000359CB6 /* mission_6.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_6.json; sourceTree = "<group>"; };
+		C3BEABBF2F9BB0BE00359CB6 /* mission_7.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_7.json; sourceTree = "<group>"; };
+		C3BEABC12F9BB0D600359CB6 /* mission_8.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_8.json; sourceTree = "<group>"; };
+		C3BEABC32F9BB0EF00359CB6 /* mission_9.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_9.json; sourceTree = "<group>"; };
+		C3BEABC52F9BB10300359CB6 /* mission_10.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_10.json; sourceTree = "<group>"; };
+		C3BEABC72F9BB11F00359CB6 /* mission_11.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_11.json; sourceTree = "<group>"; };
+		C3BEABC92F9BB13D00359CB6 /* mission_12.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_12.json; sourceTree = "<group>"; };
+		C3BEABCB2F9BB15500359CB6 /* mission_13.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_13.json; sourceTree = "<group>"; };
+		C3BEABCD2F9BB23500359CB6 /* mission_14.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_14.json; sourceTree = "<group>"; };
+		C3BEABCF2F9BB35400359CB6 /* mission_15.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_15.json; sourceTree = "<group>"; };
+		C3BEABD12F9BB4F800359CB6 /* mission_16.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_16.json; sourceTree = "<group>"; };
+		C3BEABD32F9BB5FA00359CB6 /* mission_17.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_17.json; sourceTree = "<group>"; };
 		C3CF26ED2F79290F0008718D /* CoverCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverCell.swift; sourceTree = "<group>"; };
 		C3CF26EF2F7929B70008718D /* CoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverViewController.swift; sourceTree = "<group>"; };
 		C3CF26F12F7936DD0008718D /* UIViewController+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Utils.swift"; sourceTree = "<group>"; };
@@ -251,6 +289,7 @@
 				C34665A32F783741008648C8 /* CreateMissionViewController.swift */,
 				C3CF26EF2F7929B70008718D /* CoverViewController.swift */,
 				C33F22BA2F838D5300EF2A81 /* MissionViewController.swift */,
+				C3BEABB12F9A39BF00359CB6 /* TemplateViewController.swift */,
 				C3CF26EC2F7929050008718D /* Cells */,
 			);
 			path = Missions;
@@ -301,9 +340,34 @@
 		C36B3D002F9692CB00976790 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				C36B3D012F9692E400976790 /* missions.json */,
+				C36B3D012F9692E400976790 /* missions_list.json */,
+				C3BEABB32F9BAFD600359CB6 /* mission_1.json */,
+				C3BEABB52F9BB00500359CB6 /* mission_2.json */,
+				C3BEABB72F9BB02F00359CB6 /* mission_3.json */,
+				C3BEABB92F9BB05200359CB6 /* mission_4.json */,
+				C3BEABBB2F9BB06F00359CB6 /* mission_5.json */,
+				C3BEABBD2F9BB0A000359CB6 /* mission_6.json */,
+				C3BEABBF2F9BB0BE00359CB6 /* mission_7.json */,
+				C3BEABC12F9BB0D600359CB6 /* mission_8.json */,
+				C3BEABC32F9BB0EF00359CB6 /* mission_9.json */,
+				C3BEABC52F9BB10300359CB6 /* mission_10.json */,
+				C3BEABC72F9BB11F00359CB6 /* mission_11.json */,
+				C3BEABC92F9BB13D00359CB6 /* mission_12.json */,
+				C3BEABCB2F9BB15500359CB6 /* mission_13.json */,
+				C3BEABCD2F9BB23500359CB6 /* mission_14.json */,
+				C3BEABCF2F9BB35400359CB6 /* mission_15.json */,
+				C3BEABD12F9BB4F800359CB6 /* mission_16.json */,
+				C3BEABD32F9BB5FA00359CB6 /* mission_17.json */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		C3BEABAE2F9A38D000359CB6 /* TemplateScreen */ = {
+			isa = PBXGroup;
+			children = (
+				C3BEABAF2F9A38E900359CB6 /* TemplateHeaderCell.swift */,
+			);
+			path = TemplateScreen;
 			sourceTree = "<group>";
 		};
 		C3CF26EC2F7929050008718D /* Cells */ = {
@@ -313,6 +377,7 @@
 				C3CF26ED2F79290F0008718D /* CoverCell.swift */,
 				C36B3D052F97D71900976790 /* TemplateCell.swift */,
 				C36B3D082F9884EE00976790 /* EmotionCell.swift */,
+				C3BEABAE2F9A38D000359CB6 /* TemplateScreen */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -413,19 +478,33 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C36B3D072F97DC9100976790 /* missions.json in Resources */,
+				C3BEABD22F9BB50000359CB6 /* mission_16.json in Resources */,
+				C36B3D072F97DC9100976790 /* missions_list.json in Resources */,
 				C34665B72F783741008648C8 /* LaunchScreen.storyboard in Resources */,
+				C3BEABC82F9BB12700359CB6 /* mission_11.json in Resources */,
+				C3BEABCA2F9BB14300359CB6 /* mission_12.json in Resources */,
 				C33F22C82F84C86500EF2A81 /* MenuView.xib in Resources */,
+				C3BEABB82F9BB03500359CB6 /* mission_3.json in Resources */,
 				C3D5425A2F91F61E0093D819 /* TooltipView.xib in Resources */,
 				C34665B82F783741008648C8 /* Main.storyboard in Resources */,
 				C33F22B02F82CA7E00EF2A81 /* SegmentedControl.xib in Resources */,
 				C3D5425C2F928B350093D819 /* NotificationView.xib in Resources */,
+				C3BEABD02F9BB35A00359CB6 /* mission_15.json in Resources */,
 				C34665B92F783741008648C8 /* Map.storyboard in Resources */,
+				C3BEABC02F9BB0C300359CB6 /* mission_7.json in Resources */,
 				C33F22C22F84C6D700EF2A81 /* MenuItemView.xib in Resources */,
+				C3BEABC22F9BB0DC00359CB6 /* mission_8.json in Resources */,
+				C3BEABB62F9BB00A00359CB6 /* mission_2.json in Resources */,
 				C33F22B22F82CE7F00EF2A81 /* SegmentedControlTab.xib in Resources */,
 				C34665BA2F783741008648C8 /* Me.storyboard in Resources */,
 				C34665BB2F783741008648C8 /* Missions.storyboard in Resources */,
+				C3BEABD42F9BB5FF00359CB6 /* mission_17.json in Resources */,
+				C3BEABB42F9BAFDD00359CB6 /* mission_1.json in Resources */,
+				C3BEABCC2F9BB15A00359CB6 /* mission_13.json in Resources */,
+				C3BEABBA2F9BB05700359CB6 /* mission_4.json in Resources */,
 				C34665BC2F783741008648C8 /* MyDay.storyboard in Resources */,
+				C3BEABBE2F9BB0A600359CB6 /* mission_6.json in Resources */,
+				C3BEABBC2F9BB07400359CB6 /* mission_5.json in Resources */,
 				C34665BD2F783741008648C8 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -499,7 +578,10 @@
 				C3D542562F9125370093D819 /* NotificationNames.swift in Sources */,
 				C34665C32F783741008648C8 /* UITableView+Utils.swift in Sources */,
 				C33F22C42F84C75300EF2A81 /* MenuItemView.swift in Sources */,
+				C3BEABC42F9BB0F200359CB6 /* mission_9.json in Sources */,
+				C3BEABC62F9BB10600359CB6 /* mission_10.json in Sources */,
 				C3D5425E2F928C4F0093D819 /* NotificationView.swift in Sources */,
+				C3BEABCE2F9BB23800359CB6 /* mission_14.json in Sources */,
 				C33F22B92F838A1200EF2A81 /* SegmentedControl.swift in Sources */,
 				C3B7D71A2F94A55400562DC2 /* CropImageViewController.swift in Sources */,
 				C33F22AA2F8238C600EF2A81 /* MissionsHolder.swift in Sources */,
@@ -513,16 +595,18 @@
 				C33F22A12F80145B00EF2A81 /* FilesHelper.swift in Sources */,
 				C34665C62F783741008648C8 /* CreateMissionViewController.swift in Sources */,
 				C332CFCB2F8FB4A6002ABF15 /* MyMissionsViewController.swift in Sources */,
-				C36B3D022F9692EA00976790 /* missions.json in Sources */,
+				C36B3D022F9692EA00976790 /* missions_list.json in Sources */,
 				C34665C72F783741008648C8 /* MissionsViewController.swift in Sources */,
 				C34665C82F783741008648C8 /* MainViewController.swift in Sources */,
 				C33F229E2F80134A00EF2A81 /* Mission.swift in Sources */,
 				C34665C92F783741008648C8 /* StyledNavigationController.swift in Sources */,
 				C33F22BD2F83F48C00EF2A81 /* UILabel+Utils.swift in Sources */,
 				C3CF26F02F7929C00008718D /* CoverViewController.swift in Sources */,
+				C3BEABB22F9A39C300359CB6 /* TemplateViewController.swift in Sources */,
 				C33F22A82F82376B00EF2A81 /* UIImage+Utils.swift in Sources */,
 				C34665CA2F783741008648C8 /* AppDelegate.swift in Sources */,
 				C34665CB2F783741008648C8 /* SceneDelegate.swift in Sources */,
+				C3BEABB02F9A38ED00359CB6 /* TemplateHeaderCell.swift in Sources */,
 				C33F22B72F83893E00EF2A81 /* UIColor+Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

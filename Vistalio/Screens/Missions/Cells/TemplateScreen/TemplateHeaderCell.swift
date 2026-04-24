@@ -1,16 +1,15 @@
 //
-//  TemplateCell.swift
+//  TemplateHeaderCell.swift
 //  Vistalio
 //
-//  Created by Julia Konkova on 21.04.2026.
+//  Created by Julia Konkova on 23.04.2026.
 //
 
 import UIKit
-import Kingfisher
 
-class TemplateCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class TemplateHeaderCell: UICollectionViewCell, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-    @IBOutlet weak var roundedView: RoundedView!
+    @IBOutlet weak var bgView: UIView!
     @IBOutlet weak var missionImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
@@ -25,10 +24,12 @@ class TemplateCell: UITableViewCell, UICollectionViewDataSource, UICollectionVie
     @IBOutlet weak var badgeAgeLabel: UILabel!
     @IBOutlet weak var badgeHoursLabel: UILabel!
     
-    @IBOutlet weak var eyeButton: UIButton!
-    
     override func awakeFromNib() {
         super.awakeFromNib()
+        
+        bgView.layer.cornerRadius = 30
+        bgView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        
         collectionViewGradieintLeft.setGradientLayer(colors: [.white, .white.withAlphaComponent(0.01)], startPoint: CGPoint(x: 0.0, y: 0.5), endPoint: CGPoint(x: 1.0, y: 0.5), cornerRadius: 0)
         collectionViewGradieintRight.setGradientLayer(colors: [.white, .white.withAlphaComponent(0.01)], startPoint: CGPoint(x: 1.0, y: 0.5), endPoint: CGPoint(x: 0.0, y: 0.5), cornerRadius: 0)
         badgeAgeLabel.transform = CGAffineTransform(rotationAngle: .pi * 11 / 180)
@@ -40,12 +41,7 @@ class TemplateCell: UITableViewCell, UICollectionViewDataSource, UICollectionVie
             if let url = URL(string: template.cover) {
                 missionImageView.kf.setImage(with: url)
                 nameLabel.text = template.name
-                
-                let paragraphStyle = NSMutableParagraphStyle()
-                paragraphStyle.lineSpacing = 4
-                
-                let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 14, weight: .semibold), .foregroundColor: UIColor.textGrey60, .paragraphStyle: paragraphStyle]
-                descriptionLabel.attributedText = NSAttributedString(string: template.shortDescription, attributes: attributes)
+                descriptionLabel.text = template.fullDescription
                 
                 if let minAge = template.minAge {
                     badgeAge.isHidden = false
@@ -65,22 +61,7 @@ class TemplateCell: UITableViewCell, UICollectionViewDataSource, UICollectionVie
                 } else {
                     badgeHours.isHidden = true
                 }
-                
-                eyeButton.setImage(template.hiddenAt != nil ? .eyeOn : .eyeOff, for: .normal)
             }
-        }
-    }
-    
-    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        super.setHighlighted(highlighted, animated: animated)
-        roundedView.backgroundColor = highlighted ? .textGrey20 : .white
-    }
-    
-    @IBAction func eyeButtonTapped(_ sender: Any) {
-        if template.hiddenAt != nil {
-            parentViewController?.openShowMissionTemplate(template)
-        } else {
-            parentViewController?.openHideMissionTemplate(template)
         }
     }
     

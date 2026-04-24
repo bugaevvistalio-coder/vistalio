@@ -70,7 +70,7 @@ class MissionsHolder {
     
     func loadTemplates() {
         DispatchQueue.global().async {
-            if let path = Bundle.main.path(forResource: "missions", ofType: "json") {
+            if let path = Bundle.main.path(forResource: "missions_list", ofType: "json") {
                 do {
                     let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
                     

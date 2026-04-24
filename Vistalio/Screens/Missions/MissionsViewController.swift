@@ -131,8 +131,17 @@ extension MissionsViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
-        hiddenTemplatesExpanded = !hiddenTemplatesExpanded
-        tableView.reloadSections(IndexSet(arrayLiteral: 1, 2), with: .automatic)
+        if indexPath.section == 1 {
+            hiddenTemplatesExpanded = !hiddenTemplatesExpanded
+            tableView.reloadSections(IndexSet(arrayLiteral: 1, 2), with: .automatic)
+        } else {
+            let templates = indexPath.section == 0 ? self.templates : hiddenTemplates
+            let vc = storyboard!.instantiateViewController(withIdentifier: "TemplateVC") as! TemplateViewController
+            vc.template = templates[indexPath.row]
+            let window = UIApplication.shared.windows.first
+            let top = (window?.safeAreaInsets.top ?? 20)
+            presentBottomSheet(vc, height: UIScreen.main.bounds.height - top)
+        }
     }
 }
 
