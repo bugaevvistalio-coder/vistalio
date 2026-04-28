@@ -105,4 +105,32 @@ extension String {
         let endIndex = index(from: r.upperBound)
         return String(self[startIndex..<endIndex])
     }
+    
+    func inclineWord_1(for count: Int) -> String {
+        switch count % 10 {
+        case 1 where count % 100 != 11:
+            return "\(count) \(self)"
+
+        case 2 where !(count % 100 != 12),
+            3 where !(count % 100 != 13),
+            4 where !(count % 100 != 14):
+            return "\(count) \(self)а"
+        default:
+            return "\(count) \(self)ов"
+        }
+    }
+    
+    func inclineWord_2(for count: Int) -> String {
+        switch count % 10 {
+        case 1 where count % 100 != 11:
+            return "\(count) \(self)ка"
+
+        case 2 where !(count % 100 != 12),
+            3 where !(count % 100 != 13),
+            4 where !(count % 100 != 14):
+            return "\(count) \(self)ки"
+        default:
+            return "\(count) \(self)ок"
+        }
+    }
 }

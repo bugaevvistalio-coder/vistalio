@@ -57,7 +57,7 @@ enum MissionCategory: String, CaseIterable {
 public class Mission: NSManagedObject {
     
     @discardableResult
-    class func create(context: NSManagedObjectContext, name: String?, coverPath: String?, about: String? = nil, category: String? = nil, templateId: Int? = nil) -> Mission? {
+    class func create(context: NSManagedObjectContext, name: String?, coverPath: String?, about: String? = nil, category: String? = nil) -> Mission? {
         guard let entityDescription = NSEntityDescription.entity(forEntityName: "Mission", in: context) else { return nil }
         
         let mission =  Mission(entity: entityDescription, insertInto: context)
@@ -67,7 +67,52 @@ public class Mission: NSManagedObject {
         mission.category = category
         mission.creationDate = Date()
         mission.updateDate = mission.creationDate
-        mission.templateId = templateId ?? 0
+        
+        return mission
+    }
+    
+    @discardableResult
+    class func create(context: NSManagedObjectContext, template: MissionTemplate, steps: [[TemplateStep]]) -> Mission? {
+        guard let entityDescription = NSEntityDescription.entity(forEntityName: "Mission", in: context) else { return nil }
+        
+        let mission =  Mission(entity: entityDescription, insertInto: context)
+        mission.name = template.name
+        mission.photoPath = template.cover
+        mission.about = template.fullDescription
+        mission.creationDate = Date()
+        mission.updateDate = mission.creationDate
+        mission.templateId = template.id
+        
+        steps.flatMap { $0 }.forEach {
+            if let stepEntity = NSEntityDescription.entity(forEntityName: "MissionStep", in: context) {
+                let step = MissionStep(entity: stepEntity, insertInto: context)
+                step.name = $0.name
+                step.text = $0.description
+                step.mission = mission
+                
+                if let notes = $0.notes {
+                    notes.forEach {
+                        if let noteEntity = NSEntityDescription.entity(forEntityName: "MissionNote", in: context) {
+                            let note = MissionNote(entity: noteEntity, insertInto: context)
+                            note.name = $0.name
+                            note.text = $0.description
+                            note.audio = $0.audio
+                            note.step = step
+                            
+                            if let images = $0.images {
+                                images.forEach {
+                                    if let imageEntity = NSEntityDescription.entity(forEntityName: "MissionNoteImage", in: context) {
+                                        let image = MissionNoteImage(entity: imageEntity, insertInto: context)
+                                        image.path = $0
+                                        image.note = note
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         
         return mission
     }
@@ -94,4 +139,23 @@ extension Mission {
     @NSManaged public var category: String?
     @NSManaged public var templateId: Int
     @NSManaged public var archived: Bool
+    @NSManaged public var finishedAt: Date?
+    
+    @NSManaged public var steps: NSSet?
+}
+
+extension Mission {
+
+    @objc(addStepsObject:)
+    @NSManaged public func addToSteps(_ value: MissionStep)
+
+    @objc(removeStepsObject:)
+    @NSManaged public func removeFromSteps(_ value: MissionStep)
+
+    @objc(addSteps:)
+    @NSManaged public func addToSteps(_ values: NSSet)
+
+    @objc(removeSteps:)
+    @NSManaged public func removeFromSteps(_ values: NSSet)
+
 }

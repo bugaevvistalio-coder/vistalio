@@ -22,8 +22,16 @@ class MyMissionCell: UICollectionViewCell {
             nameLabel.text = mission.name
             
             if let path = mission.photoPath {
-                coverImageView.loadFromPath(path) { [weak self] in
-                    return self?.mission.photoPath
+                if path.starts(with: "http") {
+                    if let url = URL(string: path) {
+                        coverImageView.loadFromUrl(url) { [weak self] in
+                            return self?.mission.photoPath
+                        }
+                    }
+                } else {
+                    coverImageView.loadFromPath(path) { [weak self] in
+                        return self?.mission.photoPath
+                    }
                 }
             } else if let categoryName = mission.category, let category = MissionCategory(rawValue: categoryName) {
                 coverImageView.image = UIImage(named: category.coverName)

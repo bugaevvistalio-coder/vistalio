@@ -38,36 +38,38 @@ class TemplateCell: UITableViewCell, UICollectionViewDataSource, UICollectionVie
     var template: MissionTemplate! {
         didSet {
             if let url = URL(string: template.cover) {
-                missionImageView.kf.setImage(with: url)
-                nameLabel.text = template.name
-                
-                let paragraphStyle = NSMutableParagraphStyle()
-                paragraphStyle.lineSpacing = 4
-                
-                let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 14, weight: .semibold), .foregroundColor: UIColor.textGrey60, .paragraphStyle: paragraphStyle]
-                descriptionLabel.attributedText = NSAttributedString(string: template.shortDescription, attributes: attributes)
-                
-                if let minAge = template.minAge {
-                    badgeAge.isHidden = false
-                    badgeAgeLabel.text = "\(minAge)+"
-                    if minAge == 12 {
-                        badgeAgeImageView.image = .badgeAge12
-                    } else {
-                        badgeAgeImageView.image = .badgeAge3
-                    }
-                } else {
-                    badgeAge.isHidden = true
+                missionImageView.loadFromUrl(url) { [weak self] in
+                    return self?.template.cover
                 }
-                
-                if let maxHours = template.maxHours {
-                    badgeHours.isHidden = false
-                    badgeHoursLabel.text = "<\(maxHours)ч."
-                } else {
-                    badgeHours.isHidden = true
-                }
-                
-                eyeButton.setImage(template.hiddenAt != nil ? .eyeOn : .eyeOff, for: .normal)
             }
+            nameLabel.text = template.name
+            
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineSpacing = 4
+            
+            let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 14, weight: .semibold), .foregroundColor: UIColor.textGrey60, .paragraphStyle: paragraphStyle]
+            descriptionLabel.attributedText = NSAttributedString(string: template.shortDescription, attributes: attributes)
+            
+            if let minAge = template.minAge {
+                badgeAge.isHidden = false
+                badgeAgeLabel.text = "\(minAge)+"
+                if minAge == 12 {
+                    badgeAgeImageView.image = .badgeAge12
+                } else {
+                    badgeAgeImageView.image = .badgeAge3
+                }
+            } else {
+                badgeAge.isHidden = true
+            }
+            
+            if let maxHours = template.maxHours {
+                badgeHours.isHidden = false
+                badgeHoursLabel.text = "<\(maxHours)ч."
+            } else {
+                badgeHours.isHidden = true
+            }
+            
+            eyeButton.setImage(template.hiddenAt != nil ? .eyeOn : .eyeOff, for: .normal)
         }
     }
     
@@ -78,9 +80,13 @@ class TemplateCell: UITableViewCell, UICollectionViewDataSource, UICollectionVie
     
     @IBAction func eyeButtonTapped(_ sender: Any) {
         if template.hiddenAt != nil {
-            parentViewController?.openShowMissionTemplate(template)
+            parentViewController?.openShowMissionTemplate(template) {
+                (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Миссия убрана из скрытых")
+            }
         } else {
-            parentViewController?.openHideMissionTemplate(template)
+            parentViewController?.openHideMissionTemplate(template) {
+                (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Миссия скрыта")
+            }
         }
     }
     

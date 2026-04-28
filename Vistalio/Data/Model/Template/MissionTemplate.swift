@@ -121,3 +121,31 @@ enum MissionEmotion: String {
         }
     }
 }
+
+class StepsList: Codable {
+    let blocks: [[TemplateStep]]
+}
+
+class TemplateStep: Codable {
+    let name: String
+    let description: String?
+    let preview: Bool?
+    var expanded: Bool?
+    let notes: [TemplateNote]?
+    
+    var shortDescription: String? {
+        return description?.replacingOccurrences(of: "\n\n", with: " ").replacingOccurrences(of: "\n", with: " ")
+    }
+}
+
+class TemplateNote: Codable {
+    let name: String
+    let description: String?
+    let preview: Bool?
+    let images: [String]?
+    let audio: String?
+    
+    var shortDescription: String? {
+        return description?.replacingOccurrences(of: "\n\n", with: " ").replacingOccurrences(of: "\n", with: " ")
+    }
+}

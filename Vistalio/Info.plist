@@ -27,5 +27,18 @@
 	<string>Доступ к камере нужен, чтобы снимать фото и видео прямо из приложения.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Доступ к галерее нужен, чтобы добавлять фото и видео.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.ab.vistalio</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>vistalio</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

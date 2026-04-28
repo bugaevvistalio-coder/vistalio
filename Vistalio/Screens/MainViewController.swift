@@ -55,8 +55,15 @@ class MainViewController: UIViewController {
     @IBAction func tabTapped(_ sender: Any) {
         for (i, tab) in tabs.enumerated() {
             let control = (sender as! UIControl)
+            let wasSelected = tab.isTabSelected
             tab.isTabSelected = (i == control.tag)
-            if i == control.tag {
+            if i == control.tag && !wasSelected {
+                if let currentChild = children.first {
+                    currentChild.view.removeFromSuperview()
+                    currentChild.willMove(toParent: nil)
+                    currentChild.removeFromParent()
+                }
+                
                 let childVC = controllers[i]
                 addChild(childVC)
 

@@ -51,6 +51,13 @@ extension UIViewController {
         present(picker, animated: true)
     }
     
+    func openMission(_ mission: Mission) {
+        let sb = UIStoryboard(name: "Missions", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "MissionVC") as! MissionViewController
+        vc.mission = mission
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
     func openEditMission(_ mission: Mission, onMissionUpdated: ((Mission) -> ())?) {
         let storyboard = UIStoryboard(name: "Missions", bundle: nil)
         let nc = storyboard.instantiateViewController(identifier: "CreateMissionNC") as! UINavigationController
@@ -103,7 +110,7 @@ extension UIViewController {
         presentBottomSheet(vc, height: 200)
     }
     
-    func openHideMissionTemplate(_ template: MissionTemplate) {
+    func openHideMissionTemplate(_ template: MissionTemplate, onHidden: (() -> ())? = nil) {
         let sb = UIStoryboard(name: "Main", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
         vc.popupTitle = "Скрыть миссию?"
@@ -116,12 +123,13 @@ extension UIViewController {
                     HiddenMissionTemplate.create(context: context, templateId: template.id)
                 }
                 NotificationCenter.default.post(name: .templatesUpdated, object: nil)
+                onHidden?()
             })
         ]
         presentBottomSheet(vc, height: 200)
     }
     
-    func openShowMissionTemplate(_ template: MissionTemplate) {
+    func openShowMissionTemplate(_ template: MissionTemplate, onShown: (() -> ())? = nil) {
         let sb = UIStoryboard(name: "Main", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
         vc.popupTitle = "Убрать миссию из скрытых?"
@@ -143,6 +151,7 @@ extension UIViewController {
                     }
                 }
                 NotificationCenter.default.post(name: .templatesUpdated, object: nil)
+                onShown?()
             })
         ]
         presentBottomSheet(vc, height: 200)

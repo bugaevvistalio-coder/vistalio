@@ -63,12 +63,6 @@ class MissionsViewController: UIViewController {
         myMissionsSpacing.constant = myMissions.isEmpty ? 24 : 16
     }
     
-    private func openMission(_ mission: Mission) {
-        let vc = storyboard!.instantiateViewController(withIdentifier: "MissionVC") as! MissionViewController
-        vc.mission = mission
-        navigationController?.pushViewController(vc, animated: true)
-    }
-    
     @IBAction func addMissionTapped(_ sender: Any) {
         let nc = storyboard!.instantiateViewController(identifier: "CreateMissionNC") as! UINavigationController
         let vc = nc.viewControllers.first as! CreateMissionViewController

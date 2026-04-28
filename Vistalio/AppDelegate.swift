@@ -7,11 +7,10 @@
 
 import UIKit
 import IQKeyboardManagerSwift
+import AppsFlyerLib
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
-
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
@@ -19,6 +18,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         IQKeyboardManager.shared.enableAutoToolbar = true
 //        IQKeyboardManager.shared.toolbarConfiguration.previousNextDisplayMode = .alwaysHide
         IQKeyboardManager.shared.resignOnTouchOutside = true
+        
+        AppsFlyerLib.shared().appsFlyerDevKey = "Msm9X2Sp9ZbqfkdPym4eAF"
+        AppsFlyerLib.shared().appleAppID = "1632381333"
+        AppsFlyerLib.shared().deepLinkDelegate = self
+        #if DEBUG
+            AppsFlyerLib.shared().isDebug = true
+        #endif
+        
+        NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification, object: nil, queue: .main) { _ in
+            AppsFlyerLib.shared().appInviteOneLinkID = "eU8s"
+            AppsFlyerLib.shared().start()
+        }
         
         return true
     }
@@ -39,6 +50,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func addNotification(text: String) {
         (UIApplication.shared.keyWindow?.rootViewController as? MainViewController)?.addNotification(text: text)
+    }
+}
+
+extension AppDelegate: DeepLinkDelegate {
+    func didResolveDeepLink(_ result: DeepLinkResult) {
+        switch result.status {
+        case .notFound:
+            print("[AFSDK] Deep link not found")
+            return
+        case .failure:
+            print("Error %@", result.error!)
+            return
+        case .found:
+            print("[AFSDK] Deep link found")
+        }
+        
+        guard let deepLink = result.deepLink else {
+            print("[AFSDK] Could not extract deep link object")
+            return
+        }
+        
+        if deepLink.deeplinkValue == "recommended" && deepLink.clickEvent.keys.contains("deep_link_sub1"), let param = deepLink.clickEvent["deep_link_sub1"] as? String, let templateId = Int(param) {
+//            openTemplate(id: templateId)
+        }
+        
+        
     }
 }
 

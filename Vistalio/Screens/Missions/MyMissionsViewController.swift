@@ -77,12 +77,6 @@ class MyMissionsViewController: UIViewController {
         self.emptyArchiveView.isHidden = tabSelected != 1 || !self.missions.isEmpty
     }
     
-    private func openMission(_ mission: Mission) {
-        let vc = storyboard!.instantiateViewController(withIdentifier: "MissionVC") as! MissionViewController
-        vc.mission = mission
-        navigationController?.pushViewController(vc, animated: true)
-    }
-    
     private func showMenu(mission: Mission, anchorRect: CGRect, image: UIImage) {
         
         let mainVC = (UIApplication.shared.keyWindow?.rootViewController as! MainViewController)

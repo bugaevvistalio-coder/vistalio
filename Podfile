@@ -9,5 +9,6 @@ target 'Vistalio' do
   pod 'FittedSheets'
   pod 'Kingfisher', '~> 8.0'
   pod 'ImageScrollView'
+  pod 'AppsFlyerFramework/Strict'
   
 end

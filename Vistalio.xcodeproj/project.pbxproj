@@ -52,6 +52,8 @@
 		C34665CA2F783741008648C8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34665B22F783741008648C8 /* AppDelegate.swift */; };
 		C34665CB2F783741008648C8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34665B52F783741008648C8 /* SceneDelegate.swift */; };
 		C347A5842F98F4320068D5B3 /* HiddenMissionTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C347A5832F98F42E0068D5B3 /* HiddenMissionTemplate.swift */; };
+		C35911D52F9F6C780015FDE6 /* UIStackView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C35911D42F9F6C740015FDE6 /* UIStackView+Utils.swift */; };
+		C35911D72F9F81750015FDE6 /* zombi_audio.ogg in Resources */ = {isa = PBXBuildFile; fileRef = C35911D62F9F81750015FDE6 /* zombi_audio.ogg */; };
 		C36B3D022F9692EA00976790 /* missions_list.json in Sources */ = {isa = PBXBuildFile; fileRef = C36B3D012F9692E400976790 /* missions_list.json */; };
 		C36B3D042F97A85100976790 /* MissionTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36B3D032F97A84D00976790 /* MissionTemplate.swift */; };
 		C36B3D062F97D71D00976790 /* TemplateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36B3D052F97D71900976790 /* TemplateCell.swift */; };
@@ -78,6 +80,11 @@
 		C3BEABD02F9BB35A00359CB6 /* mission_15.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABCF2F9BB35400359CB6 /* mission_15.json */; };
 		C3BEABD22F9BB50000359CB6 /* mission_16.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABD12F9BB4F800359CB6 /* mission_16.json */; };
 		C3BEABD42F9BB5FF00359CB6 /* mission_17.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABD32F9BB5FA00359CB6 /* mission_17.json */; };
+		C3BEABD62F9BB88B00359CB6 /* TemplateStepCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BEABD52F9BB88700359CB6 /* TemplateStepCell.swift */; };
+		C3BEABD72F9BC01100359CB6 /* mission_9.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABC32F9BB0EF00359CB6 /* mission_9.json */; };
+		C3BEABD82F9BC01100359CB6 /* mission_10.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABC52F9BB10300359CB6 /* mission_10.json */; };
+		C3BEABD92F9BC01100359CB6 /* mission_14.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABCD2F9BB23500359CB6 /* mission_14.json */; };
+		C3BEABDD2F9E7E3800359CB6 /* TemplateNoteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BEABDC2F9E7E3300359CB6 /* TemplateNoteCell.swift */; };
 		C3CF26EE2F7929120008718D /* CoverCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CF26ED2F79290F0008718D /* CoverCell.swift */; };
 		C3CF26F02F7929C00008718D /* CoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CF26EF2F7929B70008718D /* CoverViewController.swift */; };
 		C3CF26F22F7936E20008718D /* UIViewController+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CF26F12F7936DD0008718D /* UIViewController+Utils.swift */; };
@@ -86,6 +93,9 @@
 		C3D5425A2F91F61E0093D819 /* TooltipView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3D542592F91F61E0093D819 /* TooltipView.xib */; };
 		C3D5425C2F928B350093D819 /* NotificationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3D5425B2F928B350093D819 /* NotificationView.xib */; };
 		C3D5425E2F928C4F0093D819 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D5425D2F928C4B0093D819 /* NotificationView.swift */; };
+		C3F47EC52F9FCA1A00F17AC8 /* MissionStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F47EC42F9FCA1700F17AC8 /* MissionStep.swift */; };
+		C3F47EC82F9FCAB300F17AC8 /* MissionNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F47EC72F9FCAB100F17AC8 /* MissionNote.swift */; };
+		C3F47ECA2FA0BBB600F17AC8 /* AppsFlyerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F47EC92FA0BB6600F17AC8 /* AppsFlyerHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -137,6 +147,8 @@
 		C34665B42F783741008648C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C34665B52F783741008648C8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		C347A5832F98F42E0068D5B3 /* HiddenMissionTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenMissionTemplate.swift; sourceTree = "<group>"; };
+		C35911D42F9F6C740015FDE6 /* UIStackView+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Utils.swift"; sourceTree = "<group>"; };
+		C35911D62F9F81750015FDE6 /* zombi_audio.ogg */ = {isa = PBXFileReference; lastKnownFileType = file; path = zombi_audio.ogg; sourceTree = "<group>"; };
 		C36B3D012F9692E400976790 /* missions_list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = missions_list.json; sourceTree = "<group>"; };
 		C36B3D032F97A84D00976790 /* MissionTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionTemplate.swift; sourceTree = "<group>"; };
 		C36B3D052F97D71900976790 /* TemplateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateCell.swift; sourceTree = "<group>"; };
@@ -162,6 +174,8 @@
 		C3BEABCF2F9BB35400359CB6 /* mission_15.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_15.json; sourceTree = "<group>"; };
 		C3BEABD12F9BB4F800359CB6 /* mission_16.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_16.json; sourceTree = "<group>"; };
 		C3BEABD32F9BB5FA00359CB6 /* mission_17.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_17.json; sourceTree = "<group>"; };
+		C3BEABD52F9BB88700359CB6 /* TemplateStepCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateStepCell.swift; sourceTree = "<group>"; };
+		C3BEABDC2F9E7E3300359CB6 /* TemplateNoteCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateNoteCell.swift; sourceTree = "<group>"; };
 		C3CF26ED2F79290F0008718D /* CoverCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverCell.swift; sourceTree = "<group>"; };
 		C3CF26EF2F7929B70008718D /* CoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverViewController.swift; sourceTree = "<group>"; };
 		C3CF26F12F7936DD0008718D /* UIViewController+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Utils.swift"; sourceTree = "<group>"; };
@@ -171,6 +185,9 @@
 		C3D5425B2F928B350093D819 /* NotificationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotificationView.xib; sourceTree = "<group>"; };
 		C3D5425D2F928C4B0093D819 /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		C3E34DB82F6D4B2A003ACBA4 /* Vistalio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Vistalio.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3F47EC42F9FCA1700F17AC8 /* MissionStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionStep.swift; sourceTree = "<group>"; };
+		C3F47EC72F9FCAB100F17AC8 /* MissionNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionNote.swift; sourceTree = "<group>"; };
+		C3F47EC92FA0BB6600F17AC8 /* AppsFlyerHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsFlyerHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -201,8 +218,9 @@
 			children = (
 				C33F229C2F80134A00EF2A81 /* Mission.swift */,
 				C3B7D71B2F9538FF00562DC2 /* Cover.swift */,
-				C36B3D032F97A84D00976790 /* MissionTemplate.swift */,
-				C347A5832F98F42E0068D5B3 /* HiddenMissionTemplate.swift */,
+				C3F47EC42F9FCA1700F17AC8 /* MissionStep.swift */,
+				C3F47EC72F9FCAB100F17AC8 /* MissionNote.swift */,
+				C3F47EC62F9FCA9F00F17AC8 /* Template */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -211,6 +229,7 @@
 			isa = PBXGroup;
 			children = (
 				C33F22A02F80145A00EF2A81 /* FilesHelper.swift */,
+				C3F47EC92FA0BB6600F17AC8 /* AppsFlyerHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -273,6 +292,7 @@
 				C33F22A72F82376800EF2A81 /* UIImage+Utils.swift */,
 				C33F22AD2F82A43A00EF2A81 /* UIImageView+Utils.swift */,
 				C33F22BC2F83F48800EF2A81 /* UILabel+Utils.swift */,
+				C35911D42F9F6C740015FDE6 /* UIStackView+Utils.swift */,
 				C346659F2F783741008648C8 /* UITableView+Utils.swift */,
 				C34665A02F783741008648C8 /* UITextField+Utils.swift */,
 				C34665A12F783741008648C8 /* UIView+Utils.swift */,
@@ -358,6 +378,7 @@
 				C3BEABCF2F9BB35400359CB6 /* mission_15.json */,
 				C3BEABD12F9BB4F800359CB6 /* mission_16.json */,
 				C3BEABD32F9BB5FA00359CB6 /* mission_17.json */,
+				C35911D62F9F81750015FDE6 /* zombi_audio.ogg */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -366,6 +387,8 @@
 			isa = PBXGroup;
 			children = (
 				C3BEABAF2F9A38E900359CB6 /* TemplateHeaderCell.swift */,
+				C3BEABD52F9BB88700359CB6 /* TemplateStepCell.swift */,
+				C3BEABDC2F9E7E3300359CB6 /* TemplateNoteCell.swift */,
 			);
 			path = TemplateScreen;
 			sourceTree = "<group>";
@@ -400,6 +423,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		C3F47EC62F9FCA9F00F17AC8 /* Template */ = {
+			isa = PBXGroup;
+			children = (
+				C36B3D032F97A84D00976790 /* MissionTemplate.swift */,
+				C347A5832F98F42E0068D5B3 /* HiddenMissionTemplate.swift */,
+			);
+			path = Template;
+			sourceTree = "<group>";
+		};
 		EC51933630804151656D0D2A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -429,6 +461,7 @@
 				C3E34DB52F6D4B2A003ACBA4 /* Frameworks */,
 				C3E34DB62F6D4B2A003ACBA4 /* Resources */,
 				2BE4A7E5465720E5DDDE2CD5 /* [CP] Embed Pods Frameworks */,
+				F1DBD08C2273014010CA33FC /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -478,6 +511,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3BEABD72F9BC01100359CB6 /* mission_9.json in Resources */,
+				C3BEABD82F9BC01100359CB6 /* mission_10.json in Resources */,
+				C3BEABD92F9BC01100359CB6 /* mission_14.json in Resources */,
 				C3BEABD22F9BB50000359CB6 /* mission_16.json in Resources */,
 				C36B3D072F97DC9100976790 /* missions_list.json in Resources */,
 				C34665B72F783741008648C8 /* LaunchScreen.storyboard in Resources */,
@@ -487,6 +523,7 @@
 				C3BEABB82F9BB03500359CB6 /* mission_3.json in Resources */,
 				C3D5425A2F91F61E0093D819 /* TooltipView.xib in Resources */,
 				C34665B82F783741008648C8 /* Main.storyboard in Resources */,
+				C35911D72F9F81750015FDE6 /* zombi_audio.ogg in Resources */,
 				C33F22B02F82CA7E00EF2A81 /* SegmentedControl.xib in Resources */,
 				C3D5425C2F928B350093D819 /* NotificationView.xib in Resources */,
 				C3BEABD02F9BB35A00359CB6 /* mission_15.json in Resources */,
@@ -551,6 +588,23 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		F1DBD08C2273014010CA33FC /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Vistalio/Pods-Vistalio-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Vistalio/Pods-Vistalio-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Vistalio/Pods-Vistalio-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -563,6 +617,7 @@
 				C34665BF2F783741008648C8 /* CustomTabItem.swift in Sources */,
 				C33F22BF2F84C37B00EF2A81 /* UIApplication+Utils.swift in Sources */,
 				C3CF26EE2F7929120008718D /* CoverCell.swift in Sources */,
+				C35911D52F9F6C780015FDE6 /* UIStackView+Utils.swift in Sources */,
 				C33F22962F8011F000EF2A81 /* CoreDataStack.swift in Sources */,
 				C33F22B52F83872100EF2A81 /* SegmentedControlTab.swift in Sources */,
 				C33F22A62F80251F00EF2A81 /* SelectActionViewController.swift in Sources */,
@@ -578,6 +633,7 @@
 				C3D542562F9125370093D819 /* NotificationNames.swift in Sources */,
 				C34665C32F783741008648C8 /* UITableView+Utils.swift in Sources */,
 				C33F22C42F84C75300EF2A81 /* MenuItemView.swift in Sources */,
+				C3F47EC82F9FCAB300F17AC8 /* MissionNote.swift in Sources */,
 				C3BEABC42F9BB0F200359CB6 /* mission_9.json in Sources */,
 				C3BEABC62F9BB10600359CB6 /* mission_10.json in Sources */,
 				C3D5425E2F928C4F0093D819 /* NotificationView.swift in Sources */,
@@ -586,12 +642,15 @@
 				C3B7D71A2F94A55400562DC2 /* CropImageViewController.swift in Sources */,
 				C33F22AA2F8238C600EF2A81 /* MissionsHolder.swift in Sources */,
 				C34665C42F783741008648C8 /* UITextField+Utils.swift in Sources */,
+				C3F47ECA2FA0BBB600F17AC8 /* AppsFlyerHelper.swift in Sources */,
 				C33F22AE2F82A43E00EF2A81 /* UIImageView+Utils.swift in Sources */,
 				C36B3D062F97D71D00976790 /* TemplateCell.swift in Sources */,
 				C34665C52F783741008648C8 /* UIView+Utils.swift in Sources */,
 				C36B3D092F9884F100976790 /* EmotionCell.swift in Sources */,
 				C33F22942F80104100EF2A81 /* Vistalio.xcdatamodeld in Sources */,
+				C3BEABD62F9BB88B00359CB6 /* TemplateStepCell.swift in Sources */,
 				C33F22AC2F8299DB00EF2A81 /* MyMissionCell.swift in Sources */,
+				C3BEABDD2F9E7E3800359CB6 /* TemplateNoteCell.swift in Sources */,
 				C33F22A12F80145B00EF2A81 /* FilesHelper.swift in Sources */,
 				C34665C62F783741008648C8 /* CreateMissionViewController.swift in Sources */,
 				C332CFCB2F8FB4A6002ABF15 /* MyMissionsViewController.swift in Sources */,
@@ -599,6 +658,7 @@
 				C34665C72F783741008648C8 /* MissionsViewController.swift in Sources */,
 				C34665C82F783741008648C8 /* MainViewController.swift in Sources */,
 				C33F229E2F80134A00EF2A81 /* Mission.swift in Sources */,
+				C3F47EC52F9FCA1A00F17AC8 /* MissionStep.swift in Sources */,
 				C34665C92F783741008648C8 /* StyledNavigationController.swift in Sources */,
 				C33F22BD2F83F48C00EF2A81 /* UILabel+Utils.swift in Sources */,
 				C3CF26F02F7929C00008718D /* CoverViewController.swift in Sources */,

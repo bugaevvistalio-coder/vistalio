@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AppsFlyerLib
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -17,6 +18,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
+        
+        if let url = connectionOptions.urlContexts.first?.url, url.absoluteString.contains("af_force_deeplink") {
+            AppsFlyerLib.shared().handleOpen(url, options: nil)
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -47,6 +52,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
-
+    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+        AppsFlyerLib.shared().continue(userActivity, restorationHandler: nil)
+    }
+    
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        if let url = URLContexts.first?.url {
+            AppsFlyerLib.shared().handleOpen(url, options: nil)
+        }
+    }
 }
 

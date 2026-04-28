@@ -50,6 +50,8 @@ class MissionViewController: UIViewController {
         segmentedControl.tabs = [SegmentedTabData(text: "Шаги", image: .steps), SegmentedTabData(text: "Заметки", image: .notes)]
         
         displayMission()
+        
+        print("Steps \(mission.steps?.count ?? 0)")
     }
     
     override func viewDidLayoutSubviews() {
@@ -129,28 +131,30 @@ class MissionViewController: UIViewController {
         let menuUnderlayControl =  mainVC.addMenuUnderlayControl(color: .clear)
         
         let menuView = MenuView()
-        menuView.items = [
-            MenuItemData(text: "Изменить", image: .edit, type: .normal, action: { [unowned self] in
+        var items = [MenuItemData]()
+        items.append(MenuItemData(text: "Изменить", image: .edit, type: .normal, action: { [unowned self] in
+            menuUnderlayControl.removeFromSuperview()
+            openEditMission(mission) { [unowned self] mission in
                 menuUnderlayControl.removeFromSuperview()
-                openEditMission(mission) { [unowned self] mission in
-                    menuUnderlayControl.removeFromSuperview()
-                    self.mission = mission
-                    self.displayMission()
-                }
-            }),
-            MenuItemData(text: "Поделиться", image: .share, type: .normal, action: { [unowned self] in
+                self.mission = mission
+                self.displayMission()
+            }
+        }))
+        if mission.templateId > 0 {
+            items.append(MenuItemData(text: "Поделиться", image: .share, type: .normal, action: { [unowned self] in
                 menuUnderlayControl.removeFromSuperview()
                 openShareMission(mission)
-            }),
-            MenuItemData(text: mission.archived ? "Убрать из архива" : "В архив", image: mission.archived ? .unarchive : .archive, type: .normal, action: { [unowned self] in
-                menuUnderlayControl.removeFromSuperview()
-                openArchiveMission(mission)
-            }),
-            MenuItemData(text: "Удалить", image: .trash, type: .red, action: { [unowned self] in
-                menuUnderlayControl.removeFromSuperview()
-                openDeleteMission(mission)
-            })
-        ]
+            }))
+        }
+        items.append(MenuItemData(text: mission.archived ? "Убрать из архива" : "В архив", image: mission.archived ? .unarchive : .archive, type: .normal, action: { [unowned self] in
+            menuUnderlayControl.removeFromSuperview()
+            openArchiveMission(mission)
+        }))
+        items.append(MenuItemData(text: "Удалить", image: .trash, type: .red, action: { [unowned self] in
+            menuUnderlayControl.removeFromSuperview()
+            openDeleteMission(mission)
+        }))
+        menuView.items = items
         menuView.translatesAutoresizingMaskIntoConstraints = false
         menuUnderlayControl.addSubview(menuView)
         

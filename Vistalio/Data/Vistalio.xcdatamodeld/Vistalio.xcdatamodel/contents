@@ -13,9 +13,28 @@
         <attribute name="archived" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="category" optional="YES" attributeType="String"/>
         <attribute name="creationDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="finishedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="photoPath" optional="YES" attributeType="String"/>
         <attribute name="templateId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="updateDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="steps" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MissionStep" inverseName="mission" inverseEntity="MissionStep"/>
+    </entity>
+    <entity name="MissionNote" representedClassName="MissionNote" syncable="YES">
+        <attribute name="audio" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="text" optional="YES" attributeType="String"/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MissionNoteImage" inverseName="note" inverseEntity="MissionNoteImage"/>
+        <relationship name="step" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MissionStep" inverseName="notes" inverseEntity="MissionStep"/>
+    </entity>
+    <entity name="MissionNoteImage" representedClassName="MissionNoteImage" syncable="YES">
+        <attribute name="path" optional="YES" attributeType="String"/>
+        <relationship name="note" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MissionNote" inverseName="images" inverseEntity="MissionNote"/>
+    </entity>
+    <entity name="MissionStep" representedClassName="MissionStep" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="text" optional="YES" attributeType="String"/>
+        <relationship name="mission" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Mission" inverseName="steps" inverseEntity="Mission"/>
+        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MissionNote" inverseName="step" inverseEntity="MissionNote"/>
     </entity>
 </model>
