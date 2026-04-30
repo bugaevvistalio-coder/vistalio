@@ -21,7 +21,6 @@ extension UIImageView {
         let imageView = self
         
         KingfisherManager.shared.retrieveImage(with: url) { result in
-            print("Last path \(url.lastPathComponent), \(getCurrentPath())")
             var samePath = false
             if url.absoluteString.starts(with: "http") {
                 samePath = url.absoluteString == getCurrentPath()

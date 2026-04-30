@@ -316,7 +316,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ueb-0y-T4d" customClass="ImageScrollView" customModule="ImageScrollView">
+                            <scrollView multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ueb-0y-T4d" customClass="ImageScrollView" customModule="Vistalio" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <viewLayoutGuide key="contentLayoutGuide" id="1qn-ZO-9eI"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="yy6-pQ-ZG2"/>

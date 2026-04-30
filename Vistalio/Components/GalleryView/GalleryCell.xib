@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="collection view cell content view" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="jyq-ym-egg" customClass="GalleryCell" customModule="Vistalio" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="374" height="571"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Fd8-4l-CzV">
+                <rect key="frame" x="0.0" y="0.0" width="374" height="571"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <scrollView multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="35Q-fF-iz3" customClass="ImageScrollView" customModule="Vistalio" customModuleProvider="target">
+                        <rect key="frame" x="16" y="0.0" width="342" height="571"/>
+                        <viewLayoutGuide key="contentLayoutGuide" id="gf8-nH-q4z"/>
+                        <viewLayoutGuide key="frameLayoutGuide" id="q2q-ld-fcl"/>
+                    </scrollView>
+                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="qzb-Oq-5I6">
+                        <rect key="frame" x="168.66666666666666" y="267" width="37" height="37"/>
+                        <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </activityIndicatorView>
+                </subviews>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                <constraints>
+                    <constraint firstItem="qzb-Oq-5I6" firstAttribute="centerY" secondItem="Fd8-4l-CzV" secondAttribute="centerY" id="J40-Pt-ue3"/>
+                    <constraint firstAttribute="bottom" secondItem="35Q-fF-iz3" secondAttribute="bottom" id="Mas-ic-lDg"/>
+                    <constraint firstItem="35Q-fF-iz3" firstAttribute="top" secondItem="Fd8-4l-CzV" secondAttribute="top" id="g0Y-zb-WNp"/>
+                    <constraint firstItem="35Q-fF-iz3" firstAttribute="leading" secondItem="Fd8-4l-CzV" secondAttribute="leading" constant="16" id="sLH-SK-HGJ"/>
+                    <constraint firstAttribute="trailing" secondItem="35Q-fF-iz3" secondAttribute="trailing" constant="16" id="xes-G1-AS6"/>
+                    <constraint firstItem="qzb-Oq-5I6" firstAttribute="centerX" secondItem="Fd8-4l-CzV" secondAttribute="centerX" id="zYY-tU-ecA"/>
+                </constraints>
+            </collectionViewCellContentView>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <size key="customSize" width="374" height="571"/>
+            <connections>
+                <outlet property="imageScrollView" destination="35Q-fF-iz3" id="x3b-d7-OEz"/>
+                <outlet property="loadIndicator" destination="qzb-Oq-5I6" id="S7F-Lm-Ksm"/>
+            </connections>
+            <point key="canvasLocation" x="19.847328244274809" y="265.84507042253523"/>
+        </collectionViewCell>
+    </objects>
+</document>

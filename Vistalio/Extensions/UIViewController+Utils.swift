@@ -70,10 +70,6 @@ extension UIViewController {
         presentBottomSheet(nc, height: UIScreen.main.bounds.height - top)
     }
     
-    func openShareMission(_ mission: Mission) {
-        
-    }
-    
     func openArchiveMission(_ mission: Mission) {
         let sb = UIStoryboard(name: "Main", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController

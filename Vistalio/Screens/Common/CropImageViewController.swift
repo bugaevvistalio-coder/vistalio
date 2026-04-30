@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import ImageScrollView
 
 class CropImageViewController: UIViewController {
     

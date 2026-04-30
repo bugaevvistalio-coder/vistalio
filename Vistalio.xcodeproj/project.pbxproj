@@ -88,6 +88,8 @@
 		C3CF26EE2F7929120008718D /* CoverCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CF26ED2F79290F0008718D /* CoverCell.swift */; };
 		C3CF26F02F7929C00008718D /* CoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CF26EF2F7929B70008718D /* CoverViewController.swift */; };
 		C3CF26F22F7936E20008718D /* UIViewController+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CF26F12F7936DD0008718D /* UIViewController+Utils.swift */; };
+		C3D34ADE2FA0FB5F007E5CAF /* GalleryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D34ADD2FA0FB5C007E5CAF /* GalleryCell.swift */; };
+		C3D34AE02FA1D9F0007E5CAF /* ImageScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D34ADF2FA1D9ED007E5CAF /* ImageScrollView.swift */; };
 		C3D542562F9125370093D819 /* NotificationNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D542552F9125330093D819 /* NotificationNames.swift */; };
 		C3D542582F91F5FC0093D819 /* TooltipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D542572F91F5F90093D819 /* TooltipView.swift */; };
 		C3D5425A2F91F61E0093D819 /* TooltipView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3D542592F91F61E0093D819 /* TooltipView.xib */; };
@@ -96,6 +98,9 @@
 		C3F47EC52F9FCA1A00F17AC8 /* MissionStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F47EC42F9FCA1700F17AC8 /* MissionStep.swift */; };
 		C3F47EC82F9FCAB300F17AC8 /* MissionNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F47EC72F9FCAB100F17AC8 /* MissionNote.swift */; };
 		C3F47ECA2FA0BBB600F17AC8 /* AppsFlyerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F47EC92FA0BB6600F17AC8 /* AppsFlyerHelper.swift */; };
+		C3F47ECC2FA0F7D400F17AC8 /* GalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F47ECB2FA0F7D100F17AC8 /* GalleryView.swift */; };
+		C3F47ECE2FA0F7DF00F17AC8 /* GalleryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3F47ECD2FA0F7DF00F17AC8 /* GalleryView.xib */; };
+		C3F47ED12FA0FA8400F17AC8 /* GalleryCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3F47ED02FA0FA8400F17AC8 /* GalleryCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -179,6 +184,8 @@
 		C3CF26ED2F79290F0008718D /* CoverCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverCell.swift; sourceTree = "<group>"; };
 		C3CF26EF2F7929B70008718D /* CoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverViewController.swift; sourceTree = "<group>"; };
 		C3CF26F12F7936DD0008718D /* UIViewController+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Utils.swift"; sourceTree = "<group>"; };
+		C3D34ADD2FA0FB5C007E5CAF /* GalleryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryCell.swift; sourceTree = "<group>"; };
+		C3D34ADF2FA1D9ED007E5CAF /* ImageScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageScrollView.swift; sourceTree = "<group>"; };
 		C3D542552F9125330093D819 /* NotificationNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationNames.swift; sourceTree = "<group>"; };
 		C3D542572F91F5F90093D819 /* TooltipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipView.swift; sourceTree = "<group>"; };
 		C3D542592F91F61E0093D819 /* TooltipView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TooltipView.xib; sourceTree = "<group>"; };
@@ -188,6 +195,9 @@
 		C3F47EC42F9FCA1700F17AC8 /* MissionStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionStep.swift; sourceTree = "<group>"; };
 		C3F47EC72F9FCAB100F17AC8 /* MissionNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionNote.swift; sourceTree = "<group>"; };
 		C3F47EC92FA0BB6600F17AC8 /* AppsFlyerHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsFlyerHelper.swift; sourceTree = "<group>"; };
+		C3F47ECB2FA0F7D100F17AC8 /* GalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryView.swift; sourceTree = "<group>"; };
+		C3F47ECD2FA0F7DF00F17AC8 /* GalleryView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GalleryView.xib; sourceTree = "<group>"; };
+		C3F47ED02FA0FA8400F17AC8 /* GalleryCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GalleryCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -278,6 +288,8 @@
 				C3D542572F91F5F90093D819 /* TooltipView.swift */,
 				C3D5425B2F928B350093D819 /* NotificationView.xib */,
 				C3D5425D2F928C4B0093D819 /* NotificationView.swift */,
+				C3D34ADF2FA1D9ED007E5CAF /* ImageScrollView.swift */,
+				C3F47ECF2FA0FA6B00F17AC8 /* GalleryView */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -432,6 +444,17 @@
 			path = Template;
 			sourceTree = "<group>";
 		};
+		C3F47ECF2FA0FA6B00F17AC8 /* GalleryView */ = {
+			isa = PBXGroup;
+			children = (
+				C3F47ECD2FA0F7DF00F17AC8 /* GalleryView.xib */,
+				C3F47ECB2FA0F7D100F17AC8 /* GalleryView.swift */,
+				C3F47ED02FA0FA8400F17AC8 /* GalleryCell.xib */,
+				C3D34ADD2FA0FB5C007E5CAF /* GalleryCell.swift */,
+			);
+			path = GalleryView;
+			sourceTree = "<group>";
+		};
 		EC51933630804151656D0D2A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -533,6 +556,7 @@
 				C3BEABC22F9BB0DC00359CB6 /* mission_8.json in Resources */,
 				C3BEABB62F9BB00A00359CB6 /* mission_2.json in Resources */,
 				C33F22B22F82CE7F00EF2A81 /* SegmentedControlTab.xib in Resources */,
+				C3F47ED12FA0FA8400F17AC8 /* GalleryCell.xib in Resources */,
 				C34665BA2F783741008648C8 /* Me.storyboard in Resources */,
 				C34665BB2F783741008648C8 /* Missions.storyboard in Resources */,
 				C3BEABD42F9BB5FF00359CB6 /* mission_17.json in Resources */,
@@ -543,6 +567,7 @@
 				C3BEABBE2F9BB0A600359CB6 /* mission_6.json in Resources */,
 				C3BEABBC2F9BB07400359CB6 /* mission_5.json in Resources */,
 				C34665BD2F783741008648C8 /* Assets.xcassets in Resources */,
+				C3F47ECE2FA0F7DF00F17AC8 /* GalleryView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -616,6 +641,7 @@
 				C3CF26F22F7936E20008718D /* UIViewController+Utils.swift in Sources */,
 				C34665BF2F783741008648C8 /* CustomTabItem.swift in Sources */,
 				C33F22BF2F84C37B00EF2A81 /* UIApplication+Utils.swift in Sources */,
+				C3D34AE02FA1D9F0007E5CAF /* ImageScrollView.swift in Sources */,
 				C3CF26EE2F7929120008718D /* CoverCell.swift in Sources */,
 				C35911D52F9F6C780015FDE6 /* UIStackView+Utils.swift in Sources */,
 				C33F22962F8011F000EF2A81 /* CoreDataStack.swift in Sources */,
@@ -628,6 +654,7 @@
 				C36B3D042F97A85100976790 /* MissionTemplate.swift in Sources */,
 				C347A5842F98F4320068D5B3 /* HiddenMissionTemplate.swift in Sources */,
 				C33F22BB2F838D5800EF2A81 /* MissionViewController.swift in Sources */,
+				C3F47ECC2FA0F7D400F17AC8 /* GalleryView.swift in Sources */,
 				C3B7D71C2F95390200562DC2 /* Cover.swift in Sources */,
 				C34665C22F783741008648C8 /* StyledControls.swift in Sources */,
 				C3D542562F9125370093D819 /* NotificationNames.swift in Sources */,
@@ -652,6 +679,7 @@
 				C33F22AC2F8299DB00EF2A81 /* MyMissionCell.swift in Sources */,
 				C3BEABDD2F9E7E3800359CB6 /* TemplateNoteCell.swift in Sources */,
 				C33F22A12F80145B00EF2A81 /* FilesHelper.swift in Sources */,
+				C3D34ADE2FA0FB5F007E5CAF /* GalleryCell.swift in Sources */,
 				C34665C62F783741008648C8 /* CreateMissionViewController.swift in Sources */,
 				C332CFCB2F8FB4A6002ABF15 /* MyMissionsViewController.swift in Sources */,
 				C36B3D022F9692EA00976790 /* missions_list.json in Sources */,

@@ -8,7 +8,6 @@ target 'Vistalio' do
   pod 'IQKeyboardManagerSwift'
   pod 'FittedSheets'
   pod 'Kingfisher', '~> 8.0'
-  pod 'ImageScrollView'
   pod 'AppsFlyerFramework/Strict'
   
 end

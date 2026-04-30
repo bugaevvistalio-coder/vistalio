@@ -103,7 +103,6 @@ open class ImageScrollView: UIScrollView {
         else {
             frameToCenter.origin.y = 0
         }
-        
         unwrappedZoomView.frame = frameToCenter
     }
     
@@ -175,7 +174,7 @@ open class ImageScrollView: UIScrollView {
 
     // MARK: - Display image
     
-    @objc open func display(image: UIImage) {
+    @objc open func display(image: UIImage, enableDoubleTap: Bool = true) {
 
         if let zoomView = zoomView {
             zoomView.removeFromSuperview()
@@ -185,9 +184,11 @@ open class ImageScrollView: UIScrollView {
         zoomView!.isUserInteractionEnabled = true
         addSubview(zoomView!)
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(ImageScrollView.doubleTapGestureRecognizer(_:)))
-        tapGesture.numberOfTapsRequired = 2
-        zoomView!.addGestureRecognizer(tapGesture)
+        if enableDoubleTap {
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(ImageScrollView.doubleTapGestureRecognizer(_:)))
+            tapGesture.numberOfTapsRequired = 2
+            zoomView!.addGestureRecognizer(tapGesture)
+        }
         
         configureImageForSize(image.size)
     }

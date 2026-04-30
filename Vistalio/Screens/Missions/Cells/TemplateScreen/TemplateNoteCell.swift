@@ -27,7 +27,7 @@ class TemplateNoteCell: UICollectionViewCell {
     var note: TemplateNote! {
         didSet {
             nameLabel.text = note.name
-            if let description = note.description {
+            if let description = note.shortDescription {
                 descriptionLabel.text = description
                 descriptionLabel.isHidden = false
             } else {

@@ -6,12 +6,14 @@
 //
 
 import UIKit
+import AppsFlyerLib
 
 class MissionViewController: UIViewController {
     
     @IBOutlet weak var navBar: UIView!
     @IBOutlet weak var backButton: UIButton!
     @IBOutlet weak var menuButton: UIButton!
+    @IBOutlet weak var progressIndicator: UIActivityIndicatorView!
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -43,6 +45,7 @@ class MissionViewController: UIViewController {
         
         navBar.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         navBar.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 30, shadowOpacity: 0)
+        progressIndicator.isHidden = true
         
         headerControl.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         headerShadowView.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 30, shadowOpacity: 0.1)
@@ -143,7 +146,16 @@ class MissionViewController: UIViewController {
         if mission.templateId > 0 {
             items.append(MenuItemData(text: "Поделиться", image: .share, type: .normal, action: { [unowned self] in
                 menuUnderlayControl.removeFromSuperview()
-                openShareMission(mission)
+                
+                menuButton.isHidden = true
+                progressIndicator.startAnimating()
+                progressIndicator.isHidden = false
+                
+                AppsFlyerHelper().generateLink(templateId: mission.templateId, viewController: self) { [weak self] in
+                    self?.menuButton.isHidden = false
+                    self?.progressIndicator.stopAnimating()
+                    self?.progressIndicator.isHidden = true
+                }
             }))
         }
         items.append(MenuItemData(text: mission.archived ? "Убрать из архива" : "В архив", image: mission.archived ? .unarchive : .archive, type: .normal, action: { [unowned self] in
