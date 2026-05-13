@@ -11,6 +11,8 @@ import CoreData
 @objc(MissionStep)
 public class MissionStep: NSManagedObject {
     
+    var expanded = false
+    
 }
 
 extension MissionStep {
@@ -19,11 +21,18 @@ extension MissionStep {
         return NSFetchRequest<MissionStep>(entityName: "MissionStep")
     }
 
+    @NSManaged public var id: Int
     @NSManaged public var name: String?
     @NSManaged public var text: String?
+    @NSManaged public var hidden: Bool
+    @NSManaged public var addedDate: Date?
     
     @NSManaged public var mission: Mission
     @NSManaged public var notes: NSSet?
+    
+    var shortText: String? {
+        return text?.replacingOccurrences(of: "\n\n", with: " ").replacingOccurrences(of: "\n", with: " ")
+    }
 }
 
 extension MissionStep {

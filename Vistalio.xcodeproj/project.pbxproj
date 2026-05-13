@@ -59,6 +59,9 @@
 		C36B3D062F97D71D00976790 /* TemplateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36B3D052F97D71900976790 /* TemplateCell.swift */; };
 		C36B3D072F97DC9100976790 /* missions_list.json in Resources */ = {isa = PBXBuildFile; fileRef = C36B3D012F9692E400976790 /* missions_list.json */; };
 		C36B3D092F9884F100976790 /* EmotionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36B3D082F9884EE00976790 /* EmotionCell.swift */; };
+		C37309D12FAE04A7004F7ED8 /* RecommendedStepCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37309D02FAE04A3004F7ED8 /* RecommendedStepCell.swift */; };
+		C37309D32FAF7B7E004F7ED8 /* HiddenStepsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37309D22FAF7B78004F7ED8 /* HiddenStepsViewController.swift */; };
+		C37309D52FB0D2DA004F7ED8 /* AddedStepCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37309D42FB0D2D6004F7ED8 /* AddedStepCell.swift */; };
 		C3B7D71A2F94A55400562DC2 /* CropImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B7D7192F94A54E00562DC2 /* CropImageViewController.swift */; };
 		C3B7D71C2F95390200562DC2 /* Cover.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B7D71B2F9538FF00562DC2 /* Cover.swift */; };
 		C3BEABB02F9A38ED00359CB6 /* TemplateHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BEABAF2F9A38E900359CB6 /* TemplateHeaderCell.swift */; };
@@ -158,6 +161,9 @@
 		C36B3D032F97A84D00976790 /* MissionTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionTemplate.swift; sourceTree = "<group>"; };
 		C36B3D052F97D71900976790 /* TemplateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateCell.swift; sourceTree = "<group>"; };
 		C36B3D082F9884EE00976790 /* EmotionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmotionCell.swift; sourceTree = "<group>"; };
+		C37309D02FAE04A3004F7ED8 /* RecommendedStepCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedStepCell.swift; sourceTree = "<group>"; };
+		C37309D22FAF7B78004F7ED8 /* HiddenStepsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenStepsViewController.swift; sourceTree = "<group>"; };
+		C37309D42FB0D2D6004F7ED8 /* AddedStepCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddedStepCell.swift; sourceTree = "<group>"; };
 		C3B7D7192F94A54E00562DC2 /* CropImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropImageViewController.swift; sourceTree = "<group>"; };
 		C3B7D71B2F9538FF00562DC2 /* Cover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cover.swift; sourceTree = "<group>"; };
 		C3BEABAF2F9A38E900359CB6 /* TemplateHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateHeaderCell.swift; sourceTree = "<group>"; };
@@ -192,6 +198,7 @@
 		C3D5425B2F928B350093D819 /* NotificationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotificationView.xib; sourceTree = "<group>"; };
 		C3D5425D2F928C4B0093D819 /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		C3E34DB82F6D4B2A003ACBA4 /* Vistalio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Vistalio.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3E85A702FAC857100C6ACC4 /* Vistalio.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Vistalio.entitlements; sourceTree = "<group>"; };
 		C3F47EC42F9FCA1700F17AC8 /* MissionStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionStep.swift; sourceTree = "<group>"; };
 		C3F47EC72F9FCAB100F17AC8 /* MissionNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionNote.swift; sourceTree = "<group>"; };
 		C3F47EC92FA0BB6600F17AC8 /* AppsFlyerHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsFlyerHelper.swift; sourceTree = "<group>"; };
@@ -322,6 +329,7 @@
 				C3CF26EF2F7929B70008718D /* CoverViewController.swift */,
 				C33F22BA2F838D5300EF2A81 /* MissionViewController.swift */,
 				C3BEABB12F9A39BF00359CB6 /* TemplateViewController.swift */,
+				C37309D22FAF7B78004F7ED8 /* HiddenStepsViewController.swift */,
 				C3CF26EC2F7929050008718D /* Cells */,
 			);
 			path = Missions;
@@ -354,6 +362,7 @@
 		C34665B62F783741008648C8 /* Vistalio */ = {
 			isa = PBXGroup;
 			children = (
+				C3E85A702FAC857100C6ACC4 /* Vistalio.entitlements */,
 				C346659E2F783741008648C8 /* Components */,
 				C33F22972F80127500EF2A81 /* Data */,
 				C34665A22F783741008648C8 /* Extensions */,
@@ -412,6 +421,8 @@
 				C3CF26ED2F79290F0008718D /* CoverCell.swift */,
 				C36B3D052F97D71900976790 /* TemplateCell.swift */,
 				C36B3D082F9884EE00976790 /* EmotionCell.swift */,
+				C37309D02FAE04A3004F7ED8 /* RecommendedStepCell.swift */,
+				C37309D42FB0D2D6004F7ED8 /* AddedStepCell.swift */,
 				C3BEABAE2F9A38D000359CB6 /* TemplateScreen */,
 			);
 			path = Cells;
@@ -582,9 +593,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Vistalio/Pods-Vistalio-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Vistalio/Pods-Vistalio-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -621,9 +636,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Vistalio/Pods-Vistalio-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Vistalio/Pods-Vistalio-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -664,6 +683,7 @@
 				C3BEABC42F9BB0F200359CB6 /* mission_9.json in Sources */,
 				C3BEABC62F9BB10600359CB6 /* mission_10.json in Sources */,
 				C3D5425E2F928C4F0093D819 /* NotificationView.swift in Sources */,
+				C37309D12FAE04A7004F7ED8 /* RecommendedStepCell.swift in Sources */,
 				C3BEABCE2F9BB23800359CB6 /* mission_14.json in Sources */,
 				C33F22B92F838A1200EF2A81 /* SegmentedControl.swift in Sources */,
 				C3B7D71A2F94A55400562DC2 /* CropImageViewController.swift in Sources */,
@@ -682,7 +702,9 @@
 				C3D34ADE2FA0FB5F007E5CAF /* GalleryCell.swift in Sources */,
 				C34665C62F783741008648C8 /* CreateMissionViewController.swift in Sources */,
 				C332CFCB2F8FB4A6002ABF15 /* MyMissionsViewController.swift in Sources */,
+				C37309D52FB0D2DA004F7ED8 /* AddedStepCell.swift in Sources */,
 				C36B3D022F9692EA00976790 /* missions_list.json in Sources */,
+				C37309D32FAF7B7E004F7ED8 /* HiddenStepsViewController.swift in Sources */,
 				C34665C72F783741008648C8 /* MissionsViewController.swift in Sources */,
 				C34665C82F783741008648C8 /* MainViewController.swift in Sources */,
 				C33F229E2F80134A00EF2A81 /* Mission.swift in Sources */,
@@ -727,22 +749,26 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Vistalio/Vistalio.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = K3TB65CDP6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Vistalio/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Доступ к камере нужен, чтобы снимать фото и видео прямо из приложения.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Доступ к галерее нужен, чтобы добавлять фото и видео.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ab.Vistalio;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ab.vistalio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -756,22 +782,26 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Vistalio/Vistalio.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = K3TB65CDP6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Vistalio/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Доступ к камере нужен, чтобы снимать фото и видео прямо из приложения.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Доступ к галерее нужен, чтобы добавлять фото и видео.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ab.Vistalio;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ab.vistalio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

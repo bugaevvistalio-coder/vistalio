@@ -19,6 +19,7 @@ extension MissionNote {
         return NSFetchRequest<MissionNote>(entityName: "MissionNote")
     }
 
+    @NSManaged public var id: Int
     @NSManaged public var name: String?
     @NSManaged public var text: String?
     @NSManaged public var audio: String?
@@ -54,6 +55,7 @@ extension MissionNoteImage {
         return NSFetchRequest<MissionNoteImage>(entityName: "MissionNoteImage")
     }
 
+    @NSManaged public var id: Int
     @NSManaged public var path: String?
     @NSManaged public var note: MissionNote
 }

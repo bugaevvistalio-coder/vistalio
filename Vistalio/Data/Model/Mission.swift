@@ -83,27 +83,30 @@ public class Mission: NSManagedObject {
         mission.updateDate = mission.creationDate
         mission.templateId = template.id
         
-        steps.flatMap { $0 }.forEach {
+        for (i, s) in steps.flatMap({ $0 }).enumerated() {
             if let stepEntity = NSEntityDescription.entity(forEntityName: "MissionStep", in: context) {
                 let step = MissionStep(entity: stepEntity, insertInto: context)
-                step.name = $0.name
-                step.text = $0.description
+                step.id = i+1
+                step.name = s.name
+                step.text = s.description
                 step.mission = mission
                 
-                if let notes = $0.notes {
-                    notes.forEach {
+                if let notes = s.notes {
+                    for (i, n) in notes.enumerated() {
                         if let noteEntity = NSEntityDescription.entity(forEntityName: "MissionNote", in: context) {
                             let note = MissionNote(entity: noteEntity, insertInto: context)
-                            note.name = $0.name
-                            note.text = $0.description
-                            note.audio = $0.audio
+                            note.id = i+1
+                            note.name = n.name
+                            note.text = n.description
+                            note.audio = n.audio
                             note.step = step
                             
-                            if let images = $0.images {
-                                images.forEach {
+                            if let images = n.images {
+                                for (i, ni) in images.enumerated() {
                                     if let imageEntity = NSEntityDescription.entity(forEntityName: "MissionNoteImage", in: context) {
                                         let image = MissionNoteImage(entity: imageEntity, insertInto: context)
-                                        image.path = $0
+                                        image.id = i+1
+                                        image.path = ni
                                         image.note = note
                                     }
                                 }

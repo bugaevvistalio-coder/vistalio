@@ -20,6 +20,7 @@ class SegmentedControl: UIView {
     private var view: UIView!
     
     var onTabSelected: ((Int) -> ())?
+    var selectedIndex = 0
     
     var tabs = [SegmentedTabData]() {
         didSet {
@@ -39,6 +40,7 @@ class SegmentedControl: UIView {
                     for v in self.stackView.arrangedSubviews {
                         (v as! SegmentedControlTab).isTabSelected = (v === t)
                     }
+                    selectedIndex = i
                     onTabSelected?(i)
                 }
                 stackView.addArrangedSubview(tabView)

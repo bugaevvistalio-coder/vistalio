@@ -10,6 +10,7 @@ import UIKit
 enum MenuItemType {
     case normal
     case red
+    case blue
 }
 
 struct MenuItemData {
@@ -54,6 +55,9 @@ class MenuItemView: UIControl {
             if type == .red {
                 label.textColor = .textRed
                 imageView.tintColor = .textRed
+            } else if type == .blue {
+                label.textColor = .brightBlue
+                imageView.tintColor = .brightBlue
             } else {
                 label.textColor = .black
                 imageView.tintColor = .black

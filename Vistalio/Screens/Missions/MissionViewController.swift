@@ -22,7 +22,7 @@ class MissionViewController: UIViewController {
     @IBOutlet weak var headerControlHeight: NSLayoutConstraint!
     
     @IBOutlet weak var segmentedControl: SegmentedControl!
-    @IBOutlet weak var addStepButton: UIButton!
+    @IBOutlet weak var addItemButton: UIButton!
     
     @IBOutlet weak var coverImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
@@ -32,16 +32,27 @@ class MissionViewController: UIViewController {
     @IBOutlet weak var missionInfoTop: NSLayoutConstraint!
     @IBOutlet weak var missionInfoCenterY: NSLayoutConstraint!
     
+    @IBOutlet weak var recommendedStepsControl: UIControl!
+    @IBOutlet weak var recommendedArrow: UIImageView!
+    @IBOutlet weak var addAllStepsView: UIView!
+    
     var mission: Mission!
     
     private var hasNavBarShadow = false
     private var isHeaderExpanded = false
     
+    private var recommendedSteps = [MissionStep]()
+    private var hiddenSteps = [MissionStep]()
+    private var addedSteps = [MissionStep]()
+    private var recommendedExpanded = true
+    
+    private let generator = UIImpactFeedbackGenerator(style: .medium)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         backButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1)
-        addStepButton.addDashedBorder(color: UIColor.textGrey30, dashPattern: [2, 2], cornerRadius: 18)
+        addItemButton.addDashedBorder(color: UIColor.textGrey30, dashPattern: [2, 2], cornerRadius: 18)
         
         navBar.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         navBar.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 30, shadowOpacity: 0)
@@ -50,17 +61,35 @@ class MissionViewController: UIViewController {
         headerControl.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         headerShadowView.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 30, shadowOpacity: 0.1)
         
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+        
+        updateSteps()
+        
         segmentedControl.tabs = [SegmentedTabData(text: "Шаги", image: .steps), SegmentedTabData(text: "Заметки", image: .notes)]
+        segmentedControl.onTabSelected = { [unowned self] index in
+            UIView.performWithoutAnimation {
+                self.addItemButton.setTitle(index == 0 ? "Шаг" : "Заметка", for: .normal)
+            }
+            if index == 0 {
+                recommendedStepsControl.isHidden = false
+            } else {
+                recommendedStepsControl.isHidden = true
+            }
+            updateAddAllSteps()
+            
+            tableView.reloadData()
+        }
         
         displayMission()
         
-        print("Steps \(mission.steps?.count ?? 0)")
+        generator.prepare()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.layoutHeader()
-        addStepButton.addDashedBorder(color: UIColor.textGrey30, dashPattern: [2, 2], cornerRadius: 18)
+        addItemButton.addDashedBorder(color: UIColor.textGrey30, dashPattern: [2, 2], cornerRadius: 18)
+        addAllStepsView.setGradientLayer(colors: [UIColor(hex: "#F0F6FF"), UIColor(hex: "#EAF0FC"), UIColor(hex: "#E8EFFC")], locations: [0.0, 0.25, 0.9], cornerRadius: 16)
         
         if !isHeaderExpanded {
             
@@ -82,6 +111,18 @@ class MissionViewController: UIViewController {
             aboutLabel.invalidateIntrinsicContentSize()
             aboutLabel.superview!.layoutIfNeeded()
         }
+    }
+    
+    private func updateSteps() {
+        let steps = (mission.steps?.allObjects as? [MissionStep]) ?? []
+        recommendedSteps = steps.filter { !$0.hidden && $0.addedDate == nil }.sorted(by: { $0.id < $1.id })
+        hiddenSteps = steps.filter { $0.hidden }
+        addedSteps = steps.filter { $0.addedDate != nil }.sorted(by: { $0.addedDate! > $1.addedDate! })
+        updateAddAllSteps()
+    }
+    
+    private func updateAddAllSteps() {
+        addAllStepsView.superview?.superview?.isHidden = segmentedControl.selectedIndex != 0 || !recommendedExpanded || recommendedSteps.isEmpty
     }
     
     private func displayMission() {
@@ -178,6 +219,98 @@ class MissionViewController: UIViewController {
         
         menuView.setShadow(offset: CGSize(width: 0, height: 0), radius: 20, cornerRadius: 30, shadowOpacity: 0.22)
     }
+    
+    @IBAction func recommendedStepsTapped(_ sender: Any) {
+        recommendedExpanded = !recommendedExpanded
+        addAllStepsView.superview?.superview?.isHidden = !recommendedExpanded || recommendedSteps.isEmpty
+        recommendedArrow.transform = CGAffineTransform(rotationAngle: recommendedExpanded ? 0 : .pi)
+        tableView.layoutHeader()
+        tableView.reloadData()
+    }
+    
+    @IBAction func addAllStepsTapped(_ sender: Any) {
+        CoreDataStack.shared.performAndWait { [unowned self] _ in
+            recommendedSteps.forEach {
+                $0.hidden = false
+                $0.addedDate = Date()
+            }
+        }
+        let visibleCells = tableView.visibleCells
+        for cell in visibleCells {
+            if let recommendedStepCell = cell as? RecommendedStepCell {
+                recommendedStepCell.animateAddStep() { }
+            }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak self] in
+            if let `self` = self {
+                self.updateSteps()
+                self.tableView.reloadSections(IndexSet(arrayLiteral: 0, 2, 3), with: .automatic)
+            }
+        }
+    }
+    
+    @IBAction func hiddenStepsTapped(_ sender: Any) {
+        let vc = storyboard!.instantiateViewController(identifier: "HiddenStepsVC") as! HiddenStepsViewController
+        vc.mission = mission
+        vc.onStepHidden = { [unowned self] in
+            updateSteps()
+            tableView.reloadData()
+        }
+        
+        let window = UIApplication.shared.windows.first
+        let top = (window?.safeAreaInsets.top ?? 20)
+        presentBottomSheet(vc, height: UIScreen.main.bounds.height - top)
+    }
+    
+    private func showMenu(step: MissionStep, anchorRect: CGRect, image: UIImage) {
+        let mainVC = (UIApplication.shared.keyWindow?.rootViewController as! MainViewController)
+        let menuUnderlayControl = mainVC.addMenuUnderlayControl(color: .black.withAlphaComponent(0.25))
+        
+        let menuView = MenuView()
+        menuView.items = [
+            MenuItemData(text: "Изменить", image: .edit, type: .normal, action: { [unowned self] in
+                menuUnderlayControl.removeFromSuperview()
+                
+   
+            }),
+            MenuItemData(text: "Скрыть", image: .eyeOff1, type: .red, action: { [unowned self] in
+                menuUnderlayControl.removeFromSuperview()
+                CoreDataStack.shared.performAndWait { context in
+                    step.hidden = true
+                }
+                if let index = recommendedSteps.firstIndex(where: { $0.id == step.id }) {
+                    recommendedSteps.remove(at: index)
+                    hiddenSteps.append(step)
+                    tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+                    tableView.reloadSections(IndexSet(arrayLiteral: 1), with: .none)
+                }
+            })
+        ]
+        menuView.translatesAutoresizingMaskIntoConstraints = false
+        menuUnderlayControl.addSubview(menuView)
+        
+        let screenHeight = UIScreen.main.bounds.height
+        let menuHeight = CGFloat(menuView.height)
+        let horizontalConstraint = menuView.leftAnchor.constraint(equalTo: menuUnderlayControl.leftAnchor, constant: 20)
+        let verticalConstraint = anchorRect.maxY + 20 + menuHeight > screenHeight ? menuView.bottomAnchor.constraint(equalTo: menuUnderlayControl.bottomAnchor, constant: anchorRect.minY - 7 - screenHeight) : menuView.topAnchor.constraint(equalTo: menuUnderlayControl.topAnchor, constant: anchorRect.maxY + 7)
+        NSLayoutConstraint.activate([verticalConstraint, horizontalConstraint])
+        
+        menuView.layer.cornerRadius = 30
+        
+        let highlightedItemImageView = UIImageView()
+        highlightedItemImageView.translatesAutoresizingMaskIntoConstraints = false
+        menuUnderlayControl.addSubview(highlightedItemImageView)
+        
+        let constraints = [
+            highlightedItemImageView.topAnchor.constraint(equalTo: menuUnderlayControl.topAnchor, constant: anchorRect.minY),
+            highlightedItemImageView.leftAnchor.constraint(equalTo: menuUnderlayControl.leftAnchor, constant: anchorRect.minX),
+            highlightedItemImageView.widthAnchor.constraint(equalToConstant: anchorRect.width),
+            highlightedItemImageView.heightAnchor.constraint(equalToConstant: anchorRect.height),
+        ]
+        NSLayoutConstraint.activate(constraints)
+        
+        highlightedItemImageView.image = image
+    }
 }
 
 extension MissionViewController: UITableViewDelegate {
@@ -201,5 +334,72 @@ extension MissionViewController: UITableViewDelegate {
                 navBar.layer.shadowOpacity = 0
             }
         }
+    }
+}
+
+extension MissionViewController: UITableViewDataSource {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 4
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 1 || section == 2 {
+            return 1
+        }
+        if section == 3 {
+            return addedSteps.count
+        }
+        return recommendedExpanded ? (recommendedSteps.count ) : 0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.section == 1 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "HiddenStepsCell", for: indexPath)
+            return cell
+        }
+        if indexPath.section == 2 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "AddedStepsCell", for: indexPath)
+            return cell
+        }
+        if indexPath.section == 3 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "StepCell", for: indexPath) as! AddedStepCell
+            let step = addedSteps[indexPath.row]
+            cell.step = step
+            return cell
+        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: "RecommendedStepCell", for: indexPath) as! RecommendedStepCell
+        let step = recommendedSteps[indexPath.row]
+        cell.step = step
+        cell.onStepTapped = {
+            tableView.beginUpdates()
+            tableView.endUpdates()
+        }
+        cell.onStepAdded = { [unowned self] step in
+            if let index = recommendedSteps.firstIndex(of: step) {
+                recommendedSteps.remove(at: index)
+                addedSteps.append(step)
+                tableView.beginUpdates()
+                tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+                tableView.insertRows(at: [IndexPath(row: addedSteps.count-1, section: 3)], with: .automatic)
+                tableView.endUpdates()
+            }
+        }
+        cell.onLongGesture = { [unowned self] image, rect in
+            self.generator.impactOccurred()
+            self.generator.prepare()
+            self.showMenu(step: step, anchorRect: rect, image: image)
+        }
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.section == 1 {
+            return hiddenSteps.isEmpty ? 1 : 48
+        }
+        if indexPath.section == 2 {
+            return addedSteps.isEmpty ? 1 : 66
+        }
+        return UITableView.automaticDimension
     }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23507" systemVersion="24A348" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24837" systemVersion="25E253" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="Cover" representedClassName="Cover" syncable="YES">
         <attribute name="creationDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="photoPath" optional="YES" attributeType="String"/>
@@ -22,16 +22,21 @@
     </entity>
     <entity name="MissionNote" representedClassName="MissionNote" syncable="YES">
         <attribute name="audio" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="text" optional="YES" attributeType="String"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MissionNoteImage" inverseName="note" inverseEntity="MissionNoteImage"/>
         <relationship name="step" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MissionStep" inverseName="notes" inverseEntity="MissionStep"/>
     </entity>
     <entity name="MissionNoteImage" representedClassName="MissionNoteImage" syncable="YES">
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="path" optional="YES" attributeType="String"/>
         <relationship name="note" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MissionNote" inverseName="images" inverseEntity="MissionNote"/>
     </entity>
     <entity name="MissionStep" representedClassName="MissionStep" syncable="YES">
+        <attribute name="addedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="hidden" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="text" optional="YES" attributeType="String"/>
         <relationship name="mission" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Mission" inverseName="steps" inverseEntity="Mission"/>

@@ -182,4 +182,16 @@ extension UIView {
         gradientLayer.cornerRadius = cornerRadius
         layer.insertSublayer(gradientLayer, at: 0)
     }
+    
+    func setGradientLayer(colors: [UIColor], locations: [NSNumber], cornerRadius: CGFloat, bounds: CGRect? = nil) {
+        layer.sublayers?.filter({ $0.name == "GradientLayer" }).forEach({ $0.removeFromSuperlayer() })
+        
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.name = "GradientLayer"
+        gradientLayer.colors = colors.map({$0.cgColor})
+        gradientLayer.locations = locations
+        gradientLayer.frame = bounds ?? self.bounds
+        gradientLayer.cornerRadius = cornerRadius
+        layer.insertSublayer(gradientLayer, at: 0)
+    }
 }
