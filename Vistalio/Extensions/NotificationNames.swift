@@ -10,4 +10,5 @@ import Foundation
 extension Notification.Name {
     static let missionUpdated = Notification.Name("missionUpdated")
     static let templatesUpdated = Notification.Name("templatesUpdated")
+    static let menuClosed = Notification.Name("menuClosed")
 }

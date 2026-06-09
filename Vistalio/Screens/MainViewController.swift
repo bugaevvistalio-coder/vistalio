@@ -76,14 +76,8 @@ class MainViewController: UIViewController {
         }
     }
     
-    func addNotification(text: String) {
-        let notificationView = NotificationView()
-        notificationView.translatesAutoresizingMaskIntoConstraints = false
-        notificationsStackView.addArrangedSubview(notificationView)
-        
-        NSLayoutConstraint.activate([notificationView.heightAnchor.constraint(equalToConstant: 68)])
-        
-        notificationView.text = text
+    func addNotification(text: String, secondaryText: String? = nil, onTapped: (() -> ())? = nil) {
+        notificationsStackView.addNotification(text: text, secondaryText: secondaryText, onTapped: onTapped)
     }
 }
 

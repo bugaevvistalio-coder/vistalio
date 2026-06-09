@@ -114,10 +114,12 @@ class MissionViewController: UIViewController {
     }
     
     private func updateSteps() {
-        let steps = (mission.steps?.allObjects as? [MissionStep]) ?? []
+        let block = (mission.blocks?.allObjects as? [StepsBlock])?.filter { $0.id >= 0 }.sorted(by: { $0.id < $1.id }).first
+        let steps = (block?.steps?.allObjects as? [MissionStep]) ?? []
         recommendedSteps = steps.filter { !$0.hidden && $0.addedDate == nil }.sorted(by: { $0.id < $1.id })
         hiddenSteps = steps.filter { $0.hidden }
-        addedSteps = steps.filter { $0.addedDate != nil }.sorted(by: { $0.addedDate! > $1.addedDate! })
+        addedSteps = mission.addedSteps
+        sortAddedSteps()
         updateAddAllSteps()
     }
     
@@ -229,10 +231,13 @@ class MissionViewController: UIViewController {
     }
     
     @IBAction func addAllStepsTapped(_ sender: Any) {
+        var sortOrder = mission.maxSortOrder + 1 + Int32(recommendedSteps.count)
         CoreDataStack.shared.performAndWait { [unowned self] _ in
             recommendedSteps.forEach {
                 $0.hidden = false
                 $0.addedDate = Date()
+                $0.sortOrder = sortOrder
+                sortOrder -= 1
             }
         }
         let visibleCells = tableView.visibleCells
@@ -262,30 +267,76 @@ class MissionViewController: UIViewController {
         presentBottomSheet(vc, height: UIScreen.main.bounds.height - top)
     }
     
+    @IBAction func addItemTapped(_ sender: Any) {
+        if segmentedControl.selectedIndex == 0 {
+            openEditStep(mission: mission) { [unowned self] step in
+                addedSteps.insert(step, at: 0)
+                tableView.beginUpdates()
+                tableView.insertRows(at: [IndexPath(row: 0, section: 3)], with: .none)
+                tableView.endUpdates()
+                (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг добавлен", secondaryText: "К шагу →") { [unowned self] in
+                    openStep(step)
+                }
+            }
+        }
+    }
+    
     private func showMenu(step: MissionStep, anchorRect: CGRect, image: UIImage) {
         let mainVC = (UIApplication.shared.keyWindow?.rootViewController as! MainViewController)
         let menuUnderlayControl = mainVC.addMenuUnderlayControl(color: .black.withAlphaComponent(0.25))
         
         let menuView = MenuView()
-        menuView.items = [
-            MenuItemData(text: "Изменить", image: .edit, type: .normal, action: { [unowned self] in
-                menuUnderlayControl.removeFromSuperview()
-                
-   
-            }),
-            MenuItemData(text: "Скрыть", image: .eyeOff1, type: .red, action: { [unowned self] in
-                menuUnderlayControl.removeFromSuperview()
-                CoreDataStack.shared.performAndWait { context in
-                    step.hidden = true
-                }
-                if let index = recommendedSteps.firstIndex(where: { $0.id == step.id }) {
-                    recommendedSteps.remove(at: index)
-                    hiddenSteps.append(step)
-                    tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-                    tableView.reloadSections(IndexSet(arrayLiteral: 1), with: .none)
-                }
-            })
-        ]
+        if step.addedDate != nil {
+            var items = [MenuItemData]()
+            let stepIndex = addedSteps.firstIndex(of: step)!
+            if addedSteps.count > 1 && stepIndex > 0 {
+                items.append(
+                    MenuItemData(text: "Вверх списка", image: .arrowUp, type: .normal, action: { [unowned self] in
+                        menuUnderlayControl.removeFromSuperview()
+                        
+                        CoreDataStack.shared.performAndWait { [unowned self] context in
+                            step.sortOrder = (self.addedSteps.max(by: { $0.sortOrder < $1.sortOrder })?.sortOrder ?? 0) + 1
+                        }
+                        let previousRow = addedSteps.firstIndex(of: step)!
+                        sortAddedSteps()
+                        let newRow = addedSteps.firstIndex(of: step)!
+                        tableView.moveRow(at: IndexPath(row: previousRow, section: 3), to: IndexPath(row: newRow, section: 3))
+                    })
+                )
+            }
+            items.append(
+                MenuItemData(text: "Удалить", image: .trash, type: .red, action: { [unowned self] in
+                    menuUnderlayControl.removeFromSuperview()
+                    deleteStep(step)
+                })
+            )
+            menuView.items = items
+        } else {
+            menuView.items = [
+                MenuItemData(text: "Изменить", image: .edit, type: .normal, action: { [unowned self] in
+                    menuUnderlayControl.removeFromSuperview()
+                    let row = recommendedSteps.firstIndex(of: step)!
+                    openEditStep(mission: mission, step: step) { [unowned self] step in
+                        tableView.beginUpdates()
+                        tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .none)
+                        tableView.endUpdates()
+                        (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг изменён")
+                    }
+                }),
+                MenuItemData(text: "Скрыть", image: .eyeOff1, type: .red, action: { [unowned self] in
+                    menuUnderlayControl.removeFromSuperview()
+                    CoreDataStack.shared.performAndWait { context in
+                        step.hidden = true
+                    }
+                    if let index = recommendedSteps.firstIndex(where: { $0.id == step.id }) {
+                        recommendedSteps.remove(at: index)
+                        hiddenSteps.append(step)
+                        tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+                        tableView.reloadSections(IndexSet(arrayLiteral: 1), with: .none)
+                    }
+                })
+            ]
+        }
         menuView.translatesAutoresizingMaskIntoConstraints = false
         menuUnderlayControl.addSubview(menuView)
         
@@ -310,6 +361,26 @@ class MissionViewController: UIViewController {
         NSLayoutConstraint.activate(constraints)
         
         highlightedItemImageView.image = image
+    }
+    
+    private func sortAddedSteps() {
+        addedSteps.sort {
+            if $0.sortOrder == 0 && $1.sortOrder == 0 {
+                return $0.id > $1.id
+            }
+            return $0.sortOrder > $1.sortOrder
+        }
+    }
+    
+    private func deleteStep(_ step: MissionStep) {
+        openDeleteStep(step) { [unowned self] in
+            if let index = addedSteps.firstIndex(where: { $0.id == step.id }) {
+                addedSteps.remove(at: index)
+                hiddenSteps.append(step)
+                tableView.deleteRows(at: [IndexPath(row: index, section: 3)], with: .automatic)
+                tableView.reloadSections(IndexSet(arrayLiteral: 1), with: .none)
+            }
+        }
     }
 }
 
@@ -366,6 +437,11 @@ extension MissionViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "StepCell", for: indexPath) as! AddedStepCell
             let step = addedSteps[indexPath.row]
             cell.step = step
+            cell.onLongGesture = { [unowned self] image, rect in
+                self.generator.impactOccurred()
+                self.generator.prepare()
+                self.showMenu(step: step, anchorRect: rect, image: image)
+            }
             return cell
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: "RecommendedStepCell", for: indexPath) as! RecommendedStepCell
@@ -378,10 +454,10 @@ extension MissionViewController: UITableViewDataSource {
         cell.onStepAdded = { [unowned self] step in
             if let index = recommendedSteps.firstIndex(of: step) {
                 recommendedSteps.remove(at: index)
-                addedSteps.append(step)
+                addedSteps.insert(step, at: 0)
                 tableView.beginUpdates()
                 tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-                tableView.insertRows(at: [IndexPath(row: addedSteps.count-1, section: 3)], with: .automatic)
+                tableView.insertRows(at: [IndexPath(row: 0, section: 3)], with: .automatic)
                 tableView.endUpdates()
             }
         }

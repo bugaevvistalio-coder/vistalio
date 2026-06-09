@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import IQKeyboardManagerSwift
 
 class CreateMissionViewController: UIViewController {
     
@@ -76,6 +77,16 @@ class CreateMissionViewController: UIViewController {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardDidHideNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .templatesUpdated, object: nil)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        IQKeyboardManager.shared.isEnabled = false
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        IQKeyboardManager.shared.isEnabled = true
     }
     
     override func viewDidLayoutSubviews() {
@@ -260,6 +271,7 @@ extension CreateMissionViewController: UITableViewDataSource, UITableViewDelegat
 extension CreateMissionViewController: GrowingTextViewDelegate {
     func textViewDidChangeHeight(_ textView: GrowingTextView, height: CGFloat) {
         tableView.layoutHeader()
+        tableView.tableHeaderView?.setGradientLayer(colors: [.white, .bgGrey], startPoint: CGPoint(x: 0.5, y: 0.0), endPoint: CGPoint(x: 0.5, y: 1.0), cornerRadius: 0)
     }
     
     func textViewDidChange(_ textView: UITextView) {

@@ -62,6 +62,22 @@
 		C37309D12FAE04A7004F7ED8 /* RecommendedStepCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37309D02FAE04A3004F7ED8 /* RecommendedStepCell.swift */; };
 		C37309D32FAF7B7E004F7ED8 /* HiddenStepsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37309D22FAF7B78004F7ED8 /* HiddenStepsViewController.swift */; };
 		C37309D52FB0D2DA004F7ED8 /* AddedStepCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37309D42FB0D2D6004F7ED8 /* AddedStepCell.swift */; };
+		C3AE55C52FD09D12007A5E41 /* CreateStepViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55C42FD09D08007A5E41 /* CreateStepViewController.swift */; };
+		C3AE55C92FD1E8BF007A5E41 /* DropDownItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55C82FD1E8B9007A5E41 /* DropDownItemView.swift */; };
+		C3AE55CB2FD1E8D3007A5E41 /* DropDownItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3AE55CA2FD1E8D3007A5E41 /* DropDownItemView.xib */; };
+		C3AE55CD2FD1F412007A5E41 /* DropDownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55CC2FD1F40D007A5E41 /* DropDownView.swift */; };
+		C3AE55CF2FD1F42F007A5E41 /* DropDownView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3AE55CE2FD1F42F007A5E41 /* DropDownView.xib */; };
+		C3AE55D12FD2BA30007A5E41 /* DropDownControl.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3AE55D02FD2BA30007A5E41 /* DropDownControl.xib */; };
+		C3AE55D32FD2BA62007A5E41 /* DropDownControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55D22FD2BA5E007A5E41 /* DropDownControl.swift */; };
+		C3AE55D62FD490D0007A5E41 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55D52FD490CD007A5E41 /* CalendarView.swift */; };
+		C3AE55D82FD490DD007A5E41 /* CalendarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3AE55D72FD490DD007A5E41 /* CalendarView.xib */; };
+		C3AE55DA2FD495A9007A5E41 /* CalendarViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3AE55D92FD495A9007A5E41 /* CalendarViewCell.xib */; };
+		C3AE55DC2FD49664007A5E41 /* CalendarViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55DB2FD49660007A5E41 /* CalendarViewCell.swift */; };
+		C3AE55DE2FD49BB4007A5E41 /* DayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3AE55DD2FD49BB4007A5E41 /* DayView.xib */; };
+		C3AE55E02FD49BDE007A5E41 /* DayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55DF2FD49BDC007A5E41 /* DayView.swift */; };
+		C3AE55E22FD5E43F007A5E41 /* Date+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55E12FD5E43C007A5E41 /* Date+Utils.swift */; };
+		C3AE55E42FD81441007A5E41 /* StepViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55E32FD8143C007A5E41 /* StepViewController.swift */; };
+		C3AE55E62FD879A5007A5E41 /* UIScrollView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55E52FD879A1007A5E41 /* UIScrollView+Utils.swift */; };
 		C3B7D71A2F94A55400562DC2 /* CropImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B7D7192F94A54E00562DC2 /* CropImageViewController.swift */; };
 		C3B7D71C2F95390200562DC2 /* Cover.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B7D71B2F9538FF00562DC2 /* Cover.swift */; };
 		C3BEABB02F9A38ED00359CB6 /* TemplateHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BEABAF2F9A38E900359CB6 /* TemplateHeaderCell.swift */; };
@@ -164,6 +180,22 @@
 		C37309D02FAE04A3004F7ED8 /* RecommendedStepCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedStepCell.swift; sourceTree = "<group>"; };
 		C37309D22FAF7B78004F7ED8 /* HiddenStepsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenStepsViewController.swift; sourceTree = "<group>"; };
 		C37309D42FB0D2D6004F7ED8 /* AddedStepCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddedStepCell.swift; sourceTree = "<group>"; };
+		C3AE55C42FD09D08007A5E41 /* CreateStepViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateStepViewController.swift; sourceTree = "<group>"; };
+		C3AE55C82FD1E8B9007A5E41 /* DropDownItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownItemView.swift; sourceTree = "<group>"; };
+		C3AE55CA2FD1E8D3007A5E41 /* DropDownItemView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DropDownItemView.xib; sourceTree = "<group>"; };
+		C3AE55CC2FD1F40D007A5E41 /* DropDownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownView.swift; sourceTree = "<group>"; };
+		C3AE55CE2FD1F42F007A5E41 /* DropDownView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DropDownView.xib; sourceTree = "<group>"; };
+		C3AE55D02FD2BA30007A5E41 /* DropDownControl.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DropDownControl.xib; sourceTree = "<group>"; };
+		C3AE55D22FD2BA5E007A5E41 /* DropDownControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownControl.swift; sourceTree = "<group>"; };
+		C3AE55D52FD490CD007A5E41 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		C3AE55D72FD490DD007A5E41 /* CalendarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CalendarView.xib; sourceTree = "<group>"; };
+		C3AE55D92FD495A9007A5E41 /* CalendarViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CalendarViewCell.xib; sourceTree = "<group>"; };
+		C3AE55DB2FD49660007A5E41 /* CalendarViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewCell.swift; sourceTree = "<group>"; };
+		C3AE55DD2FD49BB4007A5E41 /* DayView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DayView.xib; sourceTree = "<group>"; };
+		C3AE55DF2FD49BDC007A5E41 /* DayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayView.swift; sourceTree = "<group>"; };
+		C3AE55E12FD5E43C007A5E41 /* Date+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Utils.swift"; sourceTree = "<group>"; };
+		C3AE55E32FD8143C007A5E41 /* StepViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepViewController.swift; sourceTree = "<group>"; };
+		C3AE55E52FD879A1007A5E41 /* UIScrollView+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Utils.swift"; sourceTree = "<group>"; };
 		C3B7D7192F94A54E00562DC2 /* CropImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropImageViewController.swift; sourceTree = "<group>"; };
 		C3B7D71B2F9538FF00562DC2 /* Cover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cover.swift; sourceTree = "<group>"; };
 		C3BEABAF2F9A38E900359CB6 /* TemplateHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateHeaderCell.swift; sourceTree = "<group>"; };
@@ -285,18 +317,20 @@
 		C346659E2F783741008648C8 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				C3AE55D42FD490BE007A5E41 /* CalendarView */,
 				C346659A2F783741008648C8 /* CustomTabItem.swift */,
+				C3AE55C72FD1E8AF007A5E41 /* DropDownView */,
+				C3F47ECF2FA0FA6B00F17AC8 /* GalleryView */,
 				C346659B2F783741008648C8 /* GrowingTextView.swift */,
+				C3D34ADF2FA1D9ED007E5CAF /* ImageScrollView.swift */,
 				C33F22C02F84C6C600EF2A81 /* Menu */,
+				C3D5425B2F928B350093D819 /* NotificationView.xib */,
+				C3D5425D2F928C4B0093D819 /* NotificationView.swift */,
 				C346659C2F783741008648C8 /* RoundedControls.swift */,
 				C33F22B32F82CE9800EF2A81 /* SegmentedControl */,
 				C346659D2F783741008648C8 /* StyledControls.swift */,
 				C3D542592F91F61E0093D819 /* TooltipView.xib */,
 				C3D542572F91F5F90093D819 /* TooltipView.swift */,
-				C3D5425B2F928B350093D819 /* NotificationView.xib */,
-				C3D5425D2F928C4B0093D819 /* NotificationView.swift */,
-				C3D34ADF2FA1D9ED007E5CAF /* ImageScrollView.swift */,
-				C3F47ECF2FA0FA6B00F17AC8 /* GalleryView */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -304,6 +338,7 @@
 		C34665A22F783741008648C8 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				C3AE55E12FD5E43C007A5E41 /* Date+Utils.swift */,
 				C3D542552F9125330093D819 /* NotificationNames.swift */,
 				C33F22A22F80147000EF2A81 /* String+Utils.swift */,
 				C33F22BE2F84C37600EF2A81 /* UIApplication+Utils.swift */,
@@ -311,6 +346,7 @@
 				C33F22A72F82376800EF2A81 /* UIImage+Utils.swift */,
 				C33F22AD2F82A43A00EF2A81 /* UIImageView+Utils.swift */,
 				C33F22BC2F83F48800EF2A81 /* UILabel+Utils.swift */,
+				C3AE55E52FD879A1007A5E41 /* UIScrollView+Utils.swift */,
 				C35911D42F9F6C740015FDE6 /* UIStackView+Utils.swift */,
 				C346659F2F783741008648C8 /* UITableView+Utils.swift */,
 				C34665A02F783741008648C8 /* UITextField+Utils.swift */,
@@ -330,6 +366,8 @@
 				C33F22BA2F838D5300EF2A81 /* MissionViewController.swift */,
 				C3BEABB12F9A39BF00359CB6 /* TemplateViewController.swift */,
 				C37309D22FAF7B78004F7ED8 /* HiddenStepsViewController.swift */,
+				C3AE55C42FD09D08007A5E41 /* CreateStepViewController.swift */,
+				C3AE55E32FD8143C007A5E41 /* StepViewController.swift */,
 				C3CF26EC2F7929050008718D /* Cells */,
 			);
 			path = Missions;
@@ -402,6 +440,32 @@
 				C35911D62F9F81750015FDE6 /* zombi_audio.ogg */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		C3AE55C72FD1E8AF007A5E41 /* DropDownView */ = {
+			isa = PBXGroup;
+			children = (
+				C3AE55CA2FD1E8D3007A5E41 /* DropDownItemView.xib */,
+				C3AE55C82FD1E8B9007A5E41 /* DropDownItemView.swift */,
+				C3AE55CE2FD1F42F007A5E41 /* DropDownView.xib */,
+				C3AE55CC2FD1F40D007A5E41 /* DropDownView.swift */,
+				C3AE55D02FD2BA30007A5E41 /* DropDownControl.xib */,
+				C3AE55D22FD2BA5E007A5E41 /* DropDownControl.swift */,
+			);
+			path = DropDownView;
+			sourceTree = "<group>";
+		};
+		C3AE55D42FD490BE007A5E41 /* CalendarView */ = {
+			isa = PBXGroup;
+			children = (
+				C3AE55D72FD490DD007A5E41 /* CalendarView.xib */,
+				C3AE55D52FD490CD007A5E41 /* CalendarView.swift */,
+				C3AE55D92FD495A9007A5E41 /* CalendarViewCell.xib */,
+				C3AE55DB2FD49660007A5E41 /* CalendarViewCell.swift */,
+				C3AE55DD2FD49BB4007A5E41 /* DayView.xib */,
+				C3AE55DF2FD49BDC007A5E41 /* DayView.swift */,
+			);
+			path = CalendarView;
 			sourceTree = "<group>";
 		};
 		C3BEABAE2F9A38D000359CB6 /* TemplateScreen */ = {
@@ -548,6 +612,7 @@
 				C3BEABD72F9BC01100359CB6 /* mission_9.json in Resources */,
 				C3BEABD82F9BC01100359CB6 /* mission_10.json in Resources */,
 				C3BEABD92F9BC01100359CB6 /* mission_14.json in Resources */,
+				C3AE55CB2FD1E8D3007A5E41 /* DropDownItemView.xib in Resources */,
 				C3BEABD22F9BB50000359CB6 /* mission_16.json in Resources */,
 				C36B3D072F97DC9100976790 /* missions_list.json in Resources */,
 				C34665B72F783741008648C8 /* LaunchScreen.storyboard in Resources */,
@@ -557,6 +622,7 @@
 				C3BEABB82F9BB03500359CB6 /* mission_3.json in Resources */,
 				C3D5425A2F91F61E0093D819 /* TooltipView.xib in Resources */,
 				C34665B82F783741008648C8 /* Main.storyboard in Resources */,
+				C3AE55CF2FD1F42F007A5E41 /* DropDownView.xib in Resources */,
 				C35911D72F9F81750015FDE6 /* zombi_audio.ogg in Resources */,
 				C33F22B02F82CA7E00EF2A81 /* SegmentedControl.xib in Resources */,
 				C3D5425C2F928B350093D819 /* NotificationView.xib in Resources */,
@@ -577,7 +643,11 @@
 				C34665BC2F783741008648C8 /* MyDay.storyboard in Resources */,
 				C3BEABBE2F9BB0A600359CB6 /* mission_6.json in Resources */,
 				C3BEABBC2F9BB07400359CB6 /* mission_5.json in Resources */,
+				C3AE55DA2FD495A9007A5E41 /* CalendarViewCell.xib in Resources */,
 				C34665BD2F783741008648C8 /* Assets.xcassets in Resources */,
+				C3AE55D12FD2BA30007A5E41 /* DropDownControl.xib in Resources */,
+				C3AE55DE2FD49BB4007A5E41 /* DayView.xib in Resources */,
+				C3AE55D82FD490DD007A5E41 /* CalendarView.xib in Resources */,
 				C3F47ECE2FA0F7DF00F17AC8 /* GalleryView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -657,13 +727,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3D542582F91F5FC0093D819 /* TooltipView.swift in Sources */,
+				C3AE55CD2FD1F412007A5E41 /* DropDownView.swift in Sources */,
 				C3CF26F22F7936E20008718D /* UIViewController+Utils.swift in Sources */,
 				C34665BF2F783741008648C8 /* CustomTabItem.swift in Sources */,
 				C33F22BF2F84C37B00EF2A81 /* UIApplication+Utils.swift in Sources */,
+				C3AE55E22FD5E43F007A5E41 /* Date+Utils.swift in Sources */,
 				C3D34AE02FA1D9F0007E5CAF /* ImageScrollView.swift in Sources */,
 				C3CF26EE2F7929120008718D /* CoverCell.swift in Sources */,
 				C35911D52F9F6C780015FDE6 /* UIStackView+Utils.swift in Sources */,
 				C33F22962F8011F000EF2A81 /* CoreDataStack.swift in Sources */,
+				C3AE55C92FD1E8BF007A5E41 /* DropDownItemView.swift in Sources */,
 				C33F22B52F83872100EF2A81 /* SegmentedControlTab.swift in Sources */,
 				C33F22A62F80251F00EF2A81 /* SelectActionViewController.swift in Sources */,
 				C33F22CA2F84C8B400EF2A81 /* MenuView.swift in Sources */,
@@ -677,7 +750,9 @@
 				C3B7D71C2F95390200562DC2 /* Cover.swift in Sources */,
 				C34665C22F783741008648C8 /* StyledControls.swift in Sources */,
 				C3D542562F9125370093D819 /* NotificationNames.swift in Sources */,
+				C3AE55D62FD490D0007A5E41 /* CalendarView.swift in Sources */,
 				C34665C32F783741008648C8 /* UITableView+Utils.swift in Sources */,
+				C3AE55C52FD09D12007A5E41 /* CreateStepViewController.swift in Sources */,
 				C33F22C42F84C75300EF2A81 /* MenuItemView.swift in Sources */,
 				C3F47EC82F9FCAB300F17AC8 /* MissionNote.swift in Sources */,
 				C3BEABC42F9BB0F200359CB6 /* mission_9.json in Sources */,
@@ -698,7 +773,10 @@
 				C3BEABD62F9BB88B00359CB6 /* TemplateStepCell.swift in Sources */,
 				C33F22AC2F8299DB00EF2A81 /* MyMissionCell.swift in Sources */,
 				C3BEABDD2F9E7E3800359CB6 /* TemplateNoteCell.swift in Sources */,
+				C3AE55DC2FD49664007A5E41 /* CalendarViewCell.swift in Sources */,
 				C33F22A12F80145B00EF2A81 /* FilesHelper.swift in Sources */,
+				C3AE55D32FD2BA62007A5E41 /* DropDownControl.swift in Sources */,
+				C3AE55E02FD49BDE007A5E41 /* DayView.swift in Sources */,
 				C3D34ADE2FA0FB5F007E5CAF /* GalleryCell.swift in Sources */,
 				C34665C62F783741008648C8 /* CreateMissionViewController.swift in Sources */,
 				C332CFCB2F8FB4A6002ABF15 /* MyMissionsViewController.swift in Sources */,
@@ -711,11 +789,13 @@
 				C3F47EC52F9FCA1A00F17AC8 /* MissionStep.swift in Sources */,
 				C34665C92F783741008648C8 /* StyledNavigationController.swift in Sources */,
 				C33F22BD2F83F48C00EF2A81 /* UILabel+Utils.swift in Sources */,
+				C3AE55E62FD879A5007A5E41 /* UIScrollView+Utils.swift in Sources */,
 				C3CF26F02F7929C00008718D /* CoverViewController.swift in Sources */,
 				C3BEABB22F9A39C300359CB6 /* TemplateViewController.swift in Sources */,
 				C33F22A82F82376B00EF2A81 /* UIImage+Utils.swift in Sources */,
 				C34665CA2F783741008648C8 /* AppDelegate.swift in Sources */,
 				C34665CB2F783741008648C8 /* SceneDelegate.swift in Sources */,
+				C3AE55E42FD81441007A5E41 /* StepViewController.swift in Sources */,
 				C3BEABB02F9A38ED00359CB6 /* TemplateHeaderCell.swift in Sources */,
 				C33F22B72F83893E00EF2A81 /* UIColor+Utils.swift in Sources */,
 			);

@@ -16,6 +16,12 @@ class AddedStepCell: UITableViewCell {
     @IBOutlet weak var addNoteInnerView: UIView!
     @IBOutlet weak var noteLabel: UILabel!
     
+    var onLongGesture: ((UIImage, CGRect) -> ())?
+    
+    private lazy var longGestureRecognizer: UILongPressGestureRecognizer = {
+        return UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
+    }()
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         addNoteControl.setShadow(offset: CGSize(width: 0, height: 0), radius: 4, cornerRadius: 16, shadowOpacity: 0.05)
@@ -27,6 +33,18 @@ class AddedStepCell: UITableViewCell {
     var step: MissionStep! {
         didSet {
             nameLabel.text = step.name
+            
+            if !(roundedView.gestureRecognizers?.contains(longGestureRecognizer) ?? false) {
+                roundedView.addGestureRecognizer(longGestureRecognizer)
+            }
+        }
+    }
+    
+    @objc private func handleLongPress(gestureRecognizer : UILongPressGestureRecognizer){
+        if gestureRecognizer.state == .began {
+            if let origin = roundedView.superview?.convert(roundedView.frame.origin, to: nil) {
+                onLongGesture?(roundedView.toImage(rect: roundedView.bounds), CGRect(origin: origin, size: roundedView.frame.size))
+            }
         }
     }
 }

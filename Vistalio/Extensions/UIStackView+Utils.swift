@@ -9,7 +9,7 @@ import UIKit
 
 extension UIStackView {
     
-    func addNotification(text: String) {
+    func addNotification(text: String, secondaryText: String? = nil, onTapped: (() -> ())? = nil) {
         let notificationView = NotificationView()
         notificationView.translatesAutoresizingMaskIntoConstraints = false
         addArrangedSubview(notificationView)
@@ -17,5 +17,7 @@ extension UIStackView {
         NSLayoutConstraint.activate([notificationView.heightAnchor.constraint(equalToConstant: 68)])
         
         notificationView.text = text
+        notificationView.secondaryText = secondaryText
+        notificationView.onTapped = onTapped
     }
 }

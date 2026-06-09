@@ -153,6 +153,59 @@ extension UIViewController {
         presentBottomSheet(vc, height: 200)
     }
     
+    func openDeleteStep(_ step: MissionStep, onDeleted: @escaping () -> ()) {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
+        vc.popupTitle = "Удалить шаг?"
+        vc.popupText = "Нельзя отменить. По умолчанию все заметки удаляемого шага помещаются в шаг «Шаг для общих заметок»."
+        vc.buttons = [
+            ActionButton(type: .red, title: "Удалить", action: { 
+                CoreDataStack.shared.performAndWait { context in
+                    if step.block.id == -1 {
+                        context.delete(step)
+                    } else {
+                        step.hidden = true
+                        step.sortOrder = 0
+                        step.addedDate = nil
+                        step.startDate = nil
+                        step.endDate = nil
+                        step.frequency = 0
+                        if let name = step.originalName {
+                            step.name = name
+                            step.originalName = nil
+                        }
+                        if let text = step.originalText {
+                            step.text = text
+                            step.originalText = nil
+                        }
+                    }
+                }
+                onDeleted()
+                (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг удалён")
+            }),
+            ActionButton(type: .secondary, title: "Отменить", action: { })
+        ]
+        presentBottomSheet(vc, height: 200)
+    }
+    
+    func openEditStep(mission: Mission, step: MissionStep? = nil, onStepSaved: @escaping (MissionStep) -> ()) {
+        let sb = UIStoryboard(name: "Missions", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "CreateStepVC") as! CreateStepViewController
+        vc.mission = mission
+        vc.step = step
+        vc.onStepSaved = onStepSaved
+        let window = UIApplication.shared.windows.first
+        let top = (window?.safeAreaInsets.top ?? 20)
+        presentBottomSheet(vc, height: UIScreen.main.bounds.height - top)
+    }
+    
+    func openStep(_ step: MissionStep) {
+        let sb = UIStoryboard(name: "Missions", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "StepVC") as! StepViewController
+        vc.step = step
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
     func addMenuUnderlayControl(color: UIColor) -> UIControl {
         let control = UIControl()
         control.translatesAutoresizingMaskIntoConstraints = false
@@ -175,5 +228,6 @@ extension UIViewController {
     @objc func menuTappedOutside(_ sender: Any) {
         let menuUnderlayControl = sender as! UIControl
         menuUnderlayControl.removeFromSuperview()
+        NotificationCenter.default.post(name: .menuClosed, object: nil)
     }
 }

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DayView" customModule="Vistalio" customModuleProvider="target">
+            <connections>
+                <outlet property="circleView" destination="gap-Do-ey7" id="77M-7R-ex1"/>
+                <outlet property="dayLabel" destination="Aod-N1-cvM" id="Ur4-L1-oak"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gzF-zn-zpd">
+            <rect key="frame" x="0.0" y="0.0" width="84" height="73"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gap-Do-ey7" customClass="RoundedView" customModule="Vistalio" customModuleProvider="target">
+                    <rect key="frame" x="26" y="20.666666666666671" width="32" height="32"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="32" id="3sY-FQ-lcc"/>
+                        <constraint firstAttribute="width" constant="32" id="b2g-9i-nIQ"/>
+                    </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="16"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                            <real key="value" value="2"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                            <color key="value" name="highlightBlue"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </view>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Aod-N1-cvM">
+                    <rect key="frame" x="38.666666666666664" y="28" width="7" height="17"/>
+                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
+                    <color key="textColor" name="textGrey60"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="7P7-hP-d9L"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="gap-Do-ey7" firstAttribute="centerY" secondItem="gzF-zn-zpd" secondAttribute="centerY" id="3pe-72-qey"/>
+                <constraint firstItem="gap-Do-ey7" firstAttribute="centerX" secondItem="gzF-zn-zpd" secondAttribute="centerX" id="9EU-23-cS7"/>
+                <constraint firstItem="Aod-N1-cvM" firstAttribute="centerY" secondItem="gzF-zn-zpd" secondAttribute="centerY" id="a6N-i3-qiu"/>
+                <constraint firstItem="Aod-N1-cvM" firstAttribute="centerX" secondItem="gzF-zn-zpd" secondAttribute="centerX" id="xqP-jG-hQX"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="-334.35114503816794" y="-169.36619718309859"/>
+        </view>
+    </objects>
+    <resources>
+        <namedColor name="highlightBlue">
+            <color red="0.45490196078431372" green="0.58039215686274515" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="textGrey60">
+            <color red="0.019607843137254902" green="0.015686274509803921" blue="0.023529411764705882" alpha="0.60000002384185791" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

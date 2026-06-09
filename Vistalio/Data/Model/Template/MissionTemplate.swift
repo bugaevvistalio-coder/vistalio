@@ -122,8 +122,12 @@ enum MissionEmotion: String {
     }
 }
 
-class StepsList: Codable {
-    let blocks: [[TemplateStep]]
+class BlocksList: Codable {
+    let blocks: [TemplateBlock]
+}
+
+class TemplateBlock: Codable {
+    let steps: [TemplateStep]
 }
 
 class TemplateStep: Codable {

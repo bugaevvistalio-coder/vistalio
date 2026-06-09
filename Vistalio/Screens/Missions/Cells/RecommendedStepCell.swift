@@ -35,7 +35,10 @@ class RecommendedStepCell: UITableViewCell {
     var step: MissionStep! {
         didSet {
             nameLabel.text = step.name
-            descriptionLabel.text = step.shortText
+            
+            descriptionLabel.text = step.expanded ? step.text : step.shortText
+            descriptionLabel.numberOfLines = step.expanded ? 0 : 2
+            
             if !(roundedView.gestureRecognizers?.contains(longGestureRecognizer) ?? false) {
                 roundedView.addGestureRecognizer(longGestureRecognizer)
             }
@@ -71,6 +74,7 @@ class RecommendedStepCell: UITableViewCell {
         CoreDataStack.shared.performAndWait { [unowned self] _ in
             self.step.addedDate = Date()
             self.step.hidden = false
+            self.step.sortOrder = self.step.block.mission.maxSortOrder + 1
         }
         let step = step!
         animateAddStep() { [weak self] in

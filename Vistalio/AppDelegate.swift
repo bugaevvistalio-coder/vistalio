@@ -48,8 +48,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
     
-    func addNotification(text: String) {
-        (UIApplication.shared.keyWindow?.rootViewController as? MainViewController)?.addNotification(text: text)
+    func addNotification(text: String, secondaryText: String? = nil, onTapped: (() -> ())? = nil) {
+        (UIApplication.shared.keyWindow?.rootViewController as? MainViewController)?.addNotification(text: text, secondaryText: secondaryText, onTapped: onTapped)
     }
 }
 

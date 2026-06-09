@@ -12,6 +12,7 @@ class HiddenStepsViewController: UIViewController {
     
     @IBOutlet weak var closeButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var notificationsStackView: UIStackView!
     
     var mission: Mission!
     var onStepHidden: (() -> ())?
@@ -24,7 +25,7 @@ class HiddenStepsViewController: UIViewController {
         
         closeButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1)
         
-        steps = (mission.steps?.allObjects as? [MissionStep])?.sorted(by: { $0.id < $1.id }).filter { $0.hidden } ?? []
+        steps = (mission.blocks?.allObjects as? [StepsBlock])?.flatMap { ($0.steps?.allObjects as? [MissionStep])?.filter { $0.hidden } ?? []}.sorted(by: { $0.id < $1.id }) ?? []
     }
     
     @IBAction func closeTapped() {
@@ -39,7 +40,14 @@ class HiddenStepsViewController: UIViewController {
             MenuItemData(text: "Изменить", image: .edit, type: .normal, action: { [unowned self] in
                 menuUnderlayControl.removeFromSuperview()
                 
-   
+                let row = steps.firstIndex(of: step)!
+                openEditStep(mission: mission, step: step) { [unowned self] step in
+                    notificationsStackView.addNotification(text: "Шаг изменён")
+                    
+                    tableView.beginUpdates()
+                    tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .none)
+                    tableView.endUpdates()
+                }
             }),
             MenuItemData(text: "Вернуть из скрытых", image: .eyeOn1, type: .blue, action: { [unowned self] in
                 menuUnderlayControl.removeFromSuperview()

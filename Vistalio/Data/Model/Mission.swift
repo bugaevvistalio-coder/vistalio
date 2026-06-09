@@ -72,7 +72,7 @@ public class Mission: NSManagedObject {
     }
     
     @discardableResult
-    class func create(context: NSManagedObjectContext, template: MissionTemplate, steps: [[TemplateStep]]) -> Mission? {
+    class func create(context: NSManagedObjectContext, template: MissionTemplate, blocks: [TemplateBlock]) -> Mission? {
         guard let entityDescription = NSEntityDescription.entity(forEntityName: "Mission", in: context) else { return nil }
         
         let mission =  Mission(entity: entityDescription, insertInto: context)
@@ -83,31 +83,46 @@ public class Mission: NSManagedObject {
         mission.updateDate = mission.creationDate
         mission.templateId = template.id
         
-        for (i, s) in steps.flatMap({ $0 }).enumerated() {
-            if let stepEntity = NSEntityDescription.entity(forEntityName: "MissionStep", in: context) {
-                let step = MissionStep(entity: stepEntity, insertInto: context)
-                step.id = i+1
-                step.name = s.name
-                step.text = s.description
-                step.mission = mission
+        var stepIndex = 0
+        var noteIndex = 0
+        
+        for (i, b) in blocks.enumerated() {
+            if let blockEntity = NSEntityDescription.entity(forEntityName: "StepsBlock", in: context) {
+                let block = StepsBlock(entity: blockEntity, insertInto: context)
+                block.id = i+1
+                block.mission = mission
                 
-                if let notes = s.notes {
-                    for (i, n) in notes.enumerated() {
-                        if let noteEntity = NSEntityDescription.entity(forEntityName: "MissionNote", in: context) {
-                            let note = MissionNote(entity: noteEntity, insertInto: context)
-                            note.id = i+1
-                            note.name = n.name
-                            note.text = n.description
-                            note.audio = n.audio
-                            note.step = step
-                            
-                            if let images = n.images {
-                                for (i, ni) in images.enumerated() {
-                                    if let imageEntity = NSEntityDescription.entity(forEntityName: "MissionNoteImage", in: context) {
-                                        let image = MissionNoteImage(entity: imageEntity, insertInto: context)
-                                        image.id = i+1
-                                        image.path = ni
-                                        image.note = note
+                for s in b.steps {
+                    if let stepEntity = NSEntityDescription.entity(forEntityName: "MissionStep", in: context) {
+                        stepIndex += 1
+                        
+                        let step = MissionStep(entity: stepEntity, insertInto: context)
+                        step.id = stepIndex
+                        step.name = s.name
+                        step.text = s.description
+                        step.block = block
+                        
+                        if let notes = s.notes {
+                            for n in notes {
+                                if let noteEntity = NSEntityDescription.entity(forEntityName: "MissionNote", in: context) {
+                                    noteIndex += 1
+                                    
+                                    let note = MissionNote(entity: noteEntity, insertInto: context)
+                                    note.id = noteIndex
+                                    note.name = n.name
+                                    note.text = n.description
+                                    note.audio = n.audio
+                                    note.step = step
+                                    
+                                    if let images = n.images {
+                                        for (i, ni) in images.enumerated() {
+                                            if let imageEntity = NSEntityDescription.entity(forEntityName: "MissionNoteImage", in: context) {
+                                                let image = MissionNoteImage(entity: imageEntity, insertInto: context)
+                                                image.id = i+1
+                                                image.path = ni
+                                                image.note = note
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -125,6 +140,16 @@ public class Mission: NSManagedObject {
             FilesHelper().deleteFile(path: photoPath)
             print("Mission cover file deleted")
         }
+    }
+    
+    var addedSteps: [MissionStep] {
+        let blocks = blocks?.allObjects.map { $0 as! StepsBlock } ?? []
+        let steps = blocks.flatMap { ($0.steps?.allObjects as? [MissionStep]) ?? [] }
+        return steps.filter { $0.addedDate != nil }
+    }
+    
+    var maxSortOrder: Int32 {
+        return (addedSteps.max(by: { $0.sortOrder < $1.sortOrder })?.sortOrder ?? 0)
     }
 }
 
@@ -144,21 +169,21 @@ extension Mission {
     @NSManaged public var archived: Bool
     @NSManaged public var finishedAt: Date?
     
-    @NSManaged public var steps: NSSet?
+    @NSManaged public var blocks: NSSet?
 }
 
 extension Mission {
 
-    @objc(addStepsObject:)
-    @NSManaged public func addToSteps(_ value: MissionStep)
+    @objc(addBlocksObject:)
+    @NSManaged public func addToBlocks(_ value: StepsBlock)
 
-    @objc(removeStepsObject:)
-    @NSManaged public func removeFromSteps(_ value: MissionStep)
+    @objc(removeBlocksObject:)
+    @NSManaged public func removeFromBlocks(_ value: StepsBlock)
 
-    @objc(addSteps:)
-    @NSManaged public func addToSteps(_ values: NSSet)
+    @objc(addBlocks:)
+    @NSManaged public func addToBlocks(_ values: NSSet)
 
-    @objc(removeSteps:)
-    @NSManaged public func removeFromSteps(_ values: NSSet)
+    @objc(removeBlocks:)
+    @NSManaged public func removeFromBlocks(_ values: NSSet)
 
 }

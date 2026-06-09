@@ -99,10 +99,11 @@ open class GrowingTextView: UITextView {
         oldText = text
         oldSize = bounds.size
         
+        let wasEnabled = isScrollEnabled
         isScrollEnabled = false
         let size = sizeThatFits(CGSize(width: bounds.size.width, height: CGFloat.greatestFiniteMagnitude))
         var height = size.height + 0.5
-        isScrollEnabled = true
+        isScrollEnabled = wasEnabled
         
         // Constrain minimum height
         height = minHeight > 0 ? max(height, minHeight) : height
@@ -123,6 +124,7 @@ open class GrowingTextView: UITextView {
             if let delegate = delegate as? GrowingTextViewDelegate {
                 delegate.textViewDidChangeHeight?(self, height: height)
             }
+            print("New height \(height)")
         } else if shouldScrollAfterHeightChanged {
             shouldScrollAfterHeightChanged = false
             scrollToCorrectPosition()

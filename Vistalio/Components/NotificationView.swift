@@ -10,8 +10,11 @@ import UIKit
 class NotificationView: UIView {
     
     @IBOutlet private weak var label: UILabel!
+    @IBOutlet private weak var secondaryLabel: UILabel!
     
     private var view: UIView!
+    
+    var onTapped: (() -> ())?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -34,11 +37,27 @@ class NotificationView: UIView {
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
         addGestureRecognizer(panGesture)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        addGestureRecognizer(tapGesture)
+        
+        secondaryLabel.isHidden = true
     }
     
     var text: String? {
         didSet {
             label.text = text
+        }
+    }
+    
+    var secondaryText: String? {
+        didSet {
+            if let text = secondaryText {
+                secondaryLabel.isHidden = false
+                secondaryLabel.text = text
+            } else {
+                secondaryLabel.isHidden = true
+            }
         }
     }
     
@@ -65,5 +84,10 @@ class NotificationView: UIView {
                 }
             }
         }
+    }
+    
+    @objc func handleTap(_ gesture: UIPanGestureRecognizer) {
+        onTapped?()
+        removeFromSuperview()
     }
 }
