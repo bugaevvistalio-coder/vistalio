@@ -62,6 +62,10 @@
 		C37309D12FAE04A7004F7ED8 /* RecommendedStepCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37309D02FAE04A3004F7ED8 /* RecommendedStepCell.swift */; };
 		C37309D32FAF7B7E004F7ED8 /* HiddenStepsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37309D22FAF7B78004F7ED8 /* HiddenStepsViewController.swift */; };
 		C37309D52FB0D2DA004F7ED8 /* AddedStepCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37309D42FB0D2D6004F7ED8 /* AddedStepCell.swift */; };
+		C37BB734300157C7006BE7EA /* EmotionCircleView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C37BB733300157C7006BE7EA /* EmotionCircleView.xib */; };
+		C37BB73630015C1E006BE7EA /* EmotionCircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB73530015C18006BE7EA /* EmotionCircleView.swift */; };
+		C37BB73830035EB1006BE7EA /* EmotionSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB73730035EA9006BE7EA /* EmotionSettingsViewController.swift */; };
+		C37BB73D3003F47A006BE7EA /* EmotionsPanelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB73C3003F45B006BE7EA /* EmotionsPanelViewController.swift */; };
 		C3AE55C52FD09D12007A5E41 /* CreateStepViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55C42FD09D08007A5E41 /* CreateStepViewController.swift */; };
 		C3AE55C92FD1E8BF007A5E41 /* DropDownItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55C82FD1E8B9007A5E41 /* DropDownItemView.swift */; };
 		C3AE55CB2FD1E8D3007A5E41 /* DropDownItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3AE55CA2FD1E8D3007A5E41 /* DropDownItemView.xib */; };
@@ -104,6 +108,14 @@
 		C3BEABD82F9BC01100359CB6 /* mission_10.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABC52F9BB10300359CB6 /* mission_10.json */; };
 		C3BEABD92F9BC01100359CB6 /* mission_14.json in Resources */ = {isa = PBXBuildFile; fileRef = C3BEABCD2F9BB23500359CB6 /* mission_14.json */; };
 		C3BEABDD2F9E7E3800359CB6 /* TemplateNoteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BEABDC2F9E7E3300359CB6 /* TemplateNoteCell.swift */; };
+		C3CABD642FF28F7C0067CA73 /* MoveStepViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CABD632FF28F760067CA73 /* MoveStepViewController.swift */; };
+		C3CABD662FF5B0EC0067CA73 /* AddNoteView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3CABD652FF5B0EC0067CA73 /* AddNoteView.xib */; };
+		C3CABD682FF5B94F0067CA73 /* AddNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CABD672FF5B94C0067CA73 /* AddNoteView.swift */; };
+		C3CABD6A2FF7D8920067CA73 /* SelectDateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CABD692FF7D88C0067CA73 /* SelectDateViewController.swift */; };
+		C3CABD6F2FF844430067CA73 /* SelectEmotionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CABD6E2FF844400067CA73 /* SelectEmotionCell.swift */; };
+		C3CABD712FF84DED0067CA73 /* SelectEmotionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CABD702FF84DE10067CA73 /* SelectEmotionViewController.swift */; };
+		C3CABD732FF9708C0067CA73 /* MissionEmotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CABD722FF9708C0067CA73 /* MissionEmotion.swift */; };
+		C3CABD752FFAE71B0067CA73 /* EmotionsModeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CABD742FFAE70C0067CA73 /* EmotionsModeCell.swift */; };
 		C3CF26EE2F7929120008718D /* CoverCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CF26ED2F79290F0008718D /* CoverCell.swift */; };
 		C3CF26F02F7929C00008718D /* CoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CF26EF2F7929B70008718D /* CoverViewController.swift */; };
 		C3CF26F22F7936E20008718D /* UIViewController+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CF26F12F7936DD0008718D /* UIViewController+Utils.swift */; };
@@ -180,6 +192,10 @@
 		C37309D02FAE04A3004F7ED8 /* RecommendedStepCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedStepCell.swift; sourceTree = "<group>"; };
 		C37309D22FAF7B78004F7ED8 /* HiddenStepsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenStepsViewController.swift; sourceTree = "<group>"; };
 		C37309D42FB0D2D6004F7ED8 /* AddedStepCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddedStepCell.swift; sourceTree = "<group>"; };
+		C37BB733300157C7006BE7EA /* EmotionCircleView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EmotionCircleView.xib; sourceTree = "<group>"; };
+		C37BB73530015C18006BE7EA /* EmotionCircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmotionCircleView.swift; sourceTree = "<group>"; };
+		C37BB73730035EA9006BE7EA /* EmotionSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmotionSettingsViewController.swift; sourceTree = "<group>"; };
+		C37BB73C3003F45B006BE7EA /* EmotionsPanelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmotionsPanelViewController.swift; sourceTree = "<group>"; };
 		C3AE55C42FD09D08007A5E41 /* CreateStepViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateStepViewController.swift; sourceTree = "<group>"; };
 		C3AE55C82FD1E8B9007A5E41 /* DropDownItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownItemView.swift; sourceTree = "<group>"; };
 		C3AE55CA2FD1E8D3007A5E41 /* DropDownItemView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DropDownItemView.xib; sourceTree = "<group>"; };
@@ -219,6 +235,14 @@
 		C3BEABD32F9BB5FA00359CB6 /* mission_17.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mission_17.json; sourceTree = "<group>"; };
 		C3BEABD52F9BB88700359CB6 /* TemplateStepCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateStepCell.swift; sourceTree = "<group>"; };
 		C3BEABDC2F9E7E3300359CB6 /* TemplateNoteCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateNoteCell.swift; sourceTree = "<group>"; };
+		C3CABD632FF28F760067CA73 /* MoveStepViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveStepViewController.swift; sourceTree = "<group>"; };
+		C3CABD652FF5B0EC0067CA73 /* AddNoteView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddNoteView.xib; sourceTree = "<group>"; };
+		C3CABD672FF5B94C0067CA73 /* AddNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNoteView.swift; sourceTree = "<group>"; };
+		C3CABD692FF7D88C0067CA73 /* SelectDateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectDateViewController.swift; sourceTree = "<group>"; };
+		C3CABD6E2FF844400067CA73 /* SelectEmotionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectEmotionCell.swift; sourceTree = "<group>"; };
+		C3CABD702FF84DE10067CA73 /* SelectEmotionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectEmotionViewController.swift; sourceTree = "<group>"; };
+		C3CABD722FF9708C0067CA73 /* MissionEmotion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionEmotion.swift; sourceTree = "<group>"; };
+		C3CABD742FFAE70C0067CA73 /* EmotionsModeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmotionsModeCell.swift; sourceTree = "<group>"; };
 		C3CF26ED2F79290F0008718D /* CoverCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverCell.swift; sourceTree = "<group>"; };
 		C3CF26EF2F7929B70008718D /* CoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverViewController.swift; sourceTree = "<group>"; };
 		C3CF26F12F7936DD0008718D /* UIViewController+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Utils.swift"; sourceTree = "<group>"; };
@@ -265,10 +289,11 @@
 		C33F22982F80128600EF2A81 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				C33F229C2F80134A00EF2A81 /* Mission.swift */,
 				C3B7D71B2F9538FF00562DC2 /* Cover.swift */,
-				C3F47EC42F9FCA1700F17AC8 /* MissionStep.swift */,
+				C33F229C2F80134A00EF2A81 /* Mission.swift */,
+				C3CABD722FF9708C0067CA73 /* MissionEmotion.swift */,
 				C3F47EC72F9FCAB100F17AC8 /* MissionNote.swift */,
+				C3F47EC42F9FCA1700F17AC8 /* MissionStep.swift */,
 				C3F47EC62F9FCA9F00F17AC8 /* Template */,
 			);
 			path = Model;
@@ -288,6 +313,7 @@
 			children = (
 				C33F22A52F80251300EF2A81 /* SelectActionViewController.swift */,
 				C3B7D7192F94A54E00562DC2 /* CropImageViewController.swift */,
+				C3CABD692FF7D88C0067CA73 /* SelectDateViewController.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -331,6 +357,10 @@
 				C346659D2F783741008648C8 /* StyledControls.swift */,
 				C3D542592F91F61E0093D819 /* TooltipView.xib */,
 				C3D542572F91F5F90093D819 /* TooltipView.swift */,
+				C3CABD652FF5B0EC0067CA73 /* AddNoteView.xib */,
+				C3CABD672FF5B94C0067CA73 /* AddNoteView.swift */,
+				C37BB733300157C7006BE7EA /* EmotionCircleView.xib */,
+				C37BB73530015C18006BE7EA /* EmotionCircleView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -365,9 +395,6 @@
 				C3CF26EF2F7929B70008718D /* CoverViewController.swift */,
 				C33F22BA2F838D5300EF2A81 /* MissionViewController.swift */,
 				C3BEABB12F9A39BF00359CB6 /* TemplateViewController.swift */,
-				C37309D22FAF7B78004F7ED8 /* HiddenStepsViewController.swift */,
-				C3AE55C42FD09D08007A5E41 /* CreateStepViewController.swift */,
-				C3AE55E32FD8143C007A5E41 /* StepViewController.swift */,
 				C3CF26EC2F7929050008718D /* Cells */,
 			);
 			path = Missions;
@@ -378,6 +405,8 @@
 			children = (
 				C33F22A42F80250F00EF2A81 /* Common */,
 				C34665A52F783741008648C8 /* Missions */,
+				C3CABD6C2FF83E980067CA73 /* Steps */,
+				C37BB73A3003F425006BE7EA /* Emotions */,
 				C34665A62F783741008648C8 /* MainViewController.swift */,
 				C34665A72F783741008648C8 /* StyledNavigationController.swift */,
 			);
@@ -442,6 +471,26 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		C37BB73A3003F425006BE7EA /* Emotions */ = {
+			isa = PBXGroup;
+			children = (
+				C3CABD702FF84DE10067CA73 /* SelectEmotionViewController.swift */,
+				C37BB73730035EA9006BE7EA /* EmotionSettingsViewController.swift */,
+				C37BB73C3003F45B006BE7EA /* EmotionsPanelViewController.swift */,
+				C37BB73B3003F434006BE7EA /* Cells */,
+			);
+			path = Emotions;
+			sourceTree = "<group>";
+		};
+		C37BB73B3003F434006BE7EA /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				C3CABD6E2FF844400067CA73 /* SelectEmotionCell.swift */,
+				C3CABD742FFAE70C0067CA73 /* EmotionsModeCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
 		C3AE55C72FD1E8AF007A5E41 /* DropDownView */ = {
 			isa = PBXGroup;
 			children = (
@@ -478,6 +527,27 @@
 			path = TemplateScreen;
 			sourceTree = "<group>";
 		};
+		C3CABD6C2FF83E980067CA73 /* Steps */ = {
+			isa = PBXGroup;
+			children = (
+				C37309D22FAF7B78004F7ED8 /* HiddenStepsViewController.swift */,
+				C3AE55C42FD09D08007A5E41 /* CreateStepViewController.swift */,
+				C3AE55E32FD8143C007A5E41 /* StepViewController.swift */,
+				C3CABD632FF28F760067CA73 /* MoveStepViewController.swift */,
+				C3CABD6D2FF83EC60067CA73 /* Cells */,
+			);
+			path = Steps;
+			sourceTree = "<group>";
+		};
+		C3CABD6D2FF83EC60067CA73 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				C37309D02FAE04A3004F7ED8 /* RecommendedStepCell.swift */,
+				C37309D42FB0D2D6004F7ED8 /* AddedStepCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
 		C3CF26EC2F7929050008718D /* Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -485,8 +555,6 @@
 				C3CF26ED2F79290F0008718D /* CoverCell.swift */,
 				C36B3D052F97D71900976790 /* TemplateCell.swift */,
 				C36B3D082F9884EE00976790 /* EmotionCell.swift */,
-				C37309D02FAE04A3004F7ED8 /* RecommendedStepCell.swift */,
-				C37309D42FB0D2D6004F7ED8 /* AddedStepCell.swift */,
 				C3BEABAE2F9A38D000359CB6 /* TemplateScreen */,
 			);
 			path = Cells;
@@ -621,6 +689,7 @@
 				C33F22C82F84C86500EF2A81 /* MenuView.xib in Resources */,
 				C3BEABB82F9BB03500359CB6 /* mission_3.json in Resources */,
 				C3D5425A2F91F61E0093D819 /* TooltipView.xib in Resources */,
+				C3CABD662FF5B0EC0067CA73 /* AddNoteView.xib in Resources */,
 				C34665B82F783741008648C8 /* Main.storyboard in Resources */,
 				C3AE55CF2FD1F42F007A5E41 /* DropDownView.xib in Resources */,
 				C35911D72F9F81750015FDE6 /* zombi_audio.ogg in Resources */,
@@ -632,6 +701,7 @@
 				C33F22C22F84C6D700EF2A81 /* MenuItemView.xib in Resources */,
 				C3BEABC22F9BB0DC00359CB6 /* mission_8.json in Resources */,
 				C3BEABB62F9BB00A00359CB6 /* mission_2.json in Resources */,
+				C37BB734300157C7006BE7EA /* EmotionCircleView.xib in Resources */,
 				C33F22B22F82CE7F00EF2A81 /* SegmentedControlTab.xib in Resources */,
 				C3F47ED12FA0FA8400F17AC8 /* GalleryCell.xib in Resources */,
 				C34665BA2F783741008648C8 /* Me.storyboard in Resources */,
@@ -729,14 +799,17 @@
 				C3D542582F91F5FC0093D819 /* TooltipView.swift in Sources */,
 				C3AE55CD2FD1F412007A5E41 /* DropDownView.swift in Sources */,
 				C3CF26F22F7936E20008718D /* UIViewController+Utils.swift in Sources */,
+				C3CABD752FFAE71B0067CA73 /* EmotionsModeCell.swift in Sources */,
 				C34665BF2F783741008648C8 /* CustomTabItem.swift in Sources */,
 				C33F22BF2F84C37B00EF2A81 /* UIApplication+Utils.swift in Sources */,
 				C3AE55E22FD5E43F007A5E41 /* Date+Utils.swift in Sources */,
 				C3D34AE02FA1D9F0007E5CAF /* ImageScrollView.swift in Sources */,
 				C3CF26EE2F7929120008718D /* CoverCell.swift in Sources */,
+				C3CABD682FF5B94F0067CA73 /* AddNoteView.swift in Sources */,
 				C35911D52F9F6C780015FDE6 /* UIStackView+Utils.swift in Sources */,
 				C33F22962F8011F000EF2A81 /* CoreDataStack.swift in Sources */,
 				C3AE55C92FD1E8BF007A5E41 /* DropDownItemView.swift in Sources */,
+				C3CABD712FF84DED0067CA73 /* SelectEmotionViewController.swift in Sources */,
 				C33F22B52F83872100EF2A81 /* SegmentedControlTab.swift in Sources */,
 				C33F22A62F80251F00EF2A81 /* SelectActionViewController.swift in Sources */,
 				C33F22CA2F84C8B400EF2A81 /* MenuView.swift in Sources */,
@@ -748,18 +821,23 @@
 				C33F22BB2F838D5800EF2A81 /* MissionViewController.swift in Sources */,
 				C3F47ECC2FA0F7D400F17AC8 /* GalleryView.swift in Sources */,
 				C3B7D71C2F95390200562DC2 /* Cover.swift in Sources */,
+				C3CABD642FF28F7C0067CA73 /* MoveStepViewController.swift in Sources */,
 				C34665C22F783741008648C8 /* StyledControls.swift in Sources */,
 				C3D542562F9125370093D819 /* NotificationNames.swift in Sources */,
 				C3AE55D62FD490D0007A5E41 /* CalendarView.swift in Sources */,
 				C34665C32F783741008648C8 /* UITableView+Utils.swift in Sources */,
+				C37BB73D3003F47A006BE7EA /* EmotionsPanelViewController.swift in Sources */,
 				C3AE55C52FD09D12007A5E41 /* CreateStepViewController.swift in Sources */,
 				C33F22C42F84C75300EF2A81 /* MenuItemView.swift in Sources */,
+				C3CABD6A2FF7D8920067CA73 /* SelectDateViewController.swift in Sources */,
+				C3CABD732FF9708C0067CA73 /* MissionEmotion.swift in Sources */,
 				C3F47EC82F9FCAB300F17AC8 /* MissionNote.swift in Sources */,
 				C3BEABC42F9BB0F200359CB6 /* mission_9.json in Sources */,
 				C3BEABC62F9BB10600359CB6 /* mission_10.json in Sources */,
 				C3D5425E2F928C4F0093D819 /* NotificationView.swift in Sources */,
 				C37309D12FAE04A7004F7ED8 /* RecommendedStepCell.swift in Sources */,
 				C3BEABCE2F9BB23800359CB6 /* mission_14.json in Sources */,
+				C37BB73830035EB1006BE7EA /* EmotionSettingsViewController.swift in Sources */,
 				C33F22B92F838A1200EF2A81 /* SegmentedControl.swift in Sources */,
 				C3B7D71A2F94A55400562DC2 /* CropImageViewController.swift in Sources */,
 				C33F22AA2F8238C600EF2A81 /* MissionsHolder.swift in Sources */,
@@ -778,6 +856,7 @@
 				C3AE55D32FD2BA62007A5E41 /* DropDownControl.swift in Sources */,
 				C3AE55E02FD49BDE007A5E41 /* DayView.swift in Sources */,
 				C3D34ADE2FA0FB5F007E5CAF /* GalleryCell.swift in Sources */,
+				C37BB73630015C1E006BE7EA /* EmotionCircleView.swift in Sources */,
 				C34665C62F783741008648C8 /* CreateMissionViewController.swift in Sources */,
 				C332CFCB2F8FB4A6002ABF15 /* MyMissionsViewController.swift in Sources */,
 				C37309D52FB0D2DA004F7ED8 /* AddedStepCell.swift in Sources */,
@@ -798,6 +877,7 @@
 				C3AE55E42FD81441007A5E41 /* StepViewController.swift in Sources */,
 				C3BEABB02F9A38ED00359CB6 /* TemplateHeaderCell.swift in Sources */,
 				C33F22B72F83893E00EF2A81 /* UIColor+Utils.swift in Sources */,
+				C3CABD6F2FF844430067CA73 /* SelectEmotionCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

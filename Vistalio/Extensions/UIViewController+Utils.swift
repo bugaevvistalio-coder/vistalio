@@ -11,6 +11,12 @@ import PhotosUI
 
 extension UIViewController {
     
+    func presentFullScreen(_ vc: UIViewController) {
+        let window = UIApplication.shared.windows.first
+        let top = (window?.safeAreaInsets.top ?? 20)
+        presentBottomSheet(vc, height: UIScreen.main.bounds.height - top)
+    }
+    
     func presentBottomSheet(_ controller: UIViewController, height: CGFloat? = nil) {
         let options = SheetOptions(shrinkPresentingViewController: false)
         let sizes: [SheetSize] = height != nil ? [.fixed(height!)] : [.intrinsic]
@@ -153,38 +159,61 @@ extension UIViewController {
         presentBottomSheet(vc, height: 200)
     }
     
-    func openDeleteStep(_ step: MissionStep, onDeleted: @escaping () -> ()) {
+    func openDeleteStep(_ step: MissionStep, date: Date? = nil, onDeleted: @escaping () -> (), onUpdated: @escaping () -> ()) {
         let sb = UIStoryboard(name: "Main", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
         vc.popupTitle = "Удалить шаг?"
         vc.popupText = "Нельзя отменить. По умолчанию все заметки удаляемого шага помещаются в шаг «Шаг для общих заметок»."
-        vc.buttons = [
-            ActionButton(type: .red, title: "Удалить", action: { 
+        
+        var buttons = [ActionButton]()
+        if let date = date, !step.hasSingleDate {
+            buttons.append(ActionButton(type: .red, title: "Удалить текущий", action: {
                 CoreDataStack.shared.performAndWait { context in
-                    if step.block.id == -1 {
-                        context.delete(step)
-                    } else {
-                        step.hidden = true
-                        step.sortOrder = 0
-                        step.addedDate = nil
-                        step.startDate = nil
-                        step.endDate = nil
-                        step.frequency = 0
-                        if let name = step.originalName {
-                            step.name = name
-                            step.originalName = nil
-                        }
-                        if let text = step.originalText {
-                            step.text = text
-                            step.originalText = nil
+                    RemovedStep.create(context: context, step: step, date: date)
+                    for item in step.implementedSteps?.allObjects ?? [] {
+                        let implemented = item as! ImplementedStep
+                        if implemented.date.toDay == date {
+                            context.delete(implemented)
                         }
                     }
                 }
+                onUpdated()
+                (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Экземпляр шага удалён")
+            }))
+            buttons.append(ActionButton(type: .red, title: "Удалить этот и все последующие", action: {
+                if date == step.startDate?.toDay {
+                    step.delete()
+                    onDeleted()
+                    (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг удалён")
+                } else {
+                    CoreDataStack.shared.performAndWait { context in
+                        let endDate = date.startOfDay.addingTimeInterval(-24 * 60 * 60)
+                        step.endDate = endDate.toDateString
+                        for item in step.implementedSteps?.allObjects ?? [] {
+                            let implemented = item as! ImplementedStep
+                            if implemented.date.toDay > endDate {
+                                context.delete(implemented)
+                            }
+                        }
+                    }
+                    onUpdated()
+                    (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Экземпляры шага удалены")
+                }
+            }))
+            buttons.append(ActionButton(type: .red, title: "Удалить всю серию", action: {
+                step.delete()
                 onDeleted()
                 (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг удалён")
-            }),
-            ActionButton(type: .secondary, title: "Отменить", action: { })
-        ]
+            }))
+        } else {
+            buttons.append(ActionButton(type: .red, title: "Удалить", action: {
+                step.delete()
+                onDeleted()
+                (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг удалён")
+            }))
+        }
+        buttons.append(ActionButton(type: .secondary, title: "Отменить", action: { }))
+        vc.buttons = buttons
         presentBottomSheet(vc, height: 200)
     }
     
@@ -199,10 +228,13 @@ extension UIViewController {
         presentBottomSheet(vc, height: UIScreen.main.bounds.height - top)
     }
     
-    func openStep(_ step: MissionStep) {
+    func openStep(_ step: MissionStep, date: Date? = nil, onStepUpdated: @escaping (MissionStep) -> (), onStepDeleted: @escaping (MissionStep) -> ()) {
         let sb = UIStoryboard(name: "Missions", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "StepVC") as! StepViewController
         vc.step = step
+        vc.date = date
+        vc.onStepUpdated = onStepUpdated
+        vc.onStepDeleted = onStepDeleted
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -229,5 +261,37 @@ extension UIViewController {
         let menuUnderlayControl = sender as! UIControl
         menuUnderlayControl.removeFromSuperview()
         NotificationCenter.default.post(name: .menuClosed, object: nil)
+    }
+    
+    func switchStepImplemented(_ step: MissionStep, date: Date, onSwitched: @escaping (Bool) -> ()) {
+        let implemented = step.getImplementedForDate(date)
+        if implemented == nil && step.frequency == StepFrequency.untilDone.rawValue {
+            let sb = UIStoryboard(name: "Main", bundle: nil)
+            let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
+            vc.popupTitle = "Все повторы шага после даты выполнения будут удалены"
+            vc.popupText = "Заметки будут сохранены."
+            vc.buttons = [
+                ActionButton(type: .primary, title: "Сделать шаг выполненным", action: { [unowned self] in
+                    switchImplemented(step, date: date, implementedStep: implemented, onSwitched: onSwitched)
+                }),
+                ActionButton(type: .secondary, title: "Отменить", action: { })
+            ]
+            presentBottomSheet(vc, height: 200)
+        } else {
+            switchImplemented(step, date: date, implementedStep: implemented, onSwitched: onSwitched)
+        }
+    }
+    
+    private func switchImplemented(_ step: MissionStep, date: Date, implementedStep: ImplementedStep?, onSwitched: (Bool) -> ()) {
+        var checked = false
+        CoreDataStack.shared.performAndWait { context in
+            if let implemented = implementedStep {
+                context.delete(implemented)
+            } else {
+                ImplementedStep.create(context: context, step: step, date: date)
+                checked = true
+            }
+        }
+        onSwitched(checked)
     }
 }

@@ -23,6 +23,7 @@ extension MissionNote {
     @NSManaged public var name: String?
     @NSManaged public var text: String?
     @NSManaged public var audio: String?
+    @NSManaged public var date: String?
     
     @NSManaged public var step: MissionStep
     @NSManaged public var images: NSSet?

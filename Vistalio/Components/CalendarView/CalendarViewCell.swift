@@ -7,6 +7,12 @@
 
 import UIKit
 
+struct CalendarStepDate {
+    let date: Date
+    let done: Bool
+    let available: Bool
+}
+
 class CalendarViewCell: UICollectionViewCell {
     
     @IBOutlet private weak var vStackView: UIStackView!
@@ -86,6 +92,36 @@ class CalendarViewCell: UICollectionViewCell {
     var maxDate: Date? {
         didSet {
             updateAvailable()
+        }
+    }
+    
+    var stepDates: [CalendarStepDate]? {
+        didSet {
+            if let dates = stepDates {
+                var dvIndex = 0
+                for sd in dates {
+                    let dayNumber = getDayNumber(sd.date)
+                    for i in dvIndex..<dayViews.count {
+                        let dv = dayViews[i]
+                        if dv.day == dayNumber {
+                            dv.stepDate = sd
+                            dv.isAvailable = sd.available
+                            dvIndex = i + 1
+                            break
+                        } else {
+                            dv.stepDate = nil
+                            dv.isAvailable = false
+                        }
+                    }
+                }
+                if dvIndex < dayViews.count {
+                    for i in dvIndex..<dayViews.count {
+                        let dv = dayViews[i]
+                        dv.stepDate = nil
+                        dv.isAvailable = false
+                    }
+                }
+            }
         }
     }
     

@@ -72,7 +72,9 @@ class RecommendedStepCell: UITableViewCell {
     
     @IBAction func addTapped(_ sender: Any) {
         CoreDataStack.shared.performAndWait { [unowned self] _ in
+            
             self.step.addedDate = Date()
+            self.step.startDate = Date().toDateString
             self.step.hidden = false
             self.step.sortOrder = self.step.block.mission.maxSortOrder + 1
         }

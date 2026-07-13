@@ -22,6 +22,7 @@ class CreateStepViewController: UIViewController {
     @IBOutlet weak var descriptionTextView: GrowingTextView!
     @IBOutlet weak var frequencyControl: DropDownControl!
     
+    @IBOutlet weak var startDateCaptionLabel: UILabel!
     @IBOutlet weak var startDateCalendarView: CalendarView!
     @IBOutlet weak var startDateLabel: UILabel!
     
@@ -52,12 +53,14 @@ class CreateStepViewController: UIViewController {
                 endDateControl.backgroundColor = .darkGrey
                 endDateLabel.textColor = .white
                 endDateImageView.backgroundColor = .white.withAlphaComponent(0.4)
+                endDateImageView.tintColor = .darkGrey
                 endDateImageView.image = .cross2
             } else {
                 endDateLabel.text = "Не указано"
                 endDateControl.backgroundColor = .bgGrey
                 endDateLabel.textColor = .textGrey10
                 endDateImageView.backgroundColor = .lightGrey
+                endDateImageView.tintColor = .textGrey10
                 endDateImageView.image = .calendar
             }
             startDateCalendarView.maxDate = endDate
@@ -89,6 +92,9 @@ class CreateStepViewController: UIViewController {
             if dropDownBottom > maxY {
                 contentView.transform = CGAffineTransform(translationX: 0, y: maxY - dropDownBottom)
             }
+        }
+        frequencyControl.onChecked = { [unowned self] _ in
+            updateDateFields()
         }
         
         startDate = Date()
@@ -145,22 +151,36 @@ class CreateStepViewController: UIViewController {
             nameTextView.text = step.name
             descriptionTextView.text = step.text
             frequencyControl.checkedIndex = Int(step.frequency)
-            startDateCalendarView.selectedDate = step.startDate ?? Date()
-            endDateCalendarView.selectedDate = step.endDate
-            startDate = step.startDate
-            endDate = step.endDate
+            updateDateFields()
+            startDateCalendarView.selectedDate = step.startDate?.toDay ?? Date()
+            endDateCalendarView.selectedDate = step.endDate?.toDay
+            startDate = startDateCalendarView.selectedDate
+            endDate = endDateCalendarView.selectedDate
             updateSaveButton()
+        }
+    }
+    
+    private func updateDateFields() {
+        if StepFrequency(rawValue: Int16(frequencyControl.checkedIndex))! == .once {
+            startDateCaptionLabel.text = "Дата появления"
+            endDateControl.superview?.isHidden = true
+            endDateCalendarView.superview?.isHidden = true
+        } else {
+            startDateCaptionLabel.text = "Дата начала"
+            endDateControl.superview?.isHidden = false
         }
     }
     
     @IBAction func closeTapped() {
         var hasChanges = false
         let text = descriptionTextView.text.trim()
+        let frequency = StepFrequency.allCases[frequencyControl.checkedIndex]
+        let endDate = (frequency == .once ? nil : endDate)
         
         if let step = step {
-            hasChanges = name != step.name || text != step.text || frequencyControl.checkedIndex != step.frequency || startDate != step.startDate || endDate != step.endDate
+            hasChanges = name != step.name || text != step.text || frequencyControl.checkedIndex != step.frequency || startDate?.startOfDay != step.startDate?.toDay || endDate != step.endDate?.toDay
         } else {
-            hasChanges = !name.isEmpty || !text.isEmpty || frequencyControl.checkedIndex != 0 || !(startDate?.isSameDay(Date()) ?? true) || endDate != nil
+            hasChanges = !name.isEmpty || !text.isEmpty || frequencyControl.checkedIndex != 0 || startDate?.startOfDay != Date().startOfDay || endDate != nil
         }
         
         if hasChanges {
@@ -192,6 +212,7 @@ class CreateStepViewController: UIViewController {
                 nameTextView.text = step?.originalName
                 descriptionTextView.text = step?.originalText
                 frequencyControl.checkedIndex = 0
+                updateDateFields()
             })
         ]
         presentBottomSheet(vc, height: 200)
@@ -204,7 +225,7 @@ class CreateStepViewController: UIViewController {
             endDateCalendarView.superview!.isHidden = true
         }
         if !startDateCalendarView.superview!.isHidden {
-            DispatchQueue.main.async {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2) {
                 self.scrollView.scrollToViewBottom(self.startDateCalendarView)
             }
         }
@@ -217,19 +238,58 @@ class CreateStepViewController: UIViewController {
             startDateCalendarView.superview!.isHidden = true
         }
         if !endDateCalendarView.superview!.isHidden {
-            DispatchQueue.main.async {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2) {
                 self.scrollView.scrollToViewBottom(self.endDateCalendarView)
             }
         }
     }
     
     @IBAction func saveTapped(_ sender: AnyObject) {
-        var step = self.step
-        var isNew = step == nil
         let frequency = StepFrequency.allCases[frequencyControl.checkedIndex]
+        let endDate = (frequency == .once ? nil : endDate)
+        
+        if let step = step, step.addedDate != nil {
+            if step.frequency != StepFrequency.once.rawValue && frequency == .once {
+                showStepItemsPopup(title: "Все повторы шага, кроме самого первого, будут удалены", text: "Останется единственный шаг на дату начала. Заметки будут сохранены.")
+            } else if step.frequency != StepFrequency.untilDone.rawValue && frequency == .untilDone {
+                showStepItemsPopup(title: "Некоторые повторы шага будут удалены", text: "Останутся экземпляры шага, которые удовлетворяют новым условиям. Заметки будут сохранены. Статус всех шагов изменится на «не выполнен».")
+            } else if step.frequency != frequency.rawValue || step.startDate != startDate?.toDateString {
+                showStepItemsPopup(title: "Некоторые повторы шага будут удалены", text: "Останутся экземпляры шага, которые удовлетворяют новым условиям. Заметки будут сохранены.")
+            } else if let endDate = endDate, step.endDate == nil || endDate < step.endDate!.toDay {
+                showStepItemsPopup(title: "Некоторые повторы шага будут удалены", text: "Останутся экземпляры шага, которые удовлетворяют новым условиям. Заметки будут сохранены.")
+            } else {
+                saveStep()
+            }
+        } else {
+            saveStep()
+        }
+    }
+    
+    private func showStepItemsPopup(title: String, text: String) {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
+        vc.popupTitle = title
+        vc.popupText = text
+        vc.showClose = true
+        vc.buttons = [
+            ActionButton(type: .primary, title: "Хорошо", action: { [unowned self] in
+//                CoreDataStack.shared.performAndWait { context in
+//                    self.step!.updateImplementedSteps(context: context)
+//                }
+                self.saveStep()
+            })
+        ]
+        presentBottomSheet(vc, height: 200)
+    }
+    
+    private func saveStep() {
+        var step = self.step
+        let frequency = StepFrequency.allCases[frequencyControl.checkedIndex]
+        let endDate = (frequency == .once ? nil : endDate)
+        
         CoreDataStack.shared.performAndWait { context in
             if step == nil {
-                step = MissionStep.create(context: context, mission: mission, name: name, text: descriptionTextView.text.trim(), frequency: frequency, startDate: startDateCalendarView.selectedDate!, endDate: endDateCalendarView.selectedDate)
+                step = MissionStep.create(context: context, mission: mission, name: name, text: descriptionTextView.text.trim(), frequency: frequency, startDate: startDateCalendarView.selectedDate!, endDate: endDate)
                 step?.sortOrder = mission.maxSortOrder + 1
             } else {
                 if step?.block.id != -1 {
@@ -240,9 +300,21 @@ class CreateStepViewController: UIViewController {
                 }
                 step?.name = name
                 step?.text = descriptionTextView.text.trim()
+                
+                let oldFrequency = step!.frequency
+                let oldStartDate = step!.startDate
+                let oldEndDate = step!.endDate
+                
                 step?.frequency = frequency.rawValue
-                step?.startDate = startDateCalendarView.selectedDate!
-                step?.endDate = endDateCalendarView.selectedDate
+                step?.startDate = startDateCalendarView.selectedDate!.toDateString
+                step?.endDate = endDate?.toDateString
+                
+                if frequency.rawValue != oldFrequency || step!.startDate != oldStartDate || step!.endDate != oldEndDate {
+                    step?.updateImplementedSteps(context: context)
+                    step?.removedSteps?.forEach {
+                        context.delete($0 as! RemovedStep)
+                    }
+                }
             }
         }
         if let step = step {

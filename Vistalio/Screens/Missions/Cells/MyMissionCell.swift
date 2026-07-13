@@ -13,6 +13,7 @@ class MyMissionCell: UICollectionViewCell {
     @IBOutlet weak var roundedView: RoundedView!
     @IBOutlet weak var coverImageView: RoundedImageView!
     @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var radioImageView: UIImageView?
     
     private var longGestureRecognizer: UILongPressGestureRecognizer?
     private var onLongGesture: ((UIImage, CGRect) -> ())?
@@ -61,6 +62,20 @@ class MyMissionCell: UICollectionViewCell {
             if let origin = roundedView.superview?.convert(roundedView.frame.origin, to: nil) {
                 roundedView.backgroundColor = .white
                 onLongGesture?(roundedView.toImage(rect: roundedView.bounds), CGRect(origin: origin, size: roundedView.frame.size))
+            }
+        }
+    }
+    
+    override var isSelected: Bool {
+        didSet {
+            if let radioImageView = radioImageView {
+                if isSelected {
+                    radioImageView.image = UIImage.radioOn
+                    roundedView.borderWidth = 3
+                } else {
+                    radioImageView.image = UIImage.radioOff
+                    roundedView.borderWidth = 0
+                }
             }
         }
     }

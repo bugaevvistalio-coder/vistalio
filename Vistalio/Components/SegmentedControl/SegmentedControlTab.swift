@@ -130,6 +130,8 @@ class SegmentedControlTab: UIControl {
         menuUnderlayControl.addSubview(tooltipView)
         
         let location = superview!.convert(frame.origin, to: nil)
+        let menuUnderlayLocation = menuUnderlayControl.superview!.convert(menuUnderlayControl.frame.origin, to: nil)
+        
         let horizontalConstraint: NSLayoutConstraint
         if position == .right {
             horizontalConstraint = tooltipView.rightAnchor.constraint(equalTo: menuUnderlayControl.rightAnchor, constant: location.x + frame.width + 4 - UIScreen.main.bounds.width)
@@ -138,7 +140,7 @@ class SegmentedControlTab: UIControl {
         }
         let constraints = [
             horizontalConstraint,
-            tooltipView.topAnchor.constraint(equalTo: menuUnderlayControl.topAnchor, constant: location.y + frame.height + 4),
+            tooltipView.topAnchor.constraint(equalTo: menuUnderlayControl.topAnchor, constant: location.y + frame.height + 4 - menuUnderlayLocation.y),
             tooltipView.widthAnchor.constraint(equalToConstant: frame.width + 24)
         ]
         NSLayoutConstraint.activate(constraints)

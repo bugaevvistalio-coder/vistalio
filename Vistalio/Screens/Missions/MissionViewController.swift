@@ -83,6 +83,17 @@ class MissionViewController: UIViewController {
         displayMission()
         
         generator.prepare()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(onStepUpdated(notification:)), name: .stepUpdated, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .stepUpdated, object: nil)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .none)
     }
     
     override func viewDidLayoutSubviews() {
@@ -131,6 +142,10 @@ class MissionViewController: UIViewController {
         coverImageView.displayMissionCover(mission: mission)
         titleLabel.text = mission.name
         aboutLabel.text = mission.about
+    }
+    
+    @objc private func onStepUpdated(notification: Notification) {
+        tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .none)
     }
     
     @IBAction func backTapped(_ sender: Any) {
@@ -232,10 +247,12 @@ class MissionViewController: UIViewController {
     
     @IBAction func addAllStepsTapped(_ sender: Any) {
         var sortOrder = mission.maxSortOrder + 1 + Int32(recommendedSteps.count)
+        let startDate = Date().toDateString
         CoreDataStack.shared.performAndWait { [unowned self] _ in
             recommendedSteps.forEach {
                 $0.hidden = false
                 $0.addedDate = Date()
+                $0.startDate = startDate
                 $0.sortOrder = sortOrder
                 sortOrder -= 1
             }
@@ -275,7 +292,11 @@ class MissionViewController: UIViewController {
                 tableView.insertRows(at: [IndexPath(row: 0, section: 3)], with: .none)
                 tableView.endUpdates()
                 (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг добавлен", secondaryText: "К шагу →") { [unowned self] in
-                    openStep(step)
+                    openStep(step, onStepUpdated: { [unowned self] step in
+                        onStepUpdated(step)
+                    }) { [unowned self] step in
+                        onStepDeleted(step)
+                    }
                 }
             }
         }
@@ -373,13 +394,27 @@ class MissionViewController: UIViewController {
     }
     
     private func deleteStep(_ step: MissionStep) {
-        openDeleteStep(step) { [unowned self] in
-            if let index = addedSteps.firstIndex(where: { $0.id == step.id }) {
-                addedSteps.remove(at: index)
+        openDeleteStep(step, date: step.lastDate, onDeleted: { [unowned self] in
+            onStepDeleted(step)
+        }, onUpdated: { [unowned self] in
+            onStepUpdated(step)
+        })
+    }
+    
+    private func onStepDeleted(_ step: MissionStep) {
+        if let index = addedSteps.firstIndex(where: { $0.id == step.id }) {
+            addedSteps.remove(at: index)
+            tableView.deleteRows(at: [IndexPath(row: index, section: 3)], with: .automatic)
+            if step.block.id > 0 {
                 hiddenSteps.append(step)
-                tableView.deleteRows(at: [IndexPath(row: index, section: 3)], with: .automatic)
                 tableView.reloadSections(IndexSet(arrayLiteral: 1), with: .none)
             }
+        }
+    }
+    
+    private func onStepUpdated(_ step: MissionStep) {
+        if let index = addedSteps.firstIndex(where: { $0.id == step.id }) {
+            tableView.reloadRows(at: [IndexPath(row: index, section: 3)], with: .none)
         }
     }
 }
@@ -441,6 +476,14 @@ extension MissionViewController: UITableViewDataSource {
                 self.generator.impactOccurred()
                 self.generator.prepare()
                 self.showMenu(step: step, anchorRect: rect, image: image)
+            }
+            cell.onOpenStep = { [unowned self] step, date in
+                openStep(step, date: date) { [unowned self] step in
+                    onStepUpdated(step)
+                } onStepDeleted: { [unowned self] step in
+                    onStepDeleted(step)
+                }
+
             }
             return cell
         }

@@ -58,7 +58,7 @@ extension UIView {
     }
     
     func addDashedBorder(color: UIColor = .black, lineWidth: CGFloat = 1, dashPattern: [NSNumber]? = [4, 2], cornerRadius: CGFloat = 0, fixedBounds: CGRect? = nil) {
-        layer.sublayers?.filter({ $0.name == "DashedBorder" }).forEach({ $0.removeFromSuperlayer() })
+        removeDashedBorder()
 
         let shapeLayer = CAShapeLayer()
         shapeLayer.name = "DashedBorder"
@@ -133,6 +133,10 @@ extension UIView {
         shapeLayer.lineCap = CAShapeLayerLineCap.round
         
         layer.addSublayer(shapeLayer)
+    }
+    
+    func removeDashedBorder() {
+        layer.sublayers?.filter({ $0.name == "DashedBorder" }).forEach({ $0.removeFromSuperlayer() })
     }
     
     func toImage(rect: CGRect) -> UIImage {

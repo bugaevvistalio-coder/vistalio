@@ -24,6 +24,7 @@ class DropDownControl: UIView {
     }
     var dropDownWidth: CGFloat = 274
     var onBeforeShowItems: (() -> ())?
+    var onChecked: ((Int) -> ())?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -51,6 +52,7 @@ class DropDownControl: UIView {
         dropDownView.checkedIndex = checkedIndex
         dropDownView.onChecked = { [unowned self] index in
             self.checkedIndex = index
+            self.onChecked?(index)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
                 menuUnderlayControl.removeFromSuperview()
                 self?.arrowImageView.image = UIImage.chevronDown

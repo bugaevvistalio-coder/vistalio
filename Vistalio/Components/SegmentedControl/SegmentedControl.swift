@@ -35,7 +35,7 @@ class SegmentedControl: UIView {
                     tabView.position = .center
                 }
                 tabView.tag = i
-                tabView.isTabSelected = (i == 0)
+                tabView.isTabSelected = (i == selectedIndex)
                 tabView.onSelected = { [unowned self] t in
                     for v in self.stackView.arrangedSubviews {
                         (v as! SegmentedControlTab).isTabSelected = (v === t)

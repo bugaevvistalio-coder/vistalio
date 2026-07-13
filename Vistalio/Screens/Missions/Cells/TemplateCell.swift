@@ -16,8 +16,8 @@ class TemplateCell: UITableViewCell, UICollectionViewDataSource, UICollectionVie
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var emotionsCollectionView: UICollectionView!
     
-    @IBOutlet weak var collectionViewGradieintLeft: UIView!
-    @IBOutlet weak var collectionViewGradieintRight: UIView!
+    @IBOutlet weak var collectionViewGradientLeft: UIView!
+    @IBOutlet weak var collectionViewGradientRight: UIView!
     
     @IBOutlet weak var badgeAge: UIView!
     @IBOutlet weak var badgeHours: UIView!
@@ -29,8 +29,8 @@ class TemplateCell: UITableViewCell, UICollectionViewDataSource, UICollectionVie
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        collectionViewGradieintLeft.setGradientLayer(colors: [.white, .white.withAlphaComponent(0.01)], startPoint: CGPoint(x: 0.0, y: 0.5), endPoint: CGPoint(x: 1.0, y: 0.5), cornerRadius: 0)
-        collectionViewGradieintRight.setGradientLayer(colors: [.white, .white.withAlphaComponent(0.01)], startPoint: CGPoint(x: 1.0, y: 0.5), endPoint: CGPoint(x: 0.0, y: 0.5), cornerRadius: 0)
+        collectionViewGradientLeft.setGradientLayer(colors: [.white, .white.withAlphaComponent(0.01)], startPoint: CGPoint(x: 0.0, y: 0.5), endPoint: CGPoint(x: 1.0, y: 0.5), cornerRadius: 0)
+        collectionViewGradientRight.setGradientLayer(colors: [.white, .white.withAlphaComponent(0.01)], startPoint: CGPoint(x: 1.0, y: 0.5), endPoint: CGPoint(x: 0.0, y: 0.5), cornerRadius: 0)
         badgeAgeLabel.transform = CGAffineTransform(rotationAngle: .pi * 11 / 180)
         badgeHoursLabel.transform = CGAffineTransform(rotationAngle: .pi * 11 / 180)
     }

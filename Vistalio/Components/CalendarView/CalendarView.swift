@@ -33,7 +33,6 @@ class CalendarView: UIView {
     private var months = [Date]()
     private var monthIndex = 0 {
         didSet {
-            
             print("Display month name month index")
             displayMonthName(index: monthIndex)
             if monthIndex == 0 {
@@ -47,6 +46,8 @@ class CalendarView: UIView {
     }
     
     private var previousPage = 0
+    
+    var missionStep: MissionStep?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -142,6 +143,10 @@ class CalendarView: UIView {
         selectedDate = nil
         collectionView.reloadData()
     }
+    
+    func refresh() {
+        collectionView.reloadData()
+    }
 }
 
 extension CalendarView: UICollectionViewDataSource, UICollectionViewDelegate {
@@ -151,10 +156,23 @@ extension CalendarView: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CalendarViewCell", for: indexPath) as! CalendarViewCell
-        cell.month = months[indexPath.row]
+        let month = months[indexPath.row]
+        cell.month = month
         cell.selectedDate = selectedDate
-        cell.minDate = minDate
-        cell.maxDate = maxDate
+        if let step = missionStep {
+            let implementedDates = step.implementedSteps?.allObjects.map { ($0 as! ImplementedStep).date } ?? []
+            let now = Date().startOfDay
+            cell.stepDates = step.generateDatesForMonth(month.startOfMonth).map {
+                var available = true
+                if step.frequency == StepFrequency.untilDone.rawValue {
+                    available = $0 <= now
+                }
+                return CalendarStepDate(date: $0, done: implementedDates.contains($0.toDateString), available: available)
+            }
+        } else {
+            cell.minDate = minDate
+            cell.maxDate = maxDate
+        }
         cell.onDateSelected = { [unowned self] date in
             self.selectedDate = date
             self.onDateSelected?(date)
@@ -180,8 +198,6 @@ extension CalendarView: UICollectionViewDataSource, UICollectionViewDelegate {
                 previousPage = monthIndex
             }
             let page = (floorPage != previousPage) ? floorPage : (ceilPage != previousPage) ? ceilPage : previousPage
-            print("Page \(floorPage), \(ceilPage), \(previousPage), \(page)")
-//            let page = Int(ceil(x/w))
             if page != monthIndex {
                 if page < 2 {
                     let previuosOffset = collectionView.contentOffset.x

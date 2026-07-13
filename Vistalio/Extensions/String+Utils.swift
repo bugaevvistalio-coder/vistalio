@@ -133,4 +133,19 @@ extension String {
             return "\(count) \(self)ок"
         }
     }
+    
+    func limitCharacters(_ limit: Int) -> String {
+        if count > limit {
+            let index = index(startIndex, offsetBy: limit)
+            return String(self[..<index]) + "..."
+        } else {
+            return self
+        }
+    }
+    
+    var toDay: Date {
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd"
+        return df.date(from: self)!
+    }
 }

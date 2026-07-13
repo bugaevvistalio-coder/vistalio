@@ -8,6 +8,10 @@
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="templateId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
+    <entity name="ImplementedStep" representedClassName="ImplementedStep" syncable="YES">
+        <attribute name="date" attributeType="String"/>
+        <relationship name="step" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MissionStep" inverseName="implementedSteps" inverseEntity="MissionStep"/>
+    </entity>
     <entity name="Mission" representedClassName="Mission" syncable="YES">
         <attribute name="about" optional="YES" attributeType="String"/>
         <attribute name="archived" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -18,14 +22,15 @@
         <attribute name="photoPath" optional="YES" attributeType="String"/>
         <attribute name="templateId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="updateDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="blocks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="StepsBlock" inverseName="mission" inverseEntity="StepsBlock"/>
+        <relationship name="blocks" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="StepsBlock" inverseName="mission" inverseEntity="StepsBlock"/>
     </entity>
     <entity name="MissionNote" representedClassName="MissionNote" syncable="YES">
         <attribute name="audio" optional="YES" attributeType="String"/>
+        <attribute name="date" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="text" optional="YES" attributeType="String"/>
-        <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MissionNoteImage" inverseName="note" inverseEntity="MissionNoteImage"/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MissionNoteImage" inverseName="note" inverseEntity="MissionNoteImage"/>
         <relationship name="step" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MissionStep" inverseName="notes" inverseEntity="MissionStep"/>
     </entity>
     <entity name="MissionNoteImage" representedClassName="MissionNoteImage" syncable="YES">
@@ -35,7 +40,7 @@
     </entity>
     <entity name="MissionStep" representedClassName="MissionStep" syncable="YES">
         <attribute name="addedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="endDate" optional="YES" attributeType="String"/>
         <attribute name="frequency" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="hidden" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -43,14 +48,28 @@
         <attribute name="originalName" optional="YES" attributeType="String"/>
         <attribute name="originalText" optional="YES" attributeType="String"/>
         <attribute name="sortOrder" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="startDate" optional="YES" attributeType="String"/>
         <attribute name="text" optional="YES" attributeType="String"/>
         <relationship name="block" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StepsBlock" inverseName="steps" inverseEntity="StepsBlock"/>
-        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MissionNote" inverseName="step" inverseEntity="MissionNote"/>
+        <relationship name="implementedSteps" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ImplementedStep" inverseName="step" inverseEntity="ImplementedStep"/>
+        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MissionNote" inverseName="step" inverseEntity="MissionNote"/>
+        <relationship name="originalBlock" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StepsBlock" inverseName="movedSteps" inverseEntity="StepsBlock"/>
+        <relationship name="removedSteps" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="RemovedStep" inverseName="step" inverseEntity="RemovedStep"/>
+    </entity>
+    <entity name="RemovedStep" representedClassName="RemovedStep" syncable="YES">
+        <attribute name="date" attributeType="String"/>
+        <relationship name="step" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MissionStep" inverseName="removedSteps" inverseEntity="MissionStep"/>
+    </entity>
+    <entity name="SelectedEmotion" representedClassName="SelectedEmotion" syncable="YES">
+        <attribute name="auto" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="emotion" attributeType="String"/>
+        <attribute name="group" attributeType="String"/>
     </entity>
     <entity name="StepsBlock" representedClassName="StepsBlock" syncable="YES">
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="mission" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Mission" inverseName="blocks" inverseEntity="Mission"/>
-        <relationship name="steps" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MissionStep" inverseName="block" inverseEntity="MissionStep"/>
+        <relationship name="movedSteps" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MissionStep" inverseName="originalBlock" inverseEntity="MissionStep"/>
+        <relationship name="steps" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MissionStep" inverseName="block" inverseEntity="MissionStep"/>
     </entity>
 </model>

@@ -12,6 +12,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DayView" customModule="Vistalio" customModuleProvider="target">
             <connections>
+                <outlet property="checkImageView" destination="x3b-Br-4h6" id="jFs-Wn-aya"/>
                 <outlet property="circleView" destination="gap-Do-ey7" id="77M-7R-ex1"/>
                 <outlet property="dayLabel" destination="Aod-N1-cvM" id="Ur4-L1-oak"/>
             </connections>
@@ -45,13 +46,23 @@
                     <color key="textColor" name="textGrey60"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="check" translatesAutoresizingMaskIntoConstraints="NO" id="x3b-Br-4h6">
+                    <rect key="frame" x="36.666666666666664" y="40.666666666666664" width="11" height="11"/>
+                    <color key="tintColor" name="textGrey60"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="11" id="8w3-gk-MXl"/>
+                        <constraint firstAttribute="width" constant="11" id="b32-Yo-kn1"/>
+                    </constraints>
+                </imageView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="7P7-hP-d9L"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="gap-Do-ey7" firstAttribute="centerY" secondItem="gzF-zn-zpd" secondAttribute="centerY" id="3pe-72-qey"/>
                 <constraint firstItem="gap-Do-ey7" firstAttribute="centerX" secondItem="gzF-zn-zpd" secondAttribute="centerX" id="9EU-23-cS7"/>
+                <constraint firstItem="x3b-Br-4h6" firstAttribute="bottom" secondItem="gap-Do-ey7" secondAttribute="bottom" constant="-1" id="PK9-AK-gC6"/>
                 <constraint firstItem="Aod-N1-cvM" firstAttribute="centerY" secondItem="gzF-zn-zpd" secondAttribute="centerY" id="a6N-i3-qiu"/>
+                <constraint firstItem="x3b-Br-4h6" firstAttribute="centerX" secondItem="gzF-zn-zpd" secondAttribute="centerX" id="t9o-Is-28Z"/>
                 <constraint firstItem="Aod-N1-cvM" firstAttribute="centerX" secondItem="gzF-zn-zpd" secondAttribute="centerX" id="xqP-jG-hQX"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -59,6 +70,7 @@
         </view>
     </objects>
     <resources>
+        <image name="check" width="22" height="22"/>
         <namedColor name="highlightBlue">
             <color red="0.45490196078431372" green="0.58039215686274515" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

@@ -26,6 +26,38 @@ extension Date {
         return string + df.string(from: self).replacingOccurrences(of: ".", with: "")
     }
     
+    var formatted2: String {
+        let calendar = Calendar.current
+        if calendar.isDate(self, equalTo: Date(), toGranularity: .day) {
+            return "Сегодня"
+        } else if calendar.isDate(self, equalTo: Date().addingTimeInterval(24 * 60 * 60), toGranularity: .day) {
+            return "Завтра"
+        } else if calendar.isDate(self, equalTo: Date().addingTimeInterval(-24 * 60 * 60), toGranularity: .day) {
+            return "Вчера"
+        }
+        
+        let df = DateFormatter()
+        df.dateFormat = "dd.MM.yyyy"
+        return df.string(from: self)
+    }
+    
+    var formatted3: String {
+        var string = ""
+        let calendar = Calendar.current
+        if calendar.isDate(self, equalTo: Date(), toGranularity: .day) {
+            return "Сегодня"
+        } else if calendar.isDate(self, equalTo: Date().addingTimeInterval(24 * 60 * 60), toGranularity: .day) {
+            return "Завтра"
+        } else if calendar.isDate(self, equalTo: Date().addingTimeInterval(-24 * 60 * 60), toGranularity: .day) {
+            return "Вчера"
+        }
+        
+        let df = DateFormatter()
+        df.dateFormat = isSameYear(Date()) ? "d MMM" : "d MMM yyyy"
+        df.locale = Locale(identifier: "ru_RU")
+        return string + df.string(from: self).replacingOccurrences(of: ".", with: "")
+    }
+    
     var startOfMonth: Date {
         let calendar = Calendar.current
         return calendar.date(from: calendar.dateComponents([.year, .month], from: self))!
@@ -38,5 +70,15 @@ extension Date {
     
     func isSameDay(_ date: Date) -> Bool {
         return Calendar.current.isDate(self, equalTo: date, toGranularity: .day)
+    }
+    
+    func isSameYear(_ date: Date) -> Bool {
+        return Calendar.current.isDate(self, equalTo: date, toGranularity: .year)
+    }
+    
+    var toDateString: String {
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd"
+        return df.string(from: self)
     }
 }
