@@ -26,15 +26,20 @@
     </entity>
     <entity name="MissionNote" representedClassName="MissionNote" syncable="YES">
         <attribute name="audio" optional="YES" attributeType="String"/>
-        <attribute name="date" optional="YES" attributeType="String"/>
-        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="text" optional="YES" attributeType="String"/>
+        <relationship name="emotions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MissionNoteEmotion" inverseName="note" inverseEntity="MissionNoteEmotion"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MissionNoteImage" inverseName="note" inverseEntity="MissionNoteImage"/>
         <relationship name="step" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MissionStep" inverseName="notes" inverseEntity="MissionStep"/>
     </entity>
+    <entity name="MissionNoteEmotion" representedClassName="MissionNoteEmotion" syncable="YES">
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="emotion" attributeType="String"/>
+        <relationship name="note" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MissionNote" inverseName="emotions" inverseEntity="MissionNote"/>
+    </entity>
     <entity name="MissionNoteImage" representedClassName="MissionNoteImage" syncable="YES">
-        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="path" optional="YES" attributeType="String"/>
         <relationship name="note" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MissionNote" inverseName="images" inverseEntity="MissionNote"/>
     </entity>

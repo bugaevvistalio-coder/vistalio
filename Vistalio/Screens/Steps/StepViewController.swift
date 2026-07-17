@@ -97,6 +97,7 @@ class StepViewController: UIViewController {
         checkImageView.addGestureRecognizer(checkTapGesture)
         
         addNoteView.isHidden = true
+        addNoteView.step = step
         addNoteView.onHeightChanged = { [unowned self] in
             tableView.layoutHeader()
         }
@@ -105,6 +106,14 @@ class StepViewController: UIViewController {
             view.alpha = 0
             textView.addSubview(view)
             tableView.scrollToViewBottom(view)
+        }
+        addNoteView.onNoteAdded = { [unowned self] note in
+            addNoteButton.superview!.isHidden = false
+            addNoteView.isHidden = true
+            addNoteViewBottom.priority = .defaultLow
+            addNoteButtonBottom.priority = .defaultHigh
+            tableView.layoutHeader()
+            tableView.reloadData()
         }
         
         displayStep()
@@ -147,8 +156,38 @@ class StepViewController: UIViewController {
         }
     }
     
+    private func notifyNoteWillBeDeleted(tabIndex: Int? = nil) {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
+        vc.popupTitle = "Недобавленная заметка будет удалена"
+        vc.buttons = [
+            ActionButton(type: .red, title: "Удалить и закрыть", action: { [unowned self] in
+                close(tabIndex: tabIndex)
+            }),
+            ActionButton(type: .blue, title: "Добавить и закрыть", action: { [unowned self] in
+                addNoteView.save()
+                close(tabIndex: tabIndex)
+            }),
+            ActionButton(type: .secondary, title: "Вернуться к редактированию", action: { })
+        ]
+        presentBottomSheet(vc, height: 200)
+    }
+    
+    private func close(tabIndex: Int? = nil) {
+        if let tabIndex = tabIndex {
+            let mainVC = (UIApplication.shared.keyWindow?.rootViewController as! MainViewController)
+            mainVC.switchTab(tabIndex: tabIndex)
+        } else {
+            navigationController?.popViewController(animated: true)
+        }
+    }
+    
     @IBAction func backTapped(_ sender: Any) {
-        navigationController?.popViewController(animated: true)
+        if addNoteView.hasData {
+            notifyNoteWillBeDeleted()
+        } else {
+            navigationController?.popViewController(animated: true)
+        }
     }
     
     @IBAction func navigationMyMissionsTapped(_ sender: Any) {
@@ -271,5 +310,30 @@ class StepViewController: UIViewController {
             checkImageView.image = checked ? .checkCircleOn : .checkCircleOff
             calendarView.refresh()
         }
+    }
+}
+
+extension StepViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return (step.notes?.allObjects.count ?? 0) / 2 + (step.notes?.allObjects.count ?? 0) % 2
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "EmotionsCell", for: indexPath)
+        let notes = step.notes?.allObjects.map { $0 as! MissionNote }.sorted { ($0.date ?? Date()) > ($1.date ?? Date()) } ?? []
+        
+        let view1 = cell.viewWithTag(1) as! NoteView
+        view1.note = notes[indexPath.row * 2]
+        
+        let view2 = cell.viewWithTag(2) as! NoteView
+        if notes.count > indexPath.row * 2 + 1 {
+            view2.alpha = 1
+            view2.note = notes[indexPath.row * 2 + 1]
+        } else {
+            view2.alpha = 0
+        }
+        
+        return cell
     }
 }

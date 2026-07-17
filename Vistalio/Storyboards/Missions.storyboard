@@ -3804,7 +3804,7 @@ About</string>
                                     <constraint firstAttribute="trailing" secondItem="fa4-kK-IaH" secondAttribute="trailing" constant="16" id="uy6-cu-63M"/>
                                 </constraints>
                             </view>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="DLd-Kq-O5Q">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="none" allowsSelection="NO" rowHeight="228" estimatedRowHeight="228" sectionHeaderHeight="1" estimatedSectionHeaderHeight="1" sectionFooterHeight="1" estimatedSectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="DLd-Kq-O5Q">
                                 <rect key="frame" x="0.0" y="186" width="393" height="666"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <view key="tableHeaderView" contentMode="scaleToFill" id="Pdq-CL-7Mv">
@@ -4073,6 +4073,43 @@ About</string>
                                         <constraint firstItem="qIM-pO-oqj" firstAttribute="bottom" secondItem="7zF-HS-mMb" secondAttribute="bottom" id="zfk-5c-NGN"/>
                                     </constraints>
                                 </view>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="EmotionsCell" id="nGF-eB-cGb">
+                                        <rect key="frame" x="0.0" y="435.33333206176758" width="393" height="228"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="nGF-eB-cGb" id="ikn-EE-9Jz">
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="228"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="pNU-gp-Nxt">
+                                                    <rect key="frame" x="10" y="4" width="373" height="224"/>
+                                                    <subviews>
+                                                        <view tag="1" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MB9-eE-ePs" customClass="NoteView" customModule="Vistalio" customModuleProvider="target">
+                                                            <rect key="frame" x="0.0" y="0.0" width="184.66666666666666" height="224"/>
+                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        </view>
+                                                        <view tag="2" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="su7-99-GUk" customClass="NoteView" customModule="Vistalio" customModuleProvider="target">
+                                                            <rect key="frame" x="188.66666666666663" y="0.0" width="184.33333333333337" height="224"/>
+                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        </view>
+                                                    </subviews>
+                                                </stackView>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstItem="pNU-gp-Nxt" firstAttribute="leading" secondItem="ikn-EE-9Jz" secondAttribute="leading" constant="10" id="IOh-me-232"/>
+                                                <constraint firstAttribute="bottom" secondItem="pNU-gp-Nxt" secondAttribute="bottom" id="kqe-Bj-RWu"/>
+                                                <constraint firstAttribute="trailing" secondItem="pNU-gp-Nxt" secondAttribute="trailing" constant="10" id="sCn-s5-alN"/>
+                                                <constraint firstItem="pNU-gp-Nxt" firstAttribute="top" secondItem="ikn-EE-9Jz" secondAttribute="top" constant="4" id="sf2-YQ-qsu"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="XEn-ko-wbL" id="pNa-i3-Jmk"/>
+                                    <outlet property="delegate" destination="XEn-ko-wbL" id="heu-yd-yri"/>
+                                </connections>
                             </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="TVf-GM-XoR"/>

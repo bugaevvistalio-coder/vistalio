@@ -7,6 +7,10 @@
 
 import UIKit
 
+@objc public protocol TabsDelegate {
+    func canSwitchTab(tabIndex: Int) -> Bool
+}
+
 class MainViewController: UIViewController {
     
     @IBOutlet weak var containerView: UIView!
@@ -53,18 +57,29 @@ class MainViewController: UIViewController {
     }
 
     @IBAction func tabTapped(_ sender: Any) {
+        let control = (sender as! UIControl)
+        let tab = tabs[control.tag]
+        if tab.isTabSelected {
+            return
+        }
+        if let tabsDelegate = UIApplication.topViewController() as? TabsDelegate, !tabsDelegate.canSwitchTab(tabIndex: control.tag) {
+            return
+        }
+        
+        switchTab(tabIndex: control.tag)
+    }
+    
+    func switchTab(tabIndex: Int) {
         for (i, tab) in tabs.enumerated() {
-            let control = (sender as! UIControl)
-            let wasSelected = tab.isTabSelected
-            tab.isTabSelected = (i == control.tag)
-            if i == control.tag && !wasSelected {
+            tab.isTabSelected = (i == tabIndex)
+            if i == tabIndex {
                 if let currentChild = children.first {
                     currentChild.view.removeFromSuperview()
                     currentChild.willMove(toParent: nil)
                     currentChild.removeFromParent()
                 }
                 
-                let childVC = controllers[i]
+                let childVC = controllers[tabIndex]
                 addChild(childVC)
 
                 containerView.addSubview(childVC.view)

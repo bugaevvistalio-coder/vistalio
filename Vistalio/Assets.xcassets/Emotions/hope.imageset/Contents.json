@@ -1,12 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "Property 1=Надежда.png",
+      "filename" : "Property 1=Надежда.svg",
       "idiom" : "universal"
     }
   ],
   "info" : {
     "author" : "xcode",
     "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
   }
 }

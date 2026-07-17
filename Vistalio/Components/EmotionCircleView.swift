@@ -12,7 +12,8 @@ class EmotionCircleView: UIView {
     @IBOutlet weak var emotionImageView: UIImageView!
     @IBOutlet weak var borderView: UIView!
     @IBOutlet weak var bgView: UIView!
-    @IBOutlet weak var outerView: UIView!
+    @IBOutlet weak var outerView: RoundedView!
+    @IBOutlet weak var emotionSize: NSLayoutConstraint!
     
     private var view: UIView!
     
@@ -38,10 +39,22 @@ class EmotionCircleView: UIView {
             emotionImageView.image = nameAndImage.1
             
             let colors = emotion.colors
-            bgView.setGradientLayer(colors: colors.0, startPoint: CGPoint(x: 0.5, y: 0.0), endPoint: CGPoint(x: 0.5, y: 1.0), cornerRadius: 17, bounds: CGRect(x: 0, y: 0, width: 34, height: 34))
-            borderView.setGradientLayer(colors: colors.1, startPoint: CGPoint(x: 0.5, y: 0.0), endPoint: CGPoint(x: 0.5, y: 1.0), cornerRadius: 18, bounds: CGRect(x: 0, y: 0, width: 36, height: 36))
-            borderView.setShadow(offset: CGSize(width: 0, height: 1.24), radius: 1.24, cornerRadius: 18, shadowOpacity: 0.12)
+            bgView.setGradientLayer(colors: colors.0, startPoint: CGPoint(x: 0.5, y: 0.0), endPoint: CGPoint(x: 0.5, y: 1.0), cornerRadius: cornerRadius-3, bounds: CGRect(x: 0, y: 0, width: cornerRadius*2-6, height: cornerRadius*2-6))
+            borderView.setGradientLayer(colors: colors.1, startPoint: CGPoint(x: 0.5, y: 0.0), endPoint: CGPoint(x: 0.5, y: 1.0), cornerRadius: cornerRadius-2, bounds: CGRect(x: 0, y: 0, width: cornerRadius*2-4, height: cornerRadius*2-4))
+            borderView.setShadow(offset: CGSize(width: 0, height: 1.24), radius: 1.24, cornerRadius: cornerRadius-2, shadowOpacity: 0.12)
             outerView.layer.borderColor = colors.2.cgColor
+        }
+    }
+    
+    @IBInspectable var imageSize: CGFloat = 0 {
+        didSet {
+            emotionSize.constant = imageSize
+        }
+    }
+    
+    @IBInspectable var cornerRadius: CGFloat = 0 {
+        didSet {
+            outerView.cornerRadius = cornerRadius
         }
     }
 }

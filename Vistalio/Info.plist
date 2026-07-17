@@ -34,5 +34,7 @@
 			</array>
 		</dict>
 	</dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Доступ к микрофону нужен для съёмки видео со звуком в приложении и добавления аудиозаписей.</string>
 </dict>
 </plist>

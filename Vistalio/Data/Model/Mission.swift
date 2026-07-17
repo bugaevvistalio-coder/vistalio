@@ -108,17 +108,17 @@ public class Mission: NSManagedObject {
                                     noteIndex += 1
                                     
                                     let note = MissionNote(entity: noteEntity, insertInto: context)
-                                    note.id = noteIndex
+                                    note.date = Date()
                                     note.name = n.name
                                     note.text = n.description
                                     note.audio = n.audio
                                     note.step = step
                                     
                                     if let images = n.images {
-                                        for (i, ni) in images.enumerated() {
+                                        for ni in images {
                                             if let imageEntity = NSEntityDescription.entity(forEntityName: "MissionNoteImage", in: context) {
                                                 let image = MissionNoteImage(entity: imageEntity, insertInto: context)
-                                                image.id = i+1
+                                                image.date = Date()
                                                 image.path = ni
                                                 image.note = note
                                             }

@@ -66,6 +66,15 @@
 		C37BB73630015C1E006BE7EA /* EmotionCircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB73530015C18006BE7EA /* EmotionCircleView.swift */; };
 		C37BB73830035EB1006BE7EA /* EmotionSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB73730035EA9006BE7EA /* EmotionSettingsViewController.swift */; };
 		C37BB73D3003F47A006BE7EA /* EmotionsPanelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB73C3003F45B006BE7EA /* EmotionsPanelViewController.swift */; };
+		C37BB73F30050458006BE7EA /* NoteBigPhotoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C37BB73E30050458006BE7EA /* NoteBigPhotoCell.xib */; };
+		C37BB7413005227F006BE7EA /* NoteBigPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB7403005227C006BE7EA /* NoteBigPhotoCell.swift */; };
+		C37BB744300559E1006BE7EA /* VideoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB743300559DE006BE7EA /* VideoHelper.swift */; };
+		C37BB7463005612F006BE7EA /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB74530056123006BE7EA /* Helpers.swift */; };
+		C37BB7483006A4EF006BE7EA /* NoteView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C37BB7473006A4EF006BE7EA /* NoteView.xib */; };
+		C37BB74A3006B854006BE7EA /* NoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB7493006B851006BE7EA /* NoteView.swift */; };
+		C37BB74C300777A8006BE7EA /* NoteSmallPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB74B300777A1006BE7EA /* NoteSmallPhotoCell.swift */; };
+		C37BB74E30077821006BE7EA /* NoteSmallPhotoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C37BB74D30077821006BE7EA /* NoteSmallPhotoCell.xib */; };
+		C37BB750300778D0006BE7EA /* NotePhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB74F300778CD006BE7EA /* NotePhotoCell.swift */; };
 		C3AE55C52FD09D12007A5E41 /* CreateStepViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55C42FD09D08007A5E41 /* CreateStepViewController.swift */; };
 		C3AE55C92FD1E8BF007A5E41 /* DropDownItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55C82FD1E8B9007A5E41 /* DropDownItemView.swift */; };
 		C3AE55CB2FD1E8D3007A5E41 /* DropDownItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3AE55CA2FD1E8D3007A5E41 /* DropDownItemView.xib */; };
@@ -196,6 +205,15 @@
 		C37BB73530015C18006BE7EA /* EmotionCircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmotionCircleView.swift; sourceTree = "<group>"; };
 		C37BB73730035EA9006BE7EA /* EmotionSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmotionSettingsViewController.swift; sourceTree = "<group>"; };
 		C37BB73C3003F45B006BE7EA /* EmotionsPanelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmotionsPanelViewController.swift; sourceTree = "<group>"; };
+		C37BB73E30050458006BE7EA /* NoteBigPhotoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteBigPhotoCell.xib; sourceTree = "<group>"; };
+		C37BB7403005227C006BE7EA /* NoteBigPhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteBigPhotoCell.swift; sourceTree = "<group>"; };
+		C37BB743300559DE006BE7EA /* VideoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoHelper.swift; sourceTree = "<group>"; };
+		C37BB74530056123006BE7EA /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		C37BB7473006A4EF006BE7EA /* NoteView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteView.xib; sourceTree = "<group>"; };
+		C37BB7493006B851006BE7EA /* NoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteView.swift; sourceTree = "<group>"; };
+		C37BB74B300777A1006BE7EA /* NoteSmallPhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteSmallPhotoCell.swift; sourceTree = "<group>"; };
+		C37BB74D30077821006BE7EA /* NoteSmallPhotoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteSmallPhotoCell.xib; sourceTree = "<group>"; };
+		C37BB74F300778CD006BE7EA /* NotePhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotePhotoCell.swift; sourceTree = "<group>"; };
 		C3AE55C42FD09D08007A5E41 /* CreateStepViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateStepViewController.swift; sourceTree = "<group>"; };
 		C3AE55C82FD1E8B9007A5E41 /* DropDownItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownItemView.swift; sourceTree = "<group>"; };
 		C3AE55CA2FD1E8D3007A5E41 /* DropDownItemView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DropDownItemView.xib; sourceTree = "<group>"; };
@@ -294,6 +312,7 @@
 				C3CABD722FF9708C0067CA73 /* MissionEmotion.swift */,
 				C3F47EC72F9FCAB100F17AC8 /* MissionNote.swift */,
 				C3F47EC42F9FCA1700F17AC8 /* MissionStep.swift */,
+				C37BB74530056123006BE7EA /* Helpers.swift */,
 				C3F47EC62F9FCA9F00F17AC8 /* Template */,
 			);
 			path = Model;
@@ -304,6 +323,7 @@
 			children = (
 				C33F22A02F80145A00EF2A81 /* FilesHelper.swift */,
 				C3F47EC92FA0BB6600F17AC8 /* AppsFlyerHelper.swift */,
+				C37BB743300559DE006BE7EA /* VideoHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -343,6 +363,7 @@
 		C346659E2F783741008648C8 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				C37BB74230053AA4006BE7EA /* AddNoteView */,
 				C3AE55D42FD490BE007A5E41 /* CalendarView */,
 				C346659A2F783741008648C8 /* CustomTabItem.swift */,
 				C3AE55C72FD1E8AF007A5E41 /* DropDownView */,
@@ -357,8 +378,6 @@
 				C346659D2F783741008648C8 /* StyledControls.swift */,
 				C3D542592F91F61E0093D819 /* TooltipView.xib */,
 				C3D542572F91F5F90093D819 /* TooltipView.swift */,
-				C3CABD652FF5B0EC0067CA73 /* AddNoteView.xib */,
-				C3CABD672FF5B94C0067CA73 /* AddNoteView.swift */,
 				C37BB733300157C7006BE7EA /* EmotionCircleView.xib */,
 				C37BB73530015C18006BE7EA /* EmotionCircleView.swift */,
 			);
@@ -487,6 +506,30 @@
 			children = (
 				C3CABD6E2FF844400067CA73 /* SelectEmotionCell.swift */,
 				C3CABD742FFAE70C0067CA73 /* EmotionsModeCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		C37BB74230053AA4006BE7EA /* AddNoteView */ = {
+			isa = PBXGroup;
+			children = (
+				C3CABD652FF5B0EC0067CA73 /* AddNoteView.xib */,
+				C3CABD672FF5B94C0067CA73 /* AddNoteView.swift */,
+				C37BB7473006A4EF006BE7EA /* NoteView.xib */,
+				C37BB7493006B851006BE7EA /* NoteView.swift */,
+				C37BB75130077909006BE7EA /* Cells */,
+			);
+			path = AddNoteView;
+			sourceTree = "<group>";
+		};
+		C37BB75130077909006BE7EA /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				C37BB74F300778CD006BE7EA /* NotePhotoCell.swift */,
+				C37BB73E30050458006BE7EA /* NoteBigPhotoCell.xib */,
+				C37BB7403005227C006BE7EA /* NoteBigPhotoCell.swift */,
+				C37BB74D30077821006BE7EA /* NoteSmallPhotoCell.xib */,
+				C37BB74B300777A1006BE7EA /* NoteSmallPhotoCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -691,6 +734,7 @@
 				C3D5425A2F91F61E0093D819 /* TooltipView.xib in Resources */,
 				C3CABD662FF5B0EC0067CA73 /* AddNoteView.xib in Resources */,
 				C34665B82F783741008648C8 /* Main.storyboard in Resources */,
+				C37BB7483006A4EF006BE7EA /* NoteView.xib in Resources */,
 				C3AE55CF2FD1F42F007A5E41 /* DropDownView.xib in Resources */,
 				C35911D72F9F81750015FDE6 /* zombi_audio.ogg in Resources */,
 				C33F22B02F82CA7E00EF2A81 /* SegmentedControl.xib in Resources */,
@@ -701,6 +745,7 @@
 				C33F22C22F84C6D700EF2A81 /* MenuItemView.xib in Resources */,
 				C3BEABC22F9BB0DC00359CB6 /* mission_8.json in Resources */,
 				C3BEABB62F9BB00A00359CB6 /* mission_2.json in Resources */,
+				C37BB73F30050458006BE7EA /* NoteBigPhotoCell.xib in Resources */,
 				C37BB734300157C7006BE7EA /* EmotionCircleView.xib in Resources */,
 				C33F22B22F82CE7F00EF2A81 /* SegmentedControlTab.xib in Resources */,
 				C3F47ED12FA0FA8400F17AC8 /* GalleryCell.xib in Resources */,
@@ -710,6 +755,7 @@
 				C3BEABB42F9BAFDD00359CB6 /* mission_1.json in Resources */,
 				C3BEABCC2F9BB15A00359CB6 /* mission_13.json in Resources */,
 				C3BEABBA2F9BB05700359CB6 /* mission_4.json in Resources */,
+				C37BB74E30077821006BE7EA /* NoteSmallPhotoCell.xib in Resources */,
 				C34665BC2F783741008648C8 /* MyDay.storyboard in Resources */,
 				C3BEABBE2F9BB0A600359CB6 /* mission_6.json in Resources */,
 				C3BEABBC2F9BB07400359CB6 /* mission_5.json in Resources */,
@@ -816,6 +862,7 @@
 				C34665C02F783741008648C8 /* GrowingTextView.swift in Sources */,
 				C33F22A32F80147300EF2A81 /* String+Utils.swift in Sources */,
 				C34665C12F783741008648C8 /* RoundedControls.swift in Sources */,
+				C37BB7413005227F006BE7EA /* NoteBigPhotoCell.swift in Sources */,
 				C36B3D042F97A85100976790 /* MissionTemplate.swift in Sources */,
 				C347A5842F98F4320068D5B3 /* HiddenMissionTemplate.swift in Sources */,
 				C33F22BB2F838D5800EF2A81 /* MissionViewController.swift in Sources */,
@@ -832,6 +879,7 @@
 				C3CABD6A2FF7D8920067CA73 /* SelectDateViewController.swift in Sources */,
 				C3CABD732FF9708C0067CA73 /* MissionEmotion.swift in Sources */,
 				C3F47EC82F9FCAB300F17AC8 /* MissionNote.swift in Sources */,
+				C37BB74C300777A8006BE7EA /* NoteSmallPhotoCell.swift in Sources */,
 				C3BEABC42F9BB0F200359CB6 /* mission_9.json in Sources */,
 				C3BEABC62F9BB10600359CB6 /* mission_10.json in Sources */,
 				C3D5425E2F928C4F0093D819 /* NotificationView.swift in Sources */,
@@ -840,12 +888,15 @@
 				C37BB73830035EB1006BE7EA /* EmotionSettingsViewController.swift in Sources */,
 				C33F22B92F838A1200EF2A81 /* SegmentedControl.swift in Sources */,
 				C3B7D71A2F94A55400562DC2 /* CropImageViewController.swift in Sources */,
+				C37BB750300778D0006BE7EA /* NotePhotoCell.swift in Sources */,
 				C33F22AA2F8238C600EF2A81 /* MissionsHolder.swift in Sources */,
 				C34665C42F783741008648C8 /* UITextField+Utils.swift in Sources */,
 				C3F47ECA2FA0BBB600F17AC8 /* AppsFlyerHelper.swift in Sources */,
 				C33F22AE2F82A43E00EF2A81 /* UIImageView+Utils.swift in Sources */,
 				C36B3D062F97D71D00976790 /* TemplateCell.swift in Sources */,
 				C34665C52F783741008648C8 /* UIView+Utils.swift in Sources */,
+				C37BB744300559E1006BE7EA /* VideoHelper.swift in Sources */,
+				C37BB74A3006B854006BE7EA /* NoteView.swift in Sources */,
 				C36B3D092F9884F100976790 /* EmotionCell.swift in Sources */,
 				C33F22942F80104100EF2A81 /* Vistalio.xcdatamodeld in Sources */,
 				C3BEABD62F9BB88B00359CB6 /* TemplateStepCell.swift in Sources */,
@@ -872,6 +923,7 @@
 				C3CF26F02F7929C00008718D /* CoverViewController.swift in Sources */,
 				C3BEABB22F9A39C300359CB6 /* TemplateViewController.swift in Sources */,
 				C33F22A82F82376B00EF2A81 /* UIImage+Utils.swift in Sources */,
+				C37BB7463005612F006BE7EA /* Helpers.swift in Sources */,
 				C34665CA2F783741008648C8 /* AppDelegate.swift in Sources */,
 				C34665CB2F783741008648C8 /* SceneDelegate.swift in Sources */,
 				C3AE55E42FD81441007A5E41 /* StepViewController.swift in Sources */,

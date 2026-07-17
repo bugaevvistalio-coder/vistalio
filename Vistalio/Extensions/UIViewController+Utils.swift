@@ -35,11 +35,14 @@ extension UIViewController {
         }
     }
     
-    func openCamera() {
+    func openCamera(delegate: Any? = nil, video: Bool = false) {
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
             let imagePicker = UIImagePickerController()
-            imagePicker.delegate = (self as? UIImagePickerControllerDelegate & UINavigationControllerDelegate)
+            imagePicker.delegate = ((delegate ?? self) as? UIImagePickerControllerDelegate & UINavigationControllerDelegate)
             imagePicker.sourceType = .camera
+            if video {
+                imagePicker.mediaTypes = ["public.image", "public.movie"]
+            }
             imagePicker.modalPresentationStyle = .overFullScreen
             present(imagePicker, animated: true, completion: nil)
         } else {
@@ -47,13 +50,13 @@ extension UIViewController {
         }
     }
     
-    func openGallery() {
+    func openGallery(delegate: Any? = nil, limit: Int = 1, video: Bool = false) {
         var configuration = PHPickerConfiguration()
-        configuration.filter = .images // Configure for images or videos
-        configuration.selectionLimit = 1 // Limit selection, 0 for unlimited
+        configuration.filter = video ? .any(of: [.images, .videos]) : .images
+        configuration.selectionLimit = limit
         
         let picker = PHPickerViewController(configuration: configuration)
-        picker.delegate = self as? PHPickerViewControllerDelegate
+        picker.delegate = (delegate ?? self)  as? PHPickerViewControllerDelegate
         present(picker, animated: true)
     }
     

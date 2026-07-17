@@ -15,12 +15,17 @@ class SelectDateViewController: UIViewController {
     @IBOutlet weak var datePicker: UIDatePicker!
     
     var popupTitle: String!
+    var maxDate: Date?
+    var selectedDate: Date?
     var onDateSelected: ((Date) -> ())?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         titleLabel.text = popupTitle
+        datePicker.maximumDate = maxDate
+        datePicker.date = selectedDate ?? Date()
+        
         closeButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1)
         setupBottomConstraint(saveButton)
     }
