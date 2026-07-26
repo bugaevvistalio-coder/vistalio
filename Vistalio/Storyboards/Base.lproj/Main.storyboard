@@ -258,7 +258,7 @@
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" image="cross"/>
                                 <connections>
-                                    <action selector="closeTapped:" destination="AnR-FD-iz0" eventType="touchUpInside" id="RdG-eh-TX7"/>
+                                    <action selector="closeTapped:" destination="AnR-FD-iz0" eventType="touchUpInside" id="sPX-0w-GEt"/>
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="AhI-ae-aUh">
@@ -278,29 +278,68 @@
                                     </label>
                                 </subviews>
                             </stackView>
-                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Dna-gr-LNe">
-                                <rect key="frame" x="10" y="164.66666666666663" width="373" height="108"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="YUt-NP-Mzn">
+                                <rect key="frame" x="10" y="165" width="373" height="178"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="48n-fq-vb6" customClass="UIControl">
+                                        <rect key="frame" x="0.0" y="0.0" width="373" height="50"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="GEe-Kl-Npa">
+                                                <rect key="frame" x="54.333333333333343" y="12" width="264.66666666666663" height="26"/>
+                                                <subviews>
+                                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="checkOff" translatesAutoresizingMaskIntoConstraints="NO" id="cPQ-EF-L1a">
+                                                        <rect key="frame" x="0.0" y="1" width="24" height="24"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" constant="24" id="5Zx-Eu-aoF"/>
+                                                            <constraint firstAttribute="height" constant="24" id="eWb-V0-k9c"/>
+                                                        </constraints>
+                                                    </imageView>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Удалить вместе с заметками" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YMy-ik-q1K">
+                                                        <rect key="frame" x="39.999999999999986" y="3.3333333333333428" width="224.66666666666663" height="19.333333333333332"/>
+                                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                            </stackView>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="GEe-Kl-Npa" secondAttribute="bottom" constant="12" id="4dI-Y8-hCg"/>
+                                            <constraint firstItem="GEe-Kl-Npa" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="48n-fq-vb6" secondAttribute="leading" constant="10" id="Ft4-sa-WNC"/>
+                                            <constraint firstItem="GEe-Kl-Npa" firstAttribute="centerX" secondItem="48n-fq-vb6" secondAttribute="centerX" id="eay-pt-2X2"/>
+                                            <constraint firstItem="GEe-Kl-Npa" firstAttribute="top" secondItem="48n-fq-vb6" secondAttribute="top" constant="12" id="thu-1I-VI0"/>
+                                        </constraints>
+                                    </view>
+                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Dna-gr-LNe">
+                                        <rect key="frame" x="0.0" y="70" width="373" height="108"/>
+                                    </stackView>
+                                </subviews>
                             </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="xGX-Cl-rvQ"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="YUt-NP-Mzn" firstAttribute="top" secondItem="AhI-ae-aUh" secondAttribute="bottom" constant="32" id="0VJ-oS-R6p"/>
                             <constraint firstItem="AhI-ae-aUh" firstAttribute="leading" secondItem="xGX-Cl-rvQ" secondAttribute="leading" constant="24" id="24u-gL-4eU"/>
                             <constraint firstItem="xGX-Cl-rvQ" firstAttribute="trailing" secondItem="AhI-ae-aUh" secondAttribute="trailing" constant="24" id="DnA-BJ-qcU"/>
+                            <constraint firstItem="YUt-NP-Mzn" firstAttribute="leading" secondItem="xGX-Cl-rvQ" secondAttribute="leading" constant="10" id="Fm1-Ul-xX9"/>
                             <constraint firstItem="AhI-ae-aUh" firstAttribute="top" secondItem="qwt-BS-nnf" secondAttribute="top" constant="72" id="HYU-CT-LMP"/>
                             <constraint firstItem="jLx-Lw-wAp" firstAttribute="top" secondItem="qwt-BS-nnf" secondAttribute="top" constant="16" id="W95-Z9-LC9"/>
-                            <constraint firstItem="xGX-Cl-rvQ" firstAttribute="trailing" secondItem="Dna-gr-LNe" secondAttribute="trailing" constant="10" id="kYr-Dr-wrG"/>
+                            <constraint firstItem="xGX-Cl-rvQ" firstAttribute="trailing" secondItem="YUt-NP-Mzn" secondAttribute="trailing" constant="10" id="ZRQ-2Q-bgM"/>
                             <constraint firstAttribute="trailing" secondItem="jLx-Lw-wAp" secondAttribute="trailing" constant="16" id="kmE-RB-Zdz"/>
-                            <constraint firstItem="Dna-gr-LNe" firstAttribute="leading" secondItem="xGX-Cl-rvQ" secondAttribute="leading" constant="10" id="oZA-SR-cUz"/>
-                            <constraint firstItem="Dna-gr-LNe" firstAttribute="top" secondItem="AhI-ae-aUh" secondAttribute="bottom" constant="32" id="uuM-gi-RvE"/>
                         </constraints>
                     </view>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="393" height="400"/>
                     <connections>
                         <outlet property="buttonsStackView" destination="Dna-gr-LNe" id="FDY-8N-hUi"/>
+                        <outlet property="checkImageView" destination="cPQ-EF-L1a" id="UxX-H4-XIU"/>
+                        <outlet property="checkLabel" destination="YMy-ik-q1K" id="1YU-LK-OKO"/>
+                        <outlet property="checkStackView" destination="GEe-Kl-Npa" id="03p-a8-RmY"/>
                         <outlet property="closeButton" destination="jLx-Lw-wAp" id="fd0-tm-LPZ"/>
                         <outlet property="textLabel" destination="R4r-lt-vnp" id="OCw-E3-a2A"/>
+                        <outlet property="textsBottom" destination="0VJ-oS-R6p" id="b7A-Z1-MZE"/>
                         <outlet property="titleLabel" destination="pKa-gv-uOY" id="Atl-h1-cPf"/>
                     </connections>
                 </viewController>
@@ -410,7 +449,6 @@
                                 <state key="normal" image="cross"/>
                                 <connections>
                                     <action selector="closeTapped:" destination="I03-Tf-BqG" eventType="touchUpInside" id="BNy-f0-i6c"/>
-                                    <action selector="closeTapped:" destination="AnR-FD-iz0" eventType="touchUpInside" id="EfT-o0-VIn"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7hd-Aw-qJq">
@@ -484,6 +522,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="checkOff" width="24" height="24"/>
         <image name="check_1" width="19" height="19"/>
         <image name="cross" width="24" height="24"/>
         <image name="cross_1" width="18" height="18"/>

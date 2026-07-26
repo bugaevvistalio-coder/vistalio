@@ -75,6 +75,9 @@
 		C37BB74C300777A8006BE7EA /* NoteSmallPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB74B300777A1006BE7EA /* NoteSmallPhotoCell.swift */; };
 		C37BB74E30077821006BE7EA /* NoteSmallPhotoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C37BB74D30077821006BE7EA /* NoteSmallPhotoCell.xib */; };
 		C37BB750300778D0006BE7EA /* NotePhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB74F300778CD006BE7EA /* NotePhotoCell.swift */; };
+		C37BB754300C9DBF006BE7EA /* MoveNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB753300C9DB8006BE7EA /* MoveNoteViewController.swift */; };
+		C37BB757300CB78F006BE7EA /* NoteToMissionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB756300CB784006BE7EA /* NoteToMissionCell.swift */; };
+		C37BB759300CB79F006BE7EA /* NoteToStepCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB758300CB793006BE7EA /* NoteToStepCell.swift */; };
 		C3AE55C52FD09D12007A5E41 /* CreateStepViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55C42FD09D08007A5E41 /* CreateStepViewController.swift */; };
 		C3AE55C92FD1E8BF007A5E41 /* DropDownItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55C82FD1E8B9007A5E41 /* DropDownItemView.swift */; };
 		C3AE55CB2FD1E8D3007A5E41 /* DropDownItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3AE55CA2FD1E8D3007A5E41 /* DropDownItemView.xib */; };
@@ -214,6 +217,9 @@
 		C37BB74B300777A1006BE7EA /* NoteSmallPhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteSmallPhotoCell.swift; sourceTree = "<group>"; };
 		C37BB74D30077821006BE7EA /* NoteSmallPhotoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteSmallPhotoCell.xib; sourceTree = "<group>"; };
 		C37BB74F300778CD006BE7EA /* NotePhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotePhotoCell.swift; sourceTree = "<group>"; };
+		C37BB753300C9DB8006BE7EA /* MoveNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveNoteViewController.swift; sourceTree = "<group>"; };
+		C37BB756300CB784006BE7EA /* NoteToMissionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteToMissionCell.swift; sourceTree = "<group>"; };
+		C37BB758300CB793006BE7EA /* NoteToStepCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteToStepCell.swift; sourceTree = "<group>"; };
 		C3AE55C42FD09D08007A5E41 /* CreateStepViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateStepViewController.swift; sourceTree = "<group>"; };
 		C3AE55C82FD1E8B9007A5E41 /* DropDownItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownItemView.swift; sourceTree = "<group>"; };
 		C3AE55CA2FD1E8D3007A5E41 /* DropDownItemView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DropDownItemView.xib; sourceTree = "<group>"; };
@@ -423,9 +429,10 @@
 			isa = PBXGroup;
 			children = (
 				C33F22A42F80250F00EF2A81 /* Common */,
-				C34665A52F783741008648C8 /* Missions */,
-				C3CABD6C2FF83E980067CA73 /* Steps */,
 				C37BB73A3003F425006BE7EA /* Emotions */,
+				C34665A52F783741008648C8 /* Missions */,
+				C37BB752300C9DAA006BE7EA /* Notes */,
+				C3CABD6C2FF83E980067CA73 /* Steps */,
 				C34665A62F783741008648C8 /* MainViewController.swift */,
 				C34665A72F783741008648C8 /* StyledNavigationController.swift */,
 			);
@@ -530,6 +537,24 @@
 				C37BB7403005227C006BE7EA /* NoteBigPhotoCell.swift */,
 				C37BB74D30077821006BE7EA /* NoteSmallPhotoCell.xib */,
 				C37BB74B300777A1006BE7EA /* NoteSmallPhotoCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		C37BB752300C9DAA006BE7EA /* Notes */ = {
+			isa = PBXGroup;
+			children = (
+				C37BB753300C9DB8006BE7EA /* MoveNoteViewController.swift */,
+				C37BB755300C9E49006BE7EA /* Cells */,
+			);
+			path = Notes;
+			sourceTree = "<group>";
+		};
+		C37BB755300C9E49006BE7EA /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				C37BB756300CB784006BE7EA /* NoteToMissionCell.swift */,
+				C37BB758300CB793006BE7EA /* NoteToStepCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -849,6 +874,7 @@
 				C34665BF2F783741008648C8 /* CustomTabItem.swift in Sources */,
 				C33F22BF2F84C37B00EF2A81 /* UIApplication+Utils.swift in Sources */,
 				C3AE55E22FD5E43F007A5E41 /* Date+Utils.swift in Sources */,
+				C37BB754300C9DBF006BE7EA /* MoveNoteViewController.swift in Sources */,
 				C3D34AE02FA1D9F0007E5CAF /* ImageScrollView.swift in Sources */,
 				C3CF26EE2F7929120008718D /* CoverCell.swift in Sources */,
 				C3CABD682FF5B94F0067CA73 /* AddNoteView.swift in Sources */,
@@ -889,9 +915,11 @@
 				C33F22B92F838A1200EF2A81 /* SegmentedControl.swift in Sources */,
 				C3B7D71A2F94A55400562DC2 /* CropImageViewController.swift in Sources */,
 				C37BB750300778D0006BE7EA /* NotePhotoCell.swift in Sources */,
+				C37BB759300CB79F006BE7EA /* NoteToStepCell.swift in Sources */,
 				C33F22AA2F8238C600EF2A81 /* MissionsHolder.swift in Sources */,
 				C34665C42F783741008648C8 /* UITextField+Utils.swift in Sources */,
 				C3F47ECA2FA0BBB600F17AC8 /* AppsFlyerHelper.swift in Sources */,
+				C37BB757300CB78F006BE7EA /* NoteToMissionCell.swift in Sources */,
 				C33F22AE2F82A43E00EF2A81 /* UIImageView+Utils.swift in Sources */,
 				C36B3D062F97D71D00976790 /* TemplateCell.swift in Sources */,
 				C34665C52F783741008648C8 /* UIView+Utils.swift in Sources */,

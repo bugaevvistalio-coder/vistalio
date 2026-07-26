@@ -19,8 +19,18 @@ class AddedStepCell: UITableViewCell {
     @IBOutlet weak var checkImageView: UIImageView!
     @IBOutlet weak var dateLabel: UILabel!
     
+    @IBOutlet private weak var addNoteLeading: NSLayoutConstraint!
+    
+    @IBOutlet private weak var emotionsCounterView: UIView!
+    @IBOutlet private weak var emotionsCounterLabel: UILabel!
+    
+    @IBOutlet private weak var emotion1View: EmotionCircleView!
+    @IBOutlet private weak var emotion2View: EmotionCircleView!
+    @IBOutlet private weak var emotion3View: EmotionCircleView!
+    @IBOutlet private weak var emotion4View: EmotionCircleView!
+    
     var onLongGesture: ((UIImage, CGRect) -> ())?
-    var onOpenStep: ((MissionStep, Date?) -> ())?
+    var onOpenStep: ((MissionStep, Date?, Bool) -> ())?
     
     private lazy var longGestureRecognizer: UILongPressGestureRecognizer = {
         return UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
@@ -44,9 +54,16 @@ class AddedStepCell: UITableViewCell {
             if !(roundedView.gestureRecognizers?.contains(longGestureRecognizer) ?? false) {
                 roundedView.addGestureRecognizer(longGestureRecognizer)
             }
+            if step.id >= 0 {
+                dateLabel.superview?.isHidden = false
+                lastStepItemDate = step.lastDate
+                checkImageView.image = step.isImplementedForDate(lastStepItemDate) ? .checkCircleOn : .checkCircleOff
+            } else {
+                dateLabel.superview?.isHidden = true
+                checkImageView.isHidden = true
+            }
             
-            lastStepItemDate = step.lastDate
-            checkImageView.image = step.isImplementedForDate(lastStepItemDate) ? .checkCircleOn : .checkCircleOff
+            displayEmotions()
         }
     }
     
@@ -57,6 +74,38 @@ class AddedStepCell: UITableViewCell {
         }
     }
     
+    private func displayEmotions() {
+        let notes = step.notes?.allObjects.map { $0 as! MissionNote }.sorted { ($0.date ?? Date()) > ($1.date ?? Date()) } ?? []
+        let emotions = notes.compactMap { $0.emotions?.allObjects.map { $0 as! MissionNoteEmotion }.sorted { $0.date < $1.date }.first }
+        let displayedEmotions = emotions.prefix(4)
+        
+        let views = [emotion4View, emotion3View, emotion2View, emotion1View]
+        for i in 0..<views.count {
+            let v = views[i]!
+            if displayedEmotions.count > i {
+                v.emotion = MissionEmotion(rawValue: displayedEmotions[i].emotion)
+                v.isHidden = false
+            } else {
+                v.isHidden = true
+            }
+        }
+        
+        let left = notes.count - displayedEmotions.count
+        if left > 0 {
+            emotionsCounterView.isHidden = false
+            if displayedEmotions.count == 4 {
+                emotionsCounterLabel.text = "+\(left+1)"
+                emotion1View.isHidden = true
+            } else {
+                emotionsCounterLabel.text = "+\(left)"
+            }
+        } else {
+            emotionsCounterView.isHidden = true
+        }
+        
+        addNoteLeading.constant = notes.isEmpty ? 0 : -7
+    }
+    
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
         roundedView.backgroundColor = highlighted ? .textGrey20 : .white
@@ -65,13 +114,20 @@ class AddedStepCell: UITableViewCell {
     @objc private func handleLongPress(gestureRecognizer : UILongPressGestureRecognizer){
         if gestureRecognizer.state == .began {
             if let origin = roundedView.superview?.convert(roundedView.frame.origin, to: nil) {
-                onLongGesture?(roundedView.toImage(rect: roundedView.bounds), CGRect(origin: origin, size: roundedView.frame.size))
+                roundedView.backgroundColor = .white
+                DispatchQueue.main.async {
+                    self.onLongGesture?(self.roundedView.toImage(rect: self.roundedView.bounds), CGRect(origin: origin, size: self.roundedView.frame.size))
+                }
             }
         }
     }
     
     @IBAction func tapped(_ sender: Any) {
-        onOpenStep?(step, lastStepItemDate)
+        onOpenStep?(step, lastStepItemDate, false)
+    }
+    
+    @IBAction func addNoteTapped(_ sender: Any) {
+        onOpenStep?(step, lastStepItemDate, true)
     }
     
     @objc func checkImageTapped(_ gesture: UITapGestureRecognizer) {

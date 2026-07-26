@@ -35,11 +35,27 @@ class StepViewController: UIViewController {
     @IBOutlet weak var addNoteViewBottom: NSLayoutConstraint!
     @IBOutlet weak var addNoteButtonBottom: NSLayoutConstraint!
     
+    @IBOutlet weak var stackView: UIStackView!
+    @IBOutlet weak var stackViewTopToNavigation: NSLayoutConstraint!
+    @IBOutlet weak var stackViewTopToDate: NSLayoutConstraint!
+    
+    @IBOutlet weak var topBgViewHeight: NSLayoutConstraint!
+    
+    @IBOutlet weak var smallHeaderView: UIView!
+    @IBOutlet weak var smallHeaderNameLabel: UILabel!
+    @IBOutlet weak var smallHeaderDescriptionLabel: UILabel!
+    
+    private var showsSmallHeader = false
+    private var isSmallHeaderExpanded = false
+    
     var step: MissionStep!
     var date: Date?
+    var createNote: Bool = false
     
     var onStepDeleted: ((MissionStep) -> ())?
     var onStepUpdated: ((MissionStep) -> ())?
+    
+    private let generator = UIImpactFeedbackGenerator(style: .medium)
     
     private var selectedDate: Date? {
         didSet {
@@ -59,7 +75,7 @@ class StepViewController: UIViewController {
                 dateImageView.backgroundColor = .lightGrey
                 dateImageView.tintColor = .textGrey10
                 dateImageView.image = .calendar
-                checkImageView.isHidden = step.frequency != StepFrequency.once.rawValue
+                checkImageView.isHidden = step.frequency != StepFrequency.once.rawValue || step.id == -1
             }
         }
     }
@@ -70,6 +86,10 @@ class StepViewController: UIViewController {
         backButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1)
         addNoteButton.addDashedBorder(color: UIColor.textGrey30, dashPattern: [2, 2], cornerRadius: 18)
         headerShadowView.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 30, shadowOpacity: 0.09)
+        headerShadowView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        
+        smallHeaderView.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 30, shadowOpacity: 0.09)
+        smallHeaderView.isHidden = true
         
         navigationMissionButton.setTitle(step.block.mission.name?.limitCharacters(20), for: .normal)
         navigationStepButton.setTitle(step.name?.limitCharacters(20), for: .normal)
@@ -78,12 +98,25 @@ class StepViewController: UIViewController {
         navigationGradientRight.setGradientLayer(colors: [.white, .white.withAlphaComponent(0.01)], startPoint: CGPoint(x: 1.0, y: 0.5), endPoint: CGPoint(x: 0.0, y: 0.5), cornerRadius: 0)
         
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 40, right: 0)
+        stackView.setCustomSpacing(16, after: calendarView.superview!)
+        
+        if step.id == -1 {
+            dateControl.isHidden = true
+            stackViewTopToDate.priority = .defaultLow
+            stackViewTopToNavigation.priority = UILayoutPriority(999)
+            menuButton.isHidden = true
+        }
         
         nameTextView.textContainer.lineFragmentPadding = 0
         nameTextView.textContainerInset = .zero
         descriptionTextView.textContainer.lineFragmentPadding = 0
         descriptionTextView.textContainerInset = .zero
         
+        
+        if let date = date, step.id >= 0 {
+            selectedDate = date
+            calendarView.selectedDate = date
+        }
         calendarView.generateMonths()
         calendarView.missionStep = step
         calendarView.superview?.isHidden = true
@@ -100,6 +133,7 @@ class StepViewController: UIViewController {
         addNoteView.step = step
         addNoteView.onHeightChanged = { [unowned self] in
             tableView.layoutHeader()
+            updateAddNoteViewShadows()
         }
         addNoteView.onCursorPositionChanged = { [unowned self] textView, rect in
             let view = UIView(frame: rect)
@@ -114,37 +148,61 @@ class StepViewController: UIViewController {
             addNoteButtonBottom.priority = .defaultHigh
             tableView.layoutHeader()
             tableView.reloadData()
+            
+            (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Заметка добавлена", secondaryText: "К заметке →") { [unowned self] in
+                openNote(note)
+            }
         }
         
         displayStep()
 
-        if step.frequency == StepFrequency.once.rawValue {
+        if step.frequency == StepFrequency.once.rawValue && step.id >= 0 {
             checkImageView.isHidden = false
             checkImageView.image = step.isImplementedForDate(step.startDate?.toDay) ? .checkCircleOn : .checkCircleOff
         } else {
             checkImageView.isHidden = true
         }
         
-        if let date = date {
-            selectedDate = date
-            calendarView.selectedDate = date
+        if createNote {
+            addNoteTapped(addNoteButton!)
+            addNoteView.layer.cornerRadius = 30
+            addNoteView.layer.borderColor = UIColor.lightBlue1.cgColor
+            addNoteView.layer.borderWidth = 3
         }
+        
+        generator.prepare()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.layoutHeader()
         addNoteButton.addDashedBorder(color: UIColor.textGrey30, dashPattern: [2, 2], cornerRadius: 18)
+        updateAddNoteViewShadows()
+    }
+    
+    private func updateAddNoteViewShadows() {
+        if createNote {
+            addNoteView.addShadow(offset: CGSize(width: 0, height: 2), radius: 3, cornerRadius: 30, color: UIColor(hex: "#0AB05B"), shadowOpacity: 0.5, layerName: "GreenShadow")
+            addNoteView.addShadow(offset: CGSize(width: 2, height: 0), radius: 3, cornerRadius: 30, color: UIColor(hex: "#454FDE"), shadowOpacity: 0.5, layerName: "BlueShadow")
+            addNoteView.addShadow(offset: CGSize(width: -2, height: 0), radius: 3, cornerRadius: 30, color: UIColor(hex: "#FFAE00"), shadowOpacity: 0.5, layerName: "YellowShadow")
+            addNoteView.addShadow(offset: CGSize(width: 0, height: -2), radius: 3, cornerRadius: 30, color: UIColor(hex: "#EE6B57"), shadowOpacity: 0.5, layerName: "RedShadow")
+            addNoteView.addShadow(offset: CGSize(width: 0, height: 1.5), radius: 1, cornerRadius: 30, color: .black, shadowOpacity: 0.18)
+        }
     }
     
     private func displayStep() {
         nameTextView.text = step.name
+        smallHeaderNameLabel.text = step.name
         if let text = step.text, !text.isEmpty {
             descriptionTextView.text = text
             descriptionTextView.isHidden = false
+            smallHeaderDescriptionLabel.text = text
+            smallHeaderDescriptionLabel.isHidden = false
         } else {
             descriptionTextView.isHidden = true
+            smallHeaderDescriptionLabel.isHidden = true
         }
+        tableView.layoutHeader()
     }
     
     private func resetCalendar() {
@@ -161,14 +219,14 @@ class StepViewController: UIViewController {
         let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
         vc.popupTitle = "Недобавленная заметка будет удалена"
         vc.buttons = [
-            ActionButton(type: .red, title: "Удалить и закрыть", action: { [unowned self] in
+            ActionButton(type: .red, title: "Удалить и закрыть", action: { [unowned self] _ in
                 close(tabIndex: tabIndex)
             }),
-            ActionButton(type: .blue, title: "Добавить и закрыть", action: { [unowned self] in
+            ActionButton(type: .blue, title: "Добавить и закрыть", action: { [unowned self] _ in
                 addNoteView.save()
                 close(tabIndex: tabIndex)
             }),
-            ActionButton(type: .secondary, title: "Вернуться к редактированию", action: { })
+            ActionButton(type: .secondary, title: "Вернуться к редактированию", action: { _ in })
         ]
         presentBottomSheet(vc, height: 200)
     }
@@ -258,6 +316,7 @@ class StepViewController: UIViewController {
             }, onUpdated: { [unowned self] in
                 onStepUpdated?(step)
                 resetCalendar()
+                tableView.reloadData()
             })
         }))
         menuView.items = items
@@ -291,6 +350,20 @@ class StepViewController: UIViewController {
         }
     }
     
+    @IBAction func smallHeaderTapped(_ sender: Any) {
+        isSmallHeaderExpanded = !isSmallHeaderExpanded
+        if isSmallHeaderExpanded {
+            smallHeaderNameLabel.numberOfLines = 0
+            smallHeaderDescriptionLabel.numberOfLines = 0
+        } else {
+            smallHeaderNameLabel.numberOfLines = 1
+            smallHeaderDescriptionLabel.numberOfLines = 1
+        }
+        smallHeaderNameLabel.invalidateIntrinsicContentSize()
+        smallHeaderDescriptionLabel.invalidateIntrinsicContentSize()
+        smallHeaderNameLabel.superview!.layoutIfNeeded()
+    }
+    
     @objc func dateImageTapped(_ gesture: UITapGestureRecognizer) {
         if selectedDate != nil {
             selectedDate = nil
@@ -313,27 +386,74 @@ class StepViewController: UIViewController {
     }
 }
 
-extension StepViewController: UITableViewDataSource {
+extension StepViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (step.notes?.allObjects.count ?? 0) / 2 + (step.notes?.allObjects.count ?? 0) % 2
+        let notesCount = step.notes?.allObjects.count ?? 0
+        return notesCount / 2 + notesCount % 2
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "EmotionsCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "NotesCell", for: indexPath)
         let notes = step.notes?.allObjects.map { $0 as! MissionNote }.sorted { ($0.date ?? Date()) > ($1.date ?? Date()) } ?? []
         
         let view1 = cell.viewWithTag(1) as! NoteView
+        let onNoteLongTap: (MissionNote, UIImage, CGRect) -> () = { [unowned self] note, image, rect in
+            self.generator.impactOccurred()
+            self.generator.prepare()
+            self.showNoteMenu(note: note, anchorRect: rect, image: image, onDeleted: { [unowned self] stepDeleted in
+                if stepDeleted {
+                    self.onStepDeleted?(step)
+                    self.navigationController?.popViewController(animated: true)
+                } else {
+                    self.tableView.reloadData()
+                }
+            })
+        }
+        
         view1.note = notes[indexPath.row * 2]
+        view1.onLongGesture = onNoteLongTap
         
         let view2 = cell.viewWithTag(2) as! NoteView
         if notes.count > indexPath.row * 2 + 1 {
             view2.alpha = 1
             view2.note = notes[indexPath.row * 2 + 1]
+            view2.onLongGesture = onNoteLongTap
         } else {
             view2.alpha = 0
+            view2.onLongGesture = nil
         }
         
         return cell
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        if scrollView.contentOffset.y < 0 {
+            topBgViewHeight.constant = -scrollView.contentOffset.y
+        } else {
+            topBgViewHeight.constant = 0
+        }
+
+        if scrollView.contentOffset.y > addNoteButton.superview!.frame.minY - 16 - smallHeaderView.frame.height + 30 {
+            if !showsSmallHeader {
+                showsSmallHeader = true
+                smallHeaderView.isHidden = false
+            }
+        } else {
+            if showsSmallHeader {
+                showsSmallHeader = false
+                smallHeaderView.isHidden = true
+                
+                if isSmallHeaderExpanded {
+                    isSmallHeaderExpanded = false
+                    smallHeaderNameLabel.numberOfLines = 1
+                    smallHeaderDescriptionLabel.numberOfLines = 1
+                    smallHeaderNameLabel.invalidateIntrinsicContentSize()
+                    smallHeaderDescriptionLabel.invalidateIntrinsicContentSize()
+                    smallHeaderNameLabel.superview!.layoutIfNeeded()
+                }
+            }
+        }
     }
 }

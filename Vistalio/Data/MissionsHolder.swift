@@ -100,4 +100,26 @@ class MissionsHolder {
             }
         }
     }
+    
+    @discardableResult func getNotesMission() -> Mission? {
+        var mission = fetchNotesMission()
+        if mission == nil {
+            CoreDataStack.shared.performAndWait { context in
+                mission = Mission.create(context: context, name: nil, coverPath: nil, category: MissionCategory.notes.rawValue)
+                mission?.creationDate = Date(timeIntervalSince1970: 0)
+            }
+        }
+        return mission
+    }
+    
+    private func fetchNotesMission() -> Mission? {
+        let missionsRequest = Mission.missionFetchRequest()
+        missionsRequest.predicate = NSPredicate(format: "category == %@", MissionCategory.notes.rawValue)
+        do {
+            return try CoreDataStack.shared.mainContext.fetch(missionsRequest).first
+        } catch {
+            print("Failed to retrive missions and folders")
+        }
+        return nil
+    }
 }

@@ -382,8 +382,36 @@ extension MissionStep {
         return implementedSteps?.allObjects.first(where: { ($0 as! ImplementedStep).date == date.toDateString || frequency == StepFrequency.untilDone.rawValue }) as? ImplementedStep
     }
     
-    func delete() {
+    @discardableResult
+    func moveNotesToNotesStep(context: NSManagedObjectContext, date: Date?, afterDate: Bool) -> Int {
+        var moved = 0
+        if let step = block.mission.getNotesStep() {
+            notes?.allObjects.forEach {
+                let note = ($0 as! MissionNote)
+                if let date = date?.startOfDay {
+                    if afterDate {
+                        if let noteDate = note.date?.startOfDay, noteDate >= date {
+                            note.step = step
+                            moved += 1
+                        }
+                    } else if note.date?.startOfDay == date {
+                        note.step = step
+                        moved += 1
+                    }
+                } else {
+                    note.step = step
+                    moved += 1
+                }
+            }
+        }
+        return moved
+    }
+    
+    func delete(withNotes: Bool) {
         CoreDataStack.shared.performAndWait { context in
+            if !withNotes {
+                moveNotesToNotesStep(context: context, date: nil, afterDate: false)
+            }
             if block.id == -1 {
                 context.delete(self)
             } else {
@@ -400,6 +428,17 @@ extension MissionStep {
                 if let text = originalText {
                     self.text = text
                     originalText = nil
+                }
+                implementedSteps?.forEach {
+                    context.delete($0 as! ImplementedStep)
+                }
+                removedSteps?.forEach {
+                    context.delete($0 as! RemovedStep)
+                }
+                if withNotes {
+                    notes?.forEach {
+                        context.delete($0 as! MissionNote)
+                    }
                 }
             }
         }

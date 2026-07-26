@@ -134,6 +134,9 @@ extension MyMissionsViewController: UICollectionViewDataSource, UICollectionView
         if section == 0 {
             return 1
         }
+        if missions.last?.category == MissionCategory.notes.rawValue && missions.count % 2 == 1 {
+            return missions.count + 1
+        }
         return missions.count
     }
     
@@ -160,12 +163,15 @@ extension MyMissionsViewController: UICollectionViewDataSource, UICollectionView
         }
        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MissionCell", for: indexPath) as! MyMissionCell
-        let mission = missions[indexPath.row]
-        cell.mission = mission
-        cell.addLongGesture() { [unowned self] image, rect in
-            self.generator.impactOccurred()
-            self.generator.prepare()
-            self.showMenu(mission: mission, anchorRect: rect, image: image)
+        if let mission = getMission(index: indexPath.row) {
+            cell.mission = mission
+            cell.addLongGesture() { [unowned self] image, rect in
+                self.generator.impactOccurred()
+                self.generator.prepare()
+                self.showMenu(mission: mission, anchorRect: rect, image: image)
+            }
+        } else {
+            cell.mission = nil
         }
         return cell
     }
@@ -175,7 +181,9 @@ extension MyMissionsViewController: UICollectionViewDataSource, UICollectionView
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        openMission(missions[indexPath.row])
+        if let mission = getMission(index: indexPath.row) {
+            openMission(mission)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -185,5 +193,19 @@ extension MyMissionsViewController: UICollectionViewDataSource, UICollectionView
         }
         let size = (width - 24) / 2
         return CGSize(width: size, height: 194)
+    }
+    
+    private func getMission(index: Int) -> Mission? {
+        if missions.last?.category == MissionCategory.notes.rawValue {
+            if index < missions.count - 1 || missions.count % 2 == 0 {
+                return missions[index]
+            } else if index == missions.count {
+                return missions[index - 1]
+            } else {
+                return nil
+            }
+        } else {
+            return missions[index]
+        }
     }
 }

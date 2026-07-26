@@ -26,10 +26,21 @@ class NotePhotoCell: UICollectionViewCell {
                 } else if let path = media.path {
                     let url = FilesHelper().buildFileUrl(path: path)
                     if media.type == "video" {
-                        imageView.image = createVideoSnapshot(from: url)
+                        DispatchQueue.global().async { [unowned self] in
+                            let image = createVideoSnapshot(from: url)
+                            DispatchQueue.main.async { [unowned self] in
+                                if path == self.media?.path {
+                                    imageView.image = image
+                                }
+                            }
+                        }
                     } else {
-                        imageView.loadFromUrl(url) {
-                            return url.absoluteString
+                        imageView.loadFromUrl(url) { [unowned self] in
+                            if let path = self.media?.path {
+                                let url = FilesHelper().buildFileUrl(path: path)
+                                return url.absoluteString
+                            }
+                            return nil
                         }
                     }
                 }
@@ -65,10 +76,10 @@ class NotePhotoCell: UICollectionViewCell {
             vc.popupTitle = "Удалить \(media.type == "video" ? "видео" : "фотографию")?"
             vc.popupText = "Это действие нельзя отменить."
             vc.buttons = [
-                ActionButton(type: .red, title: "Удалить", action: { [unowned self] in
+                ActionButton(type: .red, title: "Удалить", action: { [unowned self] _ in
                     onRemove?(media)
                 }),
-                ActionButton(type: .secondary, title: "Отменить", action: { })
+                ActionButton(type: .secondary, title: "Отменить", action: { _ in })
             ]
             parentViewController?.presentBottomSheet(vc, height: 200)
         }

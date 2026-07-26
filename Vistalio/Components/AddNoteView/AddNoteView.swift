@@ -31,7 +31,8 @@ class AddNoteView: UIView {
     
     @IBOutlet private weak var mediaCollectionView: UICollectionView!
     
-    var step: MissionStep!
+    var step: MissionStep?
+    var mission: Mission?
     var onHeightChanged: (() -> ())?
     var onCursorPositionChanged: ((UITextView, CGRect) -> ())?
     var onNoteAdded: ((MissionNote) -> ())?
@@ -125,13 +126,15 @@ class AddNoteView: UIView {
     }
     
     func save() {
-        let name = titleTextView.text.trim()
-        let text = bodyTextView.text.trim()
-        CoreDataStack.shared.performAndWait { [unowned self] context in
-            if let note = MissionNote.create(context: context, step: self.step, date: self.date ?? Date(), name: !name.isEmpty ? name : nil, text: !text.isEmpty ? text : nil, emotions: self.emotions, media: self.media) {
-                DispatchQueue.main.async {
-                    self.clear()
-                    self.onNoteAdded?(note)
+        if let step = step ?? mission?.getNotesStep() {
+            let name = titleTextView.text.trim()
+            let text = bodyTextView.text.trim()
+            CoreDataStack.shared.performAndWait { [unowned self] context in
+                if let note = MissionNote.create(context: context, step: step, date: self.date ?? Date(), name: !name.isEmpty ? name : nil, text: !text.isEmpty ? text : nil, emotions: self.emotions, media: self.media) {
+                    DispatchQueue.main.async {
+                        self.clear()
+                        self.onNoteAdded?(note)
+                    }
                 }
             }
         }
@@ -204,9 +207,12 @@ class AddNoteView: UIView {
         if !(sender is UIButton) {
             location.y += 8
         }
+        
+        let verticalConstraint = Int(location.y) - menuView.height >= 20 ? menuView.bottomAnchor.constraint(equalTo: menuUnderlayControl.topAnchor, constant: location.y - 7) : menuView.topAnchor.constraint(equalTo: menuUnderlayControl.topAnchor, constant: location.y + view.frame.height + 7)
+        
         let constraints = [
             menuView.leftAnchor.constraint(equalTo: menuUnderlayControl.leftAnchor, constant: 22),
-            menuView.bottomAnchor.constraint(equalTo: menuUnderlayControl.topAnchor, constant: location.y - 7),
+            verticalConstraint,
         ]
         NSLayoutConstraint.activate(constraints)
         
@@ -223,7 +229,19 @@ class AddNoteView: UIView {
     
     @IBAction func okTapped(_ sender: Any) {
         endEditing(true)
-        save()
+        if step != nil {
+            save()
+        } else {
+            let sb = UIStoryboard(name: "Missions", bundle: nil)
+            let vc = sb.instantiateViewController(identifier: "MoveNoteVC") as! MoveNoteViewController
+            vc.step = step
+            vc.mission = mission
+            vc.onMoved = { [unowned self] mission, step in
+                self.step = step
+                save()
+            }
+            parentViewController?.presentFullScreen(vc)
+        }
     }
     
     private func clear() {
@@ -270,7 +288,7 @@ extension AddNoteView: PHPickerViewControllerDelegate, UIImagePickerControllerDe
                         return
                     }
                     
-                    let path = "\(self.step.block.mission.name!)/\(url.lastPathComponent)"
+                    let path = "\(self.step?.block.mission.name ?? self.mission?.name ?? "Notes")/\(url.lastPathComponent)"
                     let destinationURL = FilesHelper().buildFileUrl(path: path)
                     
                     do {
@@ -314,7 +332,7 @@ extension AddNoteView: PHPickerViewControllerDelegate, UIImagePickerControllerDe
             } else if mediaType == "public.movie" {
                 if let videoURL = info[.mediaURL] as? URL {
                     if let snapshot = createVideoSnapshot(from: videoURL) {
-                        let path = "\(self.step.block.mission.name!)/\(videoURL.lastPathComponent)"
+                        let path = "\(self.step?.block.mission.name ?? self.mission?.name ?? "Notes")/\(videoURL.lastPathComponent)"
                         let destinationURL = FilesHelper().buildFileUrl(path: path)
                         print("Save camera video \(path)")
                         do {

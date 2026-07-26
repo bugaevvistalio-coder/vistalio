@@ -42,18 +42,18 @@ extension UIView {
         layer.shadowOpacity = shadowOpacity
     }
     
-    func addShadow(offset:CGSize = CGSize(width: 0, height: 5), radius: CGFloat = 5, cornerRadius:CGFloat = 12, color: UIColor = UIColor.black, shadowOpacity:Float = 0.05, bounds: CGRect? = nil) {
-        layer.sublayers?.filter({ $0.name == "ShadowLayer" }).forEach({ $0.removeFromSuperlayer() })
+    func addShadow(offset:CGSize = CGSize(width: 0, height: 5), radius: CGFloat = 5, cornerRadius: CGFloat = 12, color: UIColor = UIColor.black, shadowOpacity:Float = 0.05, bounds: CGRect? = nil, layerName: String? = "ShadowLayer") {
+        layer.sublayers?.filter({ $0.name == layerName }).forEach({ $0.removeFromSuperlayer() })
         
         let shadowLayer = CAShapeLayer()
-        shadowLayer.name = "ShadowLayer"
+        shadowLayer.name = layerName
         
-        shadowLayer.cornerRadius = cornerRadius
         shadowLayer.shadowColor = color.cgColor
         shadowLayer.shadowRadius = radius
         shadowLayer.shadowOffset = offset
         shadowLayer.shadowOpacity = shadowOpacity
-        shadowLayer.bounds = bounds ?? self.bounds
+        shadowLayer.frame = bounds ?? self.bounds
+        shadowLayer.shadowPath = UIBezierPath(roundedRect: self.bounds, cornerRadius: cornerRadius).cgPath
         layer.insertSublayer(shadowLayer, at: 0)
     }
     

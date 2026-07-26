@@ -188,9 +188,9 @@ class CreateStepViewController: UIViewController {
             let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
             vc.popupTitle = "Изменения не сохранены"
             vc.buttons = [
-                ActionButton(type: .red, title: "Выйти без сохранения", action: { [unowned self] in
+                ActionButton(type: .red, title: "Выйти без сохранения", action: { [unowned self] _ in
                     self.dismiss(animated: true)
-                }), ActionButton(type: .secondary, title: "Вернуться к редактированию", action: { })
+                }), ActionButton(type: .secondary, title: "Вернуться к редактированию", action: { _ in })
             ]
             presentBottomSheet(vc, height: 200)
         } else {
@@ -205,7 +205,7 @@ class CreateStepViewController: UIViewController {
         vc.popupText = "Вернём те настройки шага, что были, когда вы его добавляли."
         vc.showClose = true
         vc.buttons = [
-            ActionButton(type: .primary, title: "Вернуть", action: { [unowned self] in
+            ActionButton(type: .primary, title: "Вернуть", action: { [unowned self] _ in
                 
                 backToOriginalButton.superview!.isHidden = true
                 
@@ -272,7 +272,7 @@ class CreateStepViewController: UIViewController {
         vc.popupText = text
         vc.showClose = true
         vc.buttons = [
-            ActionButton(type: .primary, title: "Хорошо", action: { [unowned self] in
+            ActionButton(type: .primary, title: "Хорошо", action: { [unowned self] _ in
 //                CoreDataStack.shared.performAndWait { context in
 //                    self.step!.updateImplementedSteps(context: context)
 //                }

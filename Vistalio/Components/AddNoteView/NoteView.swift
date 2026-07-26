@@ -9,6 +9,8 @@ import UIKit
 
 class NoteView: UIView {
     
+    @IBOutlet private weak var roundedView: RoundedView!
+    
     @IBOutlet private weak var emotionsStackView: UIStackView!
     
     @IBOutlet private weak var emotionsCounterView: UIView!
@@ -17,6 +19,7 @@ class NoteView: UIView {
     @IBOutlet private weak var emotion1View: EmotionCircleView!
     @IBOutlet private weak var emotion2View: EmotionCircleView!
     @IBOutlet private weak var emotion3View: EmotionCircleView!
+    @IBOutlet private weak var emotion4View: EmotionCircleView!
     
     @IBOutlet private weak var mediaCollectionView: UICollectionView!
     @IBOutlet private weak var mediaTop: NSLayoutConstraint!
@@ -28,6 +31,8 @@ class NoteView: UIView {
     @IBOutlet private weak var textTop: NSLayoutConstraint!
     
     @IBOutlet private weak var dateLabel: UILabel!
+    
+    var onLongGesture: ((MissionNote, UIImage, CGRect) -> ())?
     
     private var images = [MissionNoteImage]()
     
@@ -51,9 +56,10 @@ class NoteView: UIView {
     func setup() {
         backgroundColor = .clear
         
-        emotion3View.layer.zPosition = 1
-        emotion2View.layer.zPosition = 2
-        emotion1View.layer.zPosition = 3
+        emotion4View.layer.zPosition = 1
+        emotion3View.layer.zPosition = 2
+        emotion2View.layer.zPosition = 3
+        emotion1View.layer.zPosition = 4
         
         let nib = UINib(nibName: "NoteSmallPhotoCell", bundle: nil)
         mediaCollectionView.register(nib, forCellWithReuseIdentifier: "NoteSmallPhotoCell")
@@ -62,6 +68,10 @@ class NoteView: UIView {
     var note: MissionNote! {
         didSet {
             top = 0
+            
+            if !(roundedView.gestureRecognizers?.contains(longGestureRecognizer) ?? false) {
+                roundedView.addGestureRecognizer(longGestureRecognizer)
+            }
             
             dateLabel.text = note.date!.formatted3
             displayEmotions()
@@ -121,14 +131,14 @@ class NoteView: UIView {
         emotionsStackView.isHidden = false
         top = 54
         
-        if displayedEmotions.count > 3 {
+        if displayedEmotions.count > 4 {
             emotionsCounterView.isHidden = false
-            emotionsCounterLabel.text = "+\(displayedEmotions.count - 2)"
-            displayedEmotions = Array(displayedEmotions.prefix(2))
+            emotionsCounterLabel.text = "+\(displayedEmotions.count - 3)"
+            displayedEmotions = Array(displayedEmotions.prefix(3))
         } else {
             emotionsCounterView.isHidden = true
         }
-        let views = [emotion1View, emotion2View, emotion3View]
+        let views = [emotion1View, emotion2View, emotion3View, emotion4View]
         for i in 0..<views.count {
             let v = views[i]!
             if displayedEmotions.count > i {
@@ -136,6 +146,20 @@ class NoteView: UIView {
                 v.isHidden = false
             } else {
                 v.isHidden = true
+            }
+        }
+    }
+    
+    private lazy var longGestureRecognizer: UILongPressGestureRecognizer = {
+        return UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
+    }()
+    
+    @objc private func handleLongPress(gestureRecognizer : UILongPressGestureRecognizer){
+        if gestureRecognizer.state == .began {
+            if let origin = roundedView.superview?.convert(roundedView.frame.origin, to: nil) {
+                print("Long gesture")
+                roundedView.backgroundColor = .white
+                onLongGesture?(note, roundedView.toImage(rect: roundedView.bounds), CGRect(origin: origin, size: roundedView.frame.size))
             }
         }
     }

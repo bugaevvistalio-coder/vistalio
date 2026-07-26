@@ -9,7 +9,11 @@ import UIKit
 
 class CalendarView: UIView {
     
-    var selectedDate: Date?
+    var selectedDate: Date? {
+        didSet {
+            print("Set selected date")
+        }
+    }
     var onDateSelected: ((Date) -> ())?
     
     @IBOutlet private weak var monthLabel: UILabel!

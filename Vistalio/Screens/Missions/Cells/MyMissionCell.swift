@@ -13,31 +13,45 @@ class MyMissionCell: UICollectionViewCell {
     @IBOutlet weak var roundedView: RoundedView!
     @IBOutlet weak var coverImageView: RoundedImageView!
     @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var aboutLabel: UILabel!
     @IBOutlet weak var radioImageView: UIImageView?
     
     private var longGestureRecognizer: UILongPressGestureRecognizer?
     private var onLongGesture: ((UIImage, CGRect) -> ())?
     
-    var mission: Mission! {
+    var mission: Mission? {
         didSet {
-            nameLabel.text = mission.name
-            
-            if let path = mission.photoPath {
-                if path.starts(with: "http") {
-                    if let url = URL(string: path) {
-                        coverImageView.loadFromUrl(url) { [weak self] in
-                            return self?.mission.photoPath
+            if let mission = mission {
+                roundedView.isHidden = false
+                
+                if mission.category == MissionCategory.notes.rawValue {
+                    nameLabel.text = "Общие заметки"
+                    aboutLabel.isHidden = false
+                    aboutLabel.text = "ⓘ Сюда попадают заметки, не привязанные к миссии"
+                } else {
+                    nameLabel.text = mission.name
+                    aboutLabel.isHidden = true
+                }
+                
+                if let path = mission.photoPath {
+                    if path.starts(with: "http") {
+                        if let url = URL(string: path) {
+                            coverImageView.loadFromUrl(url) { [weak self] in
+                                return self?.mission?.photoPath
+                            }
+                        }
+                    } else {
+                        coverImageView.loadFromPath(path) { [weak self] in
+                            return self?.mission?.photoPath
                         }
                     }
+                } else if let categoryName = mission.category, let category = MissionCategory(rawValue: categoryName) {
+                    coverImageView.image = UIImage(named: category.coverName)
                 } else {
-                    coverImageView.loadFromPath(path) { [weak self] in
-                        return self?.mission.photoPath
-                    }
+                    coverImageView.image = nil
                 }
-            } else if let categoryName = mission.category, let category = MissionCategory(rawValue: categoryName) {
-                coverImageView.image = UIImage(named: category.coverName)
             } else {
-                coverImageView.image = nil
+                roundedView.isHidden = true
             }
         }
     }

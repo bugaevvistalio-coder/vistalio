@@ -175,7 +175,7 @@ class TemplateViewController: UIViewController {
             vc.popupText = mission.archived ? "Прямо сейчас она находится в архиве." : "Прямо сейчас она находится в активных миссиях."
             vc.showClose = true
             vc.buttons = [
-                ActionButton(type: .primary, title: mission.archived ? "Убрать из архива" : "Открыть существующую", action: { [unowned self] in
+                ActionButton(type: .primary, title: mission.archived ? "Убрать из архива" : "Открыть существующую", action: { [unowned self] _ in
                     if mission.archived {
                         CoreDataStack.shared.performAndWait { context in
                             mission.archived = false
@@ -187,7 +187,7 @@ class TemplateViewController: UIViewController {
                         dismissAndOpenMission(mission)
                     }
                 }),
-                ActionButton(type: .secondary, title: "Начать новую", action: { [unowned self] in
+                ActionButton(type: .secondary, title: "Начать новую", action: { [unowned self] _ in
                     self.startMission()
                 })
             ]

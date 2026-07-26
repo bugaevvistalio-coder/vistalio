@@ -15,11 +15,13 @@
                 <outlet property="emotion1View" destination="bhP-Yo-dGr" id="Mlv-7q-J1H"/>
                 <outlet property="emotion2View" destination="Plv-k4-n6D" id="oXP-LI-fUn"/>
                 <outlet property="emotion3View" destination="HaW-LY-IxY" id="eZB-O7-uud"/>
+                <outlet property="emotion4View" destination="03p-Wi-T67" id="FQZ-y8-Hxz"/>
                 <outlet property="emotionsCounterLabel" destination="Nik-0g-7Zo" id="F5o-uA-t6G"/>
                 <outlet property="emotionsCounterView" destination="SS2-oX-3JV" id="oa5-eN-qvL"/>
                 <outlet property="emotionsStackView" destination="5wh-2j-hRm" id="82z-2w-lOd"/>
                 <outlet property="mediaCollectionView" destination="6s4-nU-axP" id="lp5-KV-PNa"/>
                 <outlet property="mediaTop" destination="pMI-VO-aL6" id="eto-PD-9fF"/>
+                <outlet property="roundedView" destination="iN0-l3-epB" id="ijZ-7q-2dt"/>
                 <outlet property="textLabel" destination="4rC-K5-XL6" id="yCQ-ld-36F"/>
                 <outlet property="textTop" destination="dcr-ir-HCH" id="uNc-Kc-EpJ"/>
                 <outlet property="titleLabel" destination="zWq-1j-7nB" id="VEF-Fv-Tkp"/>
@@ -32,7 +34,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="-7" translatesAutoresizingMaskIntoConstraints="NO" id="5wh-2j-hRm">
-                    <rect key="frame" x="12" y="12" width="125" height="32"/>
+                    <rect key="frame" x="12" y="12" width="150" height="32"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bhP-Yo-dGr" customClass="EmotionCircleView" customModule="Vistalio" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="0.0" width="32" height="32"/>
@@ -82,11 +84,27 @@
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
                         </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="03p-Wi-T67" customClass="EmotionCircleView" customModule="Vistalio" customModuleProvider="target">
+                            <rect key="frame" x="75" y="0.0" width="32" height="32"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="32" id="Urg-5K-fQb"/>
+                                <constraint firstAttribute="width" constant="32" id="p4T-FM-rAW"/>
+                            </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="imageSize">
+                                    <real key="value" value="20"/>
+                                </userDefinedRuntimeAttribute>
+                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                    <real key="value" value="16"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SS2-oX-3JV" customClass="RoundedView" customModule="Vistalio" customModuleProvider="target">
-                            <rect key="frame" x="75" y="1" width="50" height="30"/>
+                            <rect key="frame" x="100" y="0.0" width="50" height="32"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="+1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nik-0g-7Zo">
-                                    <rect key="frame" x="8" y="9" width="34" height="12"/>
+                                    <rect key="frame" x="8" y="10" width="34" height="12"/>
                                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="10"/>
                                     <color key="textColor" name="textGrey30"/>
                                     <nil key="highlightedColor"/>
@@ -95,14 +113,14 @@
                             <color key="backgroundColor" white="0.0" alpha="0.040000000000000001" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstItem="Nik-0g-7Zo" firstAttribute="centerY" secondItem="SS2-oX-3JV" secondAttribute="centerY" id="8fu-S5-9nY"/>
-                                <constraint firstAttribute="height" constant="30" id="NLM-d1-vgG"/>
+                                <constraint firstAttribute="height" constant="32" id="NLM-d1-vgG"/>
                                 <constraint firstItem="Nik-0g-7Zo" firstAttribute="leading" secondItem="SS2-oX-3JV" secondAttribute="leading" constant="8" id="TFm-11-Y2U"/>
                                 <constraint firstItem="Nik-0g-7Zo" firstAttribute="centerX" secondItem="SS2-oX-3JV" secondAttribute="centerX" id="gEi-Hu-GlH"/>
                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="30" id="h5W-qh-FHx"/>
                             </constraints>
                             <userDefinedRuntimeAttributes>
                                 <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                    <real key="value" value="15"/>
+                                    <real key="value" value="16"/>
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
                         </view>

@@ -139,9 +139,9 @@ class CreateMissionViewController: UIViewController {
             let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
             vc.popupTitle = "Изменения не сохранены"
             vc.buttons = [
-                ActionButton(type: .red, title: "Выйти без сохранения", action: { [unowned self] in
+                ActionButton(type: .red, title: "Выйти без сохранения", action: { [unowned self] _ in
                     self.dismiss(animated: true)
-                }), ActionButton(type: .secondary, title: "Вернуться к редактированию", action: { })
+                }), ActionButton(type: .secondary, title: "Вернуться к редактированию", action: { _ in })
             ]
             presentBottomSheet(vc, height: 200)
         } else {

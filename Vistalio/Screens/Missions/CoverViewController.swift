@@ -18,7 +18,7 @@ class CoverViewController: UIViewController {
     private var createButton: UIButton?
     
     private var selectionIndex = 0
-    private var categories = MissionCategory.allCases
+    private var categories = MissionCategory.allCases.filter { $0 != .notes }
     private var covers = [Cover]()
     
     private let generator = UIImpactFeedbackGenerator(style: .medium)
@@ -136,7 +136,7 @@ class CoverViewController: UIViewController {
                 vc.popupTitle = "Удалить обложку?"
                 vc.popupText = "Нельзя отменить."
                 vc.buttons = [
-                    ActionButton(type: .red, title: "Удалить", action: { [unowned self] in
+                    ActionButton(type: .red, title: "Удалить", action: { [unowned self] _ in
                         let path = cover.photoPath
                         CoreDataStack.shared.performAndWait { context in
                             context.delete(cover)
@@ -150,7 +150,7 @@ class CoverViewController: UIViewController {
                             self.onImageDeleted?(path)
                         }
                     }),
-                    ActionButton(type: .secondary, title: "Отменить", action: { })
+                    ActionButton(type: .secondary, title: "Отменить", action: { _ in })
                 ]
                 presentBottomSheet(vc, height: 200)
             })

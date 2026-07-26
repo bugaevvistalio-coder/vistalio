@@ -85,13 +85,13 @@ extension UIViewController {
         vc.popupTitle = mission.archived ? "Убрать миссию из архива?" : "Убрать миссию в архив?"
         vc.popupText = mission.archived ? "Снова начнём напоминать о её шагах и предлагать новые. Можно отменить в любой момент." : "Мы перестанем напоминать о её шагах и предлагать новые. Можно отменить в любой момент."
         vc.buttons = [
-            ActionButton(type: mission.archived ? .blue : .red, title: mission.archived ? "Убрать из архива" : "Убрать в архив", action: { CoreDataStack.shared.performAndWait { context in
+            ActionButton(type: mission.archived ? .blue : .red, title: mission.archived ? "Убрать из архива" : "Убрать в архив", action: { _ in CoreDataStack.shared.performAndWait { context in
                     mission.archived = !mission.archived
                 }
                 NotificationCenter.default.post(name: .missionUpdated, object: nil)
                 (UIApplication.shared.delegate as! AppDelegate).addNotification(text: mission.archived ? "Миссия перемещена в архив" : "Миссия убрана из архива")
             }),
-            ActionButton(type: .secondary, title: "Отменить", action: { })
+            ActionButton(type: .secondary, title: "Отменить", action: { _ in })
         ]
         presentBottomSheet(vc, height: 200)
     }
@@ -102,7 +102,7 @@ extension UIViewController {
         vc.popupTitle = "Удалить миссию?"
         vc.popupText = "Нельзя отменить. По умолчанию все заметки удаляемой миссии помещаются в миссию «Общие заметки»."
         vc.buttons = [
-            ActionButton(type: .red, title: "Удалить", action: { [unowned self] in
+            ActionButton(type: .red, title: "Удалить", action: { [unowned self] _ in
                 CoreDataStack.shared.performAndWait { context in
                     context.delete(mission)
                 }
@@ -110,7 +110,7 @@ extension UIViewController {
                 self.navigationController?.popViewController(animated: true)
                 (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Миссия удалена")
             }),
-            ActionButton(type: .secondary, title: "Отменить", action: { })
+            ActionButton(type: .secondary, title: "Отменить", action: { _ in })
         ]
         presentBottomSheet(vc, height: 200)
     }
@@ -122,7 +122,7 @@ extension UIViewController {
         vc.popupText = "Перестанем её рекомендовать.\nМожно отменить в любой момент."
         vc.showClose = true
         vc.buttons = [
-            ActionButton(type: .red, title: "Скрыть", action: {
+            ActionButton(type: .red, title: "Скрыть", action: { _ in
                 template.hiddenAt = Date()
                 CoreDataStack.shared.performAndWait { context in
                     HiddenMissionTemplate.create(context: context, templateId: template.id)
@@ -141,7 +141,7 @@ extension UIViewController {
         vc.popupText = "Снова будем её рекомендовать.\nМожно отменить в любой момент."
         vc.showClose = true
         vc.buttons = [
-            ActionButton(type: .primary, title: "Показать", action: {
+            ActionButton(type: .primary, title: "Показать", action: { _ in
                 template.hiddenAt = nil
                 CoreDataStack.shared.performAndWait { context in
                     let request = HiddenMissionTemplate.hiddenMissionTemplateFetchRequest()
@@ -167,10 +167,14 @@ extension UIViewController {
         let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
         vc.popupTitle = "Удалить шаг?"
         vc.popupText = "Нельзя отменить. По умолчанию все заметки удаляемого шага помещаются в шаг «Шаг для общих заметок»."
+        if (step.notes?.count ?? 0) > 0 {
+            vc.checkText = "Удалить вместе с заметками"
+        }
         
         var buttons = [ActionButton]()
+        
         if let date = date, !step.hasSingleDate {
-            buttons.append(ActionButton(type: .red, title: "Удалить текущий", action: {
+            buttons.append(ActionButton(type: .red, title: "Удалить текущий", action: { checked in
                 CoreDataStack.shared.performAndWait { context in
                     RemovedStep.create(context: context, step: step, date: date)
                     for item in step.implementedSteps?.allObjects ?? [] {
@@ -179,13 +183,16 @@ extension UIViewController {
                             context.delete(implemented)
                         }
                     }
+                    if !checked {
+                        step.moveNotesToNotesStep(context: context, date: date, afterDate: false)
+                    }
                 }
                 onUpdated()
                 (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Экземпляр шага удалён")
             }))
-            buttons.append(ActionButton(type: .red, title: "Удалить этот и все последующие", action: {
+            buttons.append(ActionButton(type: .red, title: "Удалить этот и все последующие", action: { checked in
                 if date == step.startDate?.toDay {
-                    step.delete()
+                    step.delete(withNotes: checked)
                     onDeleted()
                     (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг удалён")
                 } else {
@@ -198,24 +205,27 @@ extension UIViewController {
                                 context.delete(implemented)
                             }
                         }
+                        if !checked {
+                            step.moveNotesToNotesStep(context: context, date: date, afterDate: true)
+                        }
                     }
                     onUpdated()
                     (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Экземпляры шага удалены")
                 }
             }))
-            buttons.append(ActionButton(type: .red, title: "Удалить всю серию", action: {
-                step.delete()
+            buttons.append(ActionButton(type: .red, title: "Удалить всю серию", action: { checked in
+                step.delete(withNotes: checked)
                 onDeleted()
                 (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг удалён")
             }))
         } else {
-            buttons.append(ActionButton(type: .red, title: "Удалить", action: {
-                step.delete()
+            buttons.append(ActionButton(type: .red, title: "Удалить", action: { checked in
+                step.delete(withNotes: checked)
                 onDeleted()
                 (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг удалён")
             }))
         }
-        buttons.append(ActionButton(type: .secondary, title: "Отменить", action: { }))
+        buttons.append(ActionButton(type: .secondary, title: "Отменить", action: { _ in }))
         vc.buttons = buttons
         presentBottomSheet(vc, height: 200)
     }
@@ -231,14 +241,19 @@ extension UIViewController {
         presentBottomSheet(vc, height: UIScreen.main.bounds.height - top)
     }
     
-    func openStep(_ step: MissionStep, date: Date? = nil, onStepUpdated: @escaping (MissionStep) -> (), onStepDeleted: @escaping (MissionStep) -> ()) {
+    func openStep(_ step: MissionStep, date: Date? = nil, createNote: Bool = false, onStepUpdated: @escaping (MissionStep) -> (), onStepDeleted: @escaping (MissionStep) -> ()) {
         let sb = UIStoryboard(name: "Missions", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "StepVC") as! StepViewController
         vc.step = step
         vc.date = date
+        vc.createNote = createNote
         vc.onStepUpdated = onStepUpdated
         vc.onStepDeleted = onStepDeleted
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func openNote(_ note: MissionNote) {
+        
     }
     
     func addMenuUnderlayControl(color: UIColor) -> UIControl {
@@ -274,10 +289,10 @@ extension UIViewController {
             vc.popupTitle = "Все повторы шага после даты выполнения будут удалены"
             vc.popupText = "Заметки будут сохранены."
             vc.buttons = [
-                ActionButton(type: .primary, title: "Сделать шаг выполненным", action: { [unowned self] in
+                ActionButton(type: .primary, title: "Сделать шаг выполненным", action: { [unowned self] _ in
                     switchImplemented(step, date: date, implementedStep: implemented, onSwitched: onSwitched)
                 }),
-                ActionButton(type: .secondary, title: "Отменить", action: { })
+                ActionButton(type: .secondary, title: "Отменить", action: { _ in })
             ]
             presentBottomSheet(vc, height: 200)
         } else {
@@ -296,5 +311,85 @@ extension UIViewController {
             }
         }
         onSwitched(checked)
+    }
+    
+    func showMenu(items: [MenuItemData], menuUnderlayControl: UIControl, anchorRect: CGRect, image: UIImage, hMargin: CGFloat) {
+        
+        let menuView = MenuView()
+        menuView.items = items
+        menuView.translatesAutoresizingMaskIntoConstraints = false
+        menuUnderlayControl.addSubview(menuView)
+        
+        let screenHeight = UIScreen.main.bounds.height
+        let menuHeight = CGFloat(menuView.height)
+        let horizontalConstraint: NSLayoutConstraint
+        if anchorRect.minX < UIScreen.main.bounds.width / 2 {
+            horizontalConstraint = menuView.leftAnchor.constraint(equalTo: menuUnderlayControl.leftAnchor, constant: hMargin)
+        } else {
+            horizontalConstraint = menuView.rightAnchor.constraint(equalTo: menuUnderlayControl.rightAnchor, constant: -hMargin)
+        }
+        let verticalConstraint = anchorRect.maxY + 20 + menuHeight > screenHeight ? menuView.bottomAnchor.constraint(equalTo: menuUnderlayControl.bottomAnchor, constant: anchorRect.minY - 7 - screenHeight) : menuView.topAnchor.constraint(equalTo: menuUnderlayControl.topAnchor, constant: anchorRect.maxY + 7)
+        NSLayoutConstraint.activate([verticalConstraint, horizontalConstraint])
+        
+        menuView.layer.cornerRadius = 30
+        
+        let highlightedItemImageView = UIImageView()
+        highlightedItemImageView.translatesAutoresizingMaskIntoConstraints = false
+        menuUnderlayControl.addSubview(highlightedItemImageView)
+        
+        let constraints = [
+            highlightedItemImageView.topAnchor.constraint(equalTo: menuUnderlayControl.topAnchor, constant: anchorRect.minY),
+            highlightedItemImageView.leftAnchor.constraint(equalTo: menuUnderlayControl.leftAnchor, constant: anchorRect.minX),
+            highlightedItemImageView.widthAnchor.constraint(equalToConstant: anchorRect.width),
+            highlightedItemImageView.heightAnchor.constraint(equalToConstant: anchorRect.height),
+        ]
+        NSLayoutConstraint.activate(constraints)
+        
+        highlightedItemImageView.image = image
+    }
+    
+    func showNoteMenu(note: MissionNote, anchorRect: CGRect, image: UIImage, onDeleted: @escaping (Bool) -> ()) {
+        let mainVC = (UIApplication.shared.keyWindow?.rootViewController as! MainViewController)
+        let menuUnderlayControl = mainVC.addMenuUnderlayControl(color: .black.withAlphaComponent(0.25))
+        let items = [
+            MenuItemData(text: "Изменить", image: .edit, type: .normal, action: { [unowned self] in
+                menuUnderlayControl.removeFromSuperview()
+               
+            }),
+            MenuItemData(text: "Переместить", image: .target, type: .normal, action: { [unowned self] in
+                menuUnderlayControl.removeFromSuperview()
+                
+            }),
+            MenuItemData(text: "Удалить", image: .trash, type: .red, action: { [unowned self] in
+                menuUnderlayControl.removeFromSuperview()
+                openDeleteNote(note, onDeleted: onDeleted)
+            })
+        ]
+        showMenu(items: items, menuUnderlayControl: menuUnderlayControl, anchorRect: anchorRect, image: image, hMargin: 10)
+    }
+    
+    func openDeleteNote(_ note: MissionNote, onDeleted: @escaping (Bool) -> ()) {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
+        vc.popupTitle = "Удалить заметку?"
+        vc.popupText = "Также из Vistalio будут удалены все её медиа и голосовые. Нельзя отменить."
+        
+        vc.buttons = [
+            ActionButton(type: .red, title: "Удалить", action: { _ in
+                var stepDeleted = false
+                CoreDataStack.shared.performAndWait { context in
+                    if note.step?.id == -1 && note.step?.notes?.count == 1 {
+                        context.delete(note.step!)
+                        stepDeleted = true
+                    } else {
+                        context.delete(note)
+                    }
+                }
+                onDeleted(stepDeleted)
+                (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Заметка удалена")
+            }),
+            ActionButton(type: .secondary, title: "Отменить", action: { _ in })
+        ]
+        presentBottomSheet(vc, height: 200)
     }
 }

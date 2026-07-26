@@ -18,7 +18,7 @@ enum ActionButtonType {
 struct ActionButton {
     let type: ActionButtonType
     let title: String
-    let action: () -> ()
+    let action: (Bool) -> ()
     
     func create() -> UIButton {
         let button = RoundedButton(type: .system)
@@ -53,13 +53,22 @@ class SelectActionViewController: UIViewController {
     
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var textLabel: UILabel!
+    @IBOutlet weak var textsBottom: NSLayoutConstraint!
+    
+    @IBOutlet weak var checkStackView: UIStackView!
+    @IBOutlet weak var checkImageView: UIImageView!
+    @IBOutlet weak var checkLabel: UILabel!
+    
     @IBOutlet weak var buttonsStackView: UIStackView!
     @IBOutlet weak var closeButton: UIButton!
     
     var popupTitle: String!
     var popupText: String?
+    var checkText: String?
     var buttons = [ActionButton]()
     var showClose = false
+    
+    private var checked = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,6 +78,17 @@ class SelectActionViewController: UIViewController {
             textLabel.text = text
         } else {
             textLabel.isHidden = true
+        }
+        
+        if let checkText = checkText {
+            checkLabel.text = checkText
+            textsBottom.constant = 20
+            
+            let tap = UITapGestureRecognizer(target: self, action: #selector(checkTapped))
+            checkStackView.addGestureRecognizer(tap)
+        } else {
+            textsBottom.constant = 32
+            checkStackView.superview?.isHidden = true
         }
         
         closeButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1)
@@ -103,6 +123,11 @@ class SelectActionViewController: UIViewController {
             height += 8
         }
         
+        if checkText != nil {
+            height += checkStackView.superview!.frame.height
+            height += 8
+        }
+        
         buttons.forEach {_ in 
             height += 52
         }
@@ -113,12 +138,18 @@ class SelectActionViewController: UIViewController {
     
     @objc private func buttonTapped(_ sender: UIButton) {
         let action = buttons[sender.tag].action
+        let checked = self.checked
         dismiss(animated: true) {
-            action()
+            action(checked)
         }
     }
     
     @IBAction func closeTapped(_ sender: UIButton) {
         dismiss(animated: true)
+    }
+    
+    @objc func checkTapped(_ gesture: UITapGestureRecognizer) {
+        checked = !checked
+        checkImageView.image = checked ? .checkOn : .checkOff
     }
 }

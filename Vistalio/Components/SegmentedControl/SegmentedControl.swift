@@ -20,7 +20,15 @@ class SegmentedControl: UIView {
     private var view: UIView!
     
     var onTabSelected: ((Int) -> ())?
-    var selectedIndex = 0
+    var selectedIndex = 0 {
+        didSet {
+            if selectedIndex != oldValue {
+                for (i, tabView) in stackView.arrangedSubviews.enumerated() {
+                    (tabView as! SegmentedControlTab).isTabSelected = (i == selectedIndex)
+                }
+            }
+        }
+    }
     
     var tabs = [SegmentedTabData]() {
         didSet {

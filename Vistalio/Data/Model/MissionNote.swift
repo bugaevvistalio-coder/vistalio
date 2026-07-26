@@ -24,7 +24,8 @@ extension MissionNote {
     @NSManaged public var audio: String?
     @NSManaged public var date: Date?
     
-    @NSManaged public var step: MissionStep
+    @NSManaged public var step: MissionStep?
+    
     @NSManaged public var images: NSSet?
     @NSManaged public var emotions: NSSet?
     

@@ -24,6 +24,10 @@ class MissionViewController: UIViewController {
     @IBOutlet weak var segmentedControl: SegmentedControl!
     @IBOutlet weak var addItemButton: UIButton!
     
+    @IBOutlet weak var addNoteView: AddNoteView!
+    @IBOutlet weak var addNoteViewBottom: NSLayoutConstraint!
+    @IBOutlet weak var addItemButtonBottom: NSLayoutConstraint!
+    
     @IBOutlet weak var coverImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var aboutLabel: UILabel!
@@ -46,6 +50,8 @@ class MissionViewController: UIViewController {
     private var addedSteps = [MissionStep]()
     private var recommendedExpanded = true
     
+    private var isEditingNote = false
+    
     private let generator = UIImpactFeedbackGenerator(style: .medium)
     
     override func viewDidLoad() {
@@ -63,6 +69,7 @@ class MissionViewController: UIViewController {
         
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
         
+        setupAddNoteView()
         updateSteps()
         
         segmentedControl.tabs = [SegmentedTabData(text: "Шаги", image: .steps), SegmentedTabData(text: "Заметки", image: .notes)]
@@ -72,11 +79,14 @@ class MissionViewController: UIViewController {
             }
             if index == 0 {
                 recommendedStepsControl.isHidden = false
+                hideAddNoteView()
             } else {
                 recommendedStepsControl.isHidden = true
+                if isEditingNote {
+                    showAddNoteView()
+                }
             }
             updateAddAllSteps()
-            
             tableView.reloadData()
         }
         
@@ -93,7 +103,9 @@ class MissionViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .none)
+        if segmentedControl.selectedIndex == 0 {
+            tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .none)
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -124,6 +136,47 @@ class MissionViewController: UIViewController {
         }
     }
     
+    private func setupAddNoteView() {
+        addNoteView.isHidden = true
+        addNoteView.mission = mission
+        addNoteView.onHeightChanged = { [unowned self] in
+            tableView.layoutHeader()
+        }
+        addNoteView.onCursorPositionChanged = { [unowned self] textView, rect in
+            let view = UIView(frame: rect)
+            view.alpha = 0
+            textView.addSubview(view)
+            tableView.scrollToViewBottom(view)
+        }
+        addNoteView.onNoteAdded = { [unowned self] note in
+            hideAddNoteView()
+            isEditingNote = false
+            addedSteps = mission.addedSteps
+            sortAddedSteps()
+            tableView.reloadData()
+            
+            (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Заметка добавлена", secondaryText: "К заметке →") { [unowned self] in
+                openNote(note)
+            }
+        }
+    }
+    
+    private func showAddNoteView() {
+        addItemButton.superview!.isHidden = true
+        addNoteView.isHidden = false
+        addNoteViewBottom.priority = .defaultHigh
+        addItemButtonBottom.priority = .defaultLow
+        tableView.layoutHeader()
+    }
+    
+    private func hideAddNoteView() {
+        addItemButton.superview!.isHidden = false
+        addNoteView.isHidden = true
+        addNoteViewBottom.priority = .defaultLow
+        addItemButtonBottom.priority = .defaultHigh
+        tableView.layoutHeader()
+    }
+    
     private func updateSteps() {
         let block = (mission.blocks?.allObjects as? [StepsBlock])?.filter { $0.id >= 0 }.sorted(by: { $0.id < $1.id }).first
         let steps = (block?.steps?.allObjects as? [MissionStep]) ?? []
@@ -144,12 +197,33 @@ class MissionViewController: UIViewController {
         aboutLabel.text = mission.about
     }
     
+    private func notifyNoteWillBeDeleted() {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
+        vc.popupTitle = "Недобавленная заметка будет удалена"
+        vc.buttons = [
+            ActionButton(type: .red, title: "Удалить и закрыть", action: { [unowned self] _ in
+                navigationController?.popViewController(animated: true)
+            }),
+            ActionButton(type: .secondary, title: "Вернуться к редактированию", action: { [unowned self] _ in
+                segmentedControl.selectedIndex = 1
+                segmentedControl.onTabSelected?(1)
+            })
+        ]
+        presentBottomSheet(vc, height: 200)
+    }
+    
     @objc private func onStepUpdated(notification: Notification) {
         tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .none)
     }
     
     @IBAction func backTapped(_ sender: Any) {
-        navigationController?.popViewController(animated: true)
+        if addNoteView.hasData {
+            view.endEditing(true)
+            notifyNoteWillBeDeleted()
+        } else {
+            navigationController?.popViewController(animated: true)
+        }
     }
     
     @IBAction func headerTapped(_ sender: Any) {
@@ -299,6 +373,14 @@ class MissionViewController: UIViewController {
                     }
                 }
             }
+        } else {
+            showAddNoteView()
+            isEditingNote = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                if let `self` = self {
+                    self.tableView.scrollToViewBottom(self.addNoteView)
+                }
+            }
         }
     }
     
@@ -306,9 +388,8 @@ class MissionViewController: UIViewController {
         let mainVC = (UIApplication.shared.keyWindow?.rootViewController as! MainViewController)
         let menuUnderlayControl = mainVC.addMenuUnderlayControl(color: .black.withAlphaComponent(0.25))
         
-        let menuView = MenuView()
+        var items = [MenuItemData]()
         if step.addedDate != nil {
-            var items = [MenuItemData]()
             let stepIndex = addedSteps.firstIndex(of: step)!
             if addedSteps.count > 1 && stepIndex > 0 {
                 items.append(
@@ -331,9 +412,8 @@ class MissionViewController: UIViewController {
                     deleteStep(step)
                 })
             )
-            menuView.items = items
         } else {
-            menuView.items = [
+            items = [
                 MenuItemData(text: "Изменить", image: .edit, type: .normal, action: { [unowned self] in
                     menuUnderlayControl.removeFromSuperview()
                     let row = recommendedSteps.firstIndex(of: step)!
@@ -358,30 +438,7 @@ class MissionViewController: UIViewController {
                 })
             ]
         }
-        menuView.translatesAutoresizingMaskIntoConstraints = false
-        menuUnderlayControl.addSubview(menuView)
-        
-        let screenHeight = UIScreen.main.bounds.height
-        let menuHeight = CGFloat(menuView.height)
-        let horizontalConstraint = menuView.leftAnchor.constraint(equalTo: menuUnderlayControl.leftAnchor, constant: 20)
-        let verticalConstraint = anchorRect.maxY + 20 + menuHeight > screenHeight ? menuView.bottomAnchor.constraint(equalTo: menuUnderlayControl.bottomAnchor, constant: anchorRect.minY - 7 - screenHeight) : menuView.topAnchor.constraint(equalTo: menuUnderlayControl.topAnchor, constant: anchorRect.maxY + 7)
-        NSLayoutConstraint.activate([verticalConstraint, horizontalConstraint])
-        
-        menuView.layer.cornerRadius = 30
-        
-        let highlightedItemImageView = UIImageView()
-        highlightedItemImageView.translatesAutoresizingMaskIntoConstraints = false
-        menuUnderlayControl.addSubview(highlightedItemImageView)
-        
-        let constraints = [
-            highlightedItemImageView.topAnchor.constraint(equalTo: menuUnderlayControl.topAnchor, constant: anchorRect.minY),
-            highlightedItemImageView.leftAnchor.constraint(equalTo: menuUnderlayControl.leftAnchor, constant: anchorRect.minX),
-            highlightedItemImageView.widthAnchor.constraint(equalToConstant: anchorRect.width),
-            highlightedItemImageView.heightAnchor.constraint(equalToConstant: anchorRect.height),
-        ]
-        NSLayoutConstraint.activate(constraints)
-        
-        highlightedItemImageView.image = image
+        showMenu(items: items, menuUnderlayControl: menuUnderlayControl, anchorRect: anchorRect, image: image, hMargin: 20)
     }
     
     private func sortAddedSteps() {
@@ -402,20 +459,24 @@ class MissionViewController: UIViewController {
     }
     
     private func onStepDeleted(_ step: MissionStep) {
-        if let index = addedSteps.firstIndex(where: { $0.id == step.id }) {
-            addedSteps.remove(at: index)
-            tableView.deleteRows(at: [IndexPath(row: index, section: 3)], with: .automatic)
+//        if let index = addedSteps.firstIndex(where: { $0.id == step.id }) {
+//            addedSteps.remove(at: index)
+            addedSteps = mission.addedSteps
+            sortAddedSteps()
+            tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .automatic)
             if step.block.id > 0 {
                 hiddenSteps.append(step)
                 tableView.reloadSections(IndexSet(arrayLiteral: 1), with: .none)
             }
-        }
+//        }
     }
     
     private func onStepUpdated(_ step: MissionStep) {
-        if let index = addedSteps.firstIndex(where: { $0.id == step.id }) {
-            tableView.reloadRows(at: [IndexPath(row: index, section: 3)], with: .none)
-        }
+//        if let index = addedSteps.firstIndex(where: { $0.id == step.id }) {
+            addedSteps = mission.addedSteps
+            sortAddedSteps()
+            tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .automatic)
+//        }
     }
 }
 
@@ -446,20 +507,61 @@ extension MissionViewController: UITableViewDelegate {
 extension MissionViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
+        if segmentedControl.selectedIndex == 0 {
+            return 4
+        } else {
+            return 1
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 1 || section == 2 {
-            return 1
+        if segmentedControl.selectedIndex == 0 {
+            if section == 1 || section == 2 {
+                return 1
+            }
+            if section == 3 {
+                return addedSteps.count
+            }
+            return recommendedExpanded ? (recommendedSteps.count ) : 0
+        } else {
+            let notesCount = addedSteps.flatMap { $0.notes?.allObjects ?? [] }.count
+            return notesCount / 2 + notesCount % 2
         }
-        if section == 3 {
-            return addedSteps.count
-        }
-        return recommendedExpanded ? (recommendedSteps.count ) : 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if segmentedControl.selectedIndex == 1 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "NotesCell", for: indexPath)
+            let notes = addedSteps.flatMap { $0.notes?.allObjects.map { $0 as! MissionNote } ?? [] }.sorted { ($0.date ?? Date()) > ($1.date ?? Date()) }
+            
+            let onNoteLongTap: (MissionNote, UIImage, CGRect) -> () = { [unowned self] note, image, rect in
+                self.generator.impactOccurred()
+                self.generator.prepare()
+                self.showNoteMenu(note: note, anchorRect: rect, image: image, onDeleted: { [unowned self] stepDeleted in
+                    if stepDeleted {
+                        addedSteps = mission.addedSteps
+                        sortAddedSteps()
+                    }
+                    self.tableView.reloadData()
+                })
+            }
+            
+            let view1 = cell.viewWithTag(1) as! NoteView
+            view1.note = notes[indexPath.row * 2]
+            view1.onLongGesture = onNoteLongTap
+            
+            let view2 = cell.viewWithTag(2) as! NoteView
+            if notes.count > indexPath.row * 2 + 1 {
+                view2.alpha = 1
+                view2.note = notes[indexPath.row * 2 + 1]
+                view2.onLongGesture = onNoteLongTap
+            } else {
+                view2.alpha = 0
+                view2.onLongGesture = nil
+            }
+            
+            return cell
+        }
         if indexPath.section == 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "HiddenStepsCell", for: indexPath)
             return cell
@@ -473,12 +575,14 @@ extension MissionViewController: UITableViewDataSource {
             let step = addedSteps[indexPath.row]
             cell.step = step
             cell.onLongGesture = { [unowned self] image, rect in
-                self.generator.impactOccurred()
-                self.generator.prepare()
-                self.showMenu(step: step, anchorRect: rect, image: image)
+                if step.id >= 0 {
+                    self.generator.impactOccurred()
+                    self.generator.prepare()
+                    self.showMenu(step: step, anchorRect: rect, image: image)
+                }
             }
-            cell.onOpenStep = { [unowned self] step, date in
-                openStep(step, date: date) { [unowned self] step in
+            cell.onOpenStep = { [unowned self] step, date, createNote in
+                openStep(step, date: date, createNote: createNote) { [unowned self] step in
                     onStepUpdated(step)
                 } onStepDeleted: { [unowned self] step in
                     onStepDeleted(step)
@@ -513,6 +617,9 @@ extension MissionViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if segmentedControl.selectedIndex == 1 {
+            return 228
+        }
         if indexPath.section == 1 {
             return hiddenSteps.isEmpty ? 1 : 48
         }

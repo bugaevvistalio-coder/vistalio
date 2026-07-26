@@ -22,6 +22,7 @@ enum MissionCategory: String, CaseIterable {
     case travel
     case speak
     case location
+    case notes
     
     var coverName: String {
         switch self {
@@ -49,6 +50,8 @@ enum MissionCategory: String, CaseIterable {
             return "cover11"
         case .location:
             return "cover12"
+        case .notes:
+            return "coverNotes"
         }
     }
 }
@@ -151,6 +154,18 @@ public class Mission: NSManagedObject {
     var maxSortOrder: Int32 {
         return (addedSteps.max(by: { $0.sortOrder < $1.sortOrder })?.sortOrder ?? 0)
     }
+    
+    @discardableResult func getNotesStep() -> MissionStep? {
+        var step = addedSteps.first { $0.id == -1 }
+        if step == nil {
+            CoreDataStack.shared.performAndWait { context in
+                step = MissionStep.create(context: context, mission: self, name: "Шаг для общих заметок", text: "Заметки, не привязанные к конкретному шагу(-ам).", frequency: .once, startDate: Date(), endDate: nil)
+                step?.id = -1
+                step?.sortOrder = -1
+            }
+        }
+        return step
+    }
 }
 
 extension Mission {
@@ -185,5 +200,4 @@ extension Mission {
 
     @objc(removeBlocks:)
     @NSManaged public func removeFromBlocks(_ values: NSSet)
-
 }
