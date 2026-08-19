@@ -9,6 +9,7 @@ import UIKit
 
 extension UIView {
     
+    @discardableResult
     func xibSetup() -> UIView {
         backgroundColor = UIColor.clear
         let view = loadNib()
@@ -34,12 +35,15 @@ extension UIView {
         return nib.instantiate(withOwner: self, options: nil).first as! UIView
     }
     
-    func setShadow(offset:CGSize = CGSize(width: 0, height: 5), radius: CGFloat = 5, cornerRadius:CGFloat = 12, color: UIColor = UIColor.black, shadowOpacity:Float = 0.05) {
+    func setShadow(offset:CGSize = CGSize(width: 0, height: 5), radius: CGFloat = 5, cornerRadius:CGFloat = 12, color: UIColor = UIColor.black, shadowOpacity:Float = 0.05, bounds: CGRect? = nil) {
         layer.cornerRadius = cornerRadius
         layer.shadowColor = color.cgColor
         layer.shadowRadius = radius
         layer.shadowOffset = offset
         layer.shadowOpacity = shadowOpacity
+        if let bounds = bounds {
+            layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius).cgPath
+        }
     }
     
     func addShadow(offset:CGSize = CGSize(width: 0, height: 5), radius: CGFloat = 5, cornerRadius: CGFloat = 12, color: UIColor = UIColor.black, shadowOpacity:Float = 0.05, bounds: CGRect? = nil, layerName: String? = "ShadowLayer") {

@@ -32,7 +32,7 @@ class TemplateViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        backButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1)
+        backButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1, bounds: CGRect(x: 0, y: 0, width: 40, height: 40))
         progressIndicator.isHidden = true
         setupBottomConstraint(startButton)
         
@@ -129,28 +129,9 @@ class TemplateViewController: UIViewController {
     }
     
     @IBAction func coverTapped(_ sender: Any) {
-        let galleryView = GalleryView(frame: .zero)
-        galleryView.translatesAutoresizingMaskIntoConstraints = false
-        
-        let view = sheetViewController!.view!
-        view.addSubview(galleryView)
-        
-        let constraints = [
-            galleryView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
-            galleryView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
-            galleryView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
-            galleryView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
-        ]
-        NSLayoutConstraint.activate(constraints)
-        
         var paths = [template.cover]
         paths.append(contentsOf: notes.compactMap { $0.images }.flatMap { $0 })
-        galleryView.paths = paths
-        
-        sheetViewController!.view.gestureRecognizers?.first { $0 is UIPanGestureRecognizer }?.isEnabled = false
-        galleryView.onDismiss = { [unowned self] in
-            self.sheetViewController!.view.gestureRecognizers?.first { $0 is UIPanGestureRecognizer }?.isEnabled = true
-        }
+        sheetViewController!.openGallery(media: paths.map { MediaData(type: "image", image: nil, path: $0) }, at: 0)
     }
     
     @IBAction func startTapped(_ sender: Any) {

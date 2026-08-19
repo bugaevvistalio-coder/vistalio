@@ -101,9 +101,16 @@ extension UIViewController {
         let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
         vc.popupTitle = "Удалить миссию?"
         vc.popupText = "Нельзя отменить. По умолчанию все заметки удаляемой миссии помещаются в миссию «Общие заметки»."
+        vc.checkText = "Удалить вместе с заметками"
         vc.buttons = [
-            ActionButton(type: .red, title: "Удалить", action: { [unowned self] _ in
+            ActionButton(type: .red, title: "Удалить", action: { [unowned self] checked in
                 CoreDataStack.shared.performAndWait { context in
+                    if !checked {
+                        let notes = mission.addedSteps.flatMap { $0.notes?.allObjects ?? [] }.map { $0 as! MissionNote }
+                        if !notes.isEmpty, let notesMission = MissionsHolder.shared.getNotesMission(context: context), let step = MissionStep.create(context: context, mission: notesMission, name: "Удалённые заметки миссии «\(mission.name ?? "")»", text: nil, frequency: .once, startDate: Date(), endDate: nil) {
+                            notes.forEach { $0.step = step }
+                        }
+                    }
                     context.delete(mission)
                 }
                 NotificationCenter.default.post(name: .missionUpdated, object: nil)
@@ -241,19 +248,20 @@ extension UIViewController {
         presentBottomSheet(vc, height: UIScreen.main.bounds.height - top)
     }
     
-    func openStep(_ step: MissionStep, date: Date? = nil, createNote: Bool = false, onStepUpdated: @escaping (MissionStep) -> (), onStepDeleted: @escaping (MissionStep) -> ()) {
+    func openStep(_ step: MissionStep, date: Date? = nil, createNote: Bool = false) {
         let sb = UIStoryboard(name: "Missions", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "StepVC") as! StepViewController
         vc.step = step
         vc.date = date
         vc.createNote = createNote
-        vc.onStepUpdated = onStepUpdated
-        vc.onStepDeleted = onStepDeleted
         navigationController?.pushViewController(vc, animated: true)
     }
     
     func openNote(_ note: MissionNote) {
-        
+        let sb = UIStoryboard(name: "Missions", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "NoteVC") as! NoteViewController
+        vc.note = note
+        UIApplication.topViewController()?.navigationController?.pushViewController(vc, animated: true)
     }
     
     func addMenuUnderlayControl(color: UIColor) -> UIControl {
@@ -348,27 +356,42 @@ extension UIViewController {
         highlightedItemImageView.image = image
     }
     
-    func showNoteMenu(note: MissionNote, anchorRect: CGRect, image: UIImage, onDeleted: @escaping (Bool) -> ()) {
+    func showNoteMenu(note: MissionNote, anchorRect: CGRect, image: UIImage, onDeleted: @escaping (Bool, Bool) -> (), onMoved: @escaping (Bool, Bool) -> ()) {
         let mainVC = (UIApplication.shared.keyWindow?.rootViewController as! MainViewController)
         let menuUnderlayControl = mainVC.addMenuUnderlayControl(color: .black.withAlphaComponent(0.25))
-        let items = [
+        let items = getNoteMenuItems(note: note, menuUnderlayControl: menuUnderlayControl, onDeleted: onDeleted, onMoved: onMoved)
+        showMenu(items: items, menuUnderlayControl: menuUnderlayControl, anchorRect: anchorRect, image: image, hMargin: 10)
+    }
+    
+    func getNoteMenuItems(note: MissionNote, menuUnderlayControl: UIView, onDeleted: @escaping (Bool, Bool) -> (), onMoved: @escaping (Bool, Bool) -> ()) -> [MenuItemData] {
+        return [
             MenuItemData(text: "Изменить", image: .edit, type: .normal, action: { [unowned self] in
                 menuUnderlayControl.removeFromSuperview()
-               
+                let sb = UIStoryboard(name: "Missions", bundle: nil)
+                let vc = sb.instantiateViewController(identifier: "CreateNoteVC") as! CreateNoteViewController
+                vc.note = note
+                self.presentFullScreen(vc)
             }),
             MenuItemData(text: "Переместить", image: .target, type: .normal, action: { [unowned self] in
                 menuUnderlayControl.removeFromSuperview()
                 
+                let sb = UIStoryboard(name: "Missions", bundle: nil)
+                let vc = sb.instantiateViewController(identifier: "MoveNoteVC") as! MoveNoteViewController
+                vc.showCalendar = true
+                vc.note = note
+                vc.onMoved = { mission, step, stepDeleted, missionDeleted in
+                    onMoved(stepDeleted, missionDeleted)
+                }
+                self.presentFullScreen(vc)
             }),
             MenuItemData(text: "Удалить", image: .trash, type: .red, action: { [unowned self] in
                 menuUnderlayControl.removeFromSuperview()
                 openDeleteNote(note, onDeleted: onDeleted)
             })
         ]
-        showMenu(items: items, menuUnderlayControl: menuUnderlayControl, anchorRect: anchorRect, image: image, hMargin: 10)
     }
     
-    func openDeleteNote(_ note: MissionNote, onDeleted: @escaping (Bool) -> ()) {
+    func openDeleteNote(_ note: MissionNote, onDeleted: @escaping (Bool, Bool) -> ()) {
         let sb = UIStoryboard(name: "Main", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
         vc.popupTitle = "Удалить заметку?"
@@ -377,19 +400,56 @@ extension UIViewController {
         vc.buttons = [
             ActionButton(type: .red, title: "Удалить", action: { _ in
                 var stepDeleted = false
+                var missionDeleted = false
                 CoreDataStack.shared.performAndWait { context in
-                    if note.step?.id == -1 && note.step?.notes?.count == 1 {
-                        context.delete(note.step!)
+                    if note.step?.hasFrequency == false && note.step?.notes?.count == 1 {
+                        if let mission = note.step?.block.mission, mission.category == MissionCategory.notes.rawValue, mission.addedSteps.count == 1 {
+                            context.delete(mission)
+                            missionDeleted = true
+                        } else {
+                            context.delete(note.step!)
+                        }
                         stepDeleted = true
                     } else {
                         context.delete(note)
                     }
                 }
-                onDeleted(stepDeleted)
+                onDeleted(stepDeleted, missionDeleted)
                 (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Заметка удалена")
+                if missionDeleted {
+                    NotificationCenter.default.post(name: .missionUpdated, object: nil)
+                }
             }),
             ActionButton(type: .secondary, title: "Отменить", action: { _ in })
         ]
         presentBottomSheet(vc, height: 200)
+    }
+    
+    func openGallery(media: [MediaData], at index: Int) {
+        let galleryView = GalleryView(frame: .zero)
+        galleryView.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(galleryView)
+        
+        let constraints = [
+            galleryView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
+            galleryView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
+            galleryView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+            galleryView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
+        ]
+        NSLayoutConstraint.activate(constraints)
+        
+        var media = media
+        if index > 0 {
+            let firstItems = media.prefix(upTo: index)
+            media.removeFirst(index)
+            media.append(contentsOf: firstItems)
+        }
+        galleryView.media = media
+        
+        view.gestureRecognizers?.first { $0 is UIPanGestureRecognizer }?.isEnabled = false
+        galleryView.onDismiss = { [unowned self] in
+            self.view.gestureRecognizers?.first { $0 is UIPanGestureRecognizer }?.isEnabled = true
+        }
     }
 }

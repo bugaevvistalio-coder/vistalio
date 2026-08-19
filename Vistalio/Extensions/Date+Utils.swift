@@ -68,6 +68,14 @@ extension Date {
         return calendar.date(from: calendar.dateComponents([.year, .month, .day], from: self))!
     }
     
+    var startOfWeek: Date {
+        let calendar = Calendar.current
+        if let weekInterval = calendar.dateInterval(of: .weekOfYear, for: self) {
+           return weekInterval.start
+        }
+        return self
+    }
+    
     func isSameDay(_ date: Date) -> Bool {
         return Calendar.current.isDate(self, equalTo: date, toGranularity: .day)
     }

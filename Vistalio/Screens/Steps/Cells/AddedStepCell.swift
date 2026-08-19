@@ -54,13 +54,15 @@ class AddedStepCell: UITableViewCell {
             if !(roundedView.gestureRecognizers?.contains(longGestureRecognizer) ?? false) {
                 roundedView.addGestureRecognizer(longGestureRecognizer)
             }
-            if step.id >= 0 {
+            if step.hasFrequency {
                 dateLabel.superview?.isHidden = false
                 lastStepItemDate = step.lastDate
                 checkImageView.image = step.isImplementedForDate(lastStepItemDate) ? .checkCircleOn : .checkCircleOff
+                addNoteControl.isHidden = false
             } else {
                 dateLabel.superview?.isHidden = true
                 checkImageView.isHidden = true
+                addNoteControl.isHidden = true
             }
             
             displayEmotions()
@@ -96,6 +98,8 @@ class AddedStepCell: UITableViewCell {
             if displayedEmotions.count == 4 {
                 emotionsCounterLabel.text = "+\(left+1)"
                 emotion1View.isHidden = true
+            } else if displayedEmotions.count == 0 {
+                emotionsCounterLabel.text = "\(left)"
             } else {
                 emotionsCounterLabel.text = "+\(left)"
             }

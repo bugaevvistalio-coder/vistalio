@@ -15,6 +15,18 @@ class FilesHelper {
         return documentsDirectory.appendingPathComponent(path)
     }
     
+    func createFolder(_ folder: String) {
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let dir = documentsDirectory.appendingPathComponent(folder)
+        try? FileManager.default.createDirectory(atPath: dir.path, withIntermediateDirectories: true, attributes: nil)
+    }
+    
+    func createFilename(ext: String) -> String {
+        let df = DateFormatter()
+        df.dateFormat = "_dd_MM_yyyy_HH_mm_ss"
+        return "\(String.randomString(length: 8))\(df.string(from: Date())).\(ext)"
+    }
+    
     func saveToFile(data: Data, ext: String = "jpg", directory: String? = nil) -> String? {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         

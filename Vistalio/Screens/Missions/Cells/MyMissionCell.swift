@@ -13,7 +13,7 @@ class MyMissionCell: UICollectionViewCell {
     @IBOutlet weak var roundedView: RoundedView!
     @IBOutlet weak var coverImageView: RoundedImageView!
     @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var aboutLabel: UILabel!
+    @IBOutlet weak var aboutLabel: UILabel?
     @IBOutlet weak var radioImageView: UIImageView?
     
     private var longGestureRecognizer: UILongPressGestureRecognizer?
@@ -24,13 +24,12 @@ class MyMissionCell: UICollectionViewCell {
             if let mission = mission {
                 roundedView.isHidden = false
                 
+                nameLabel.text = mission.name
                 if mission.category == MissionCategory.notes.rawValue {
-                    nameLabel.text = "Общие заметки"
-                    aboutLabel.isHidden = false
-                    aboutLabel.text = "ⓘ Сюда попадают заметки, не привязанные к миссии"
+                    aboutLabel?.isHidden = false
+                    aboutLabel?.text = mission.about
                 } else {
-                    nameLabel.text = mission.name
-                    aboutLabel.isHidden = true
+                    aboutLabel?.isHidden = true
                 }
                 
                 if let path = mission.photoPath {

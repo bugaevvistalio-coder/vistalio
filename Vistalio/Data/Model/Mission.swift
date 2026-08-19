@@ -59,6 +59,8 @@ enum MissionCategory: String, CaseIterable {
 @objc(Mission)
 public class Mission: NSManagedObject {
     
+    var selectedSteps: [MissionStep]?
+    
     @discardableResult
     class func create(context: NSManagedObjectContext, name: String?, coverPath: String?, about: String? = nil, category: String? = nil) -> Mission? {
         guard let entityDescription = NSEntityDescription.entity(forEntityName: "Mission", in: context) else { return nil }

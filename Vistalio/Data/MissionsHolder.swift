@@ -6,12 +6,14 @@
 //
 
 import UIKit
+import CoreData
 
 class MissionsHolder {
     
     static let shared = MissionsHolder()
     
     private(set) var templates = [MissionTemplate]()
+    var openTemplateId: Int?
     
     func createMission(name: String, about: String?, coverPath: String?, category: MissionCategory?, onCreated: (Mission) -> ()) {
         var mission: Mission? = nil
@@ -83,7 +85,7 @@ class MissionsHolder {
                     self.templates = templatesData.missions
                     
                     let request = HiddenMissionTemplate.hiddenMissionTemplateFetchRequest()
-                    var hiddenTemplates = try CoreDataStack.shared.backgroundContext.fetch(request)
+                    let hiddenTemplates = try CoreDataStack.shared.backgroundContext.fetch(request)
                     self.templates.forEach { t in
                         if let hidden = hiddenTemplates.first(where: { $0.templateId == t.id }) {
                             t.hiddenAt = hidden.date
@@ -92,6 +94,10 @@ class MissionsHolder {
                     
                     DispatchQueue.main.async {
                         NotificationCenter.default.post(name: .templatesUpdated, object: nil)
+                        if let templateId = self.openTemplateId {
+                            self.openTemplateId = nil
+                            (UIApplication.shared.delegate as! AppDelegate).openTemplate(id: templateId)
+                        }
                     }
                     
                 } catch let error as NSError {
@@ -101,22 +107,20 @@ class MissionsHolder {
         }
     }
     
-    @discardableResult func getNotesMission() -> Mission? {
-        var mission = fetchNotesMission()
+    @discardableResult func getNotesMission(context: NSManagedObjectContext) -> Mission? {
+        var mission = fetchNotesMission(context: context)
         if mission == nil {
-            CoreDataStack.shared.performAndWait { context in
-                mission = Mission.create(context: context, name: nil, coverPath: nil, category: MissionCategory.notes.rawValue)
-                mission?.creationDate = Date(timeIntervalSince1970: 0)
-            }
+            mission = Mission.create(context: context, name: "Общие заметки", coverPath: nil, about: "ⓘ Сюда попадают заметки, не привязанные к миссии", category: MissionCategory.notes.rawValue)
+            mission?.creationDate = Date(timeIntervalSince1970: 0)
         }
         return mission
     }
     
-    private func fetchNotesMission() -> Mission? {
+    private func fetchNotesMission(context: NSManagedObjectContext) -> Mission? {
         let missionsRequest = Mission.missionFetchRequest()
         missionsRequest.predicate = NSPredicate(format: "category == %@", MissionCategory.notes.rawValue)
         do {
-            return try CoreDataStack.shared.mainContext.fetch(missionsRequest).first
+            return try context.fetch(missionsRequest).first
         } catch {
             print("Failed to retrive missions and folders")
         }

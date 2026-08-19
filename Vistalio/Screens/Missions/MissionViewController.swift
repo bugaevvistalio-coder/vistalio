@@ -22,6 +22,8 @@ class MissionViewController: UIViewController {
     @IBOutlet weak var headerControlHeight: NSLayoutConstraint!
     
     @IBOutlet weak var segmentedControl: SegmentedControl!
+    
+    @IBOutlet weak var addItemView: UIView!
     @IBOutlet weak var addItemButton: UIButton!
     
     @IBOutlet weak var addNoteView: AddNoteView!
@@ -40,6 +42,8 @@ class MissionViewController: UIViewController {
     @IBOutlet weak var recommendedArrow: UIImageView!
     @IBOutlet weak var addAllStepsView: UIView!
     
+    @IBOutlet weak var headerBottom: NSLayoutConstraint!
+    
     var mission: Mission!
     
     private var hasNavBarShadow = false
@@ -57,7 +61,7 @@ class MissionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        backButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1)
+        backButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1, bounds: CGRect(x: 0, y: 0, width: 40, height: 40))
         addItemButton.addDashedBorder(color: UIColor.textGrey30, dashPattern: [2, 2], cornerRadius: 18)
         
         navBar.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
@@ -71,34 +75,40 @@ class MissionViewController: UIViewController {
         
         setupAddNoteView()
         updateSteps()
+        updateAddItemViewVisibility()
         
         segmentedControl.tabs = [SegmentedTabData(text: "Шаги", image: .steps), SegmentedTabData(text: "Заметки", image: .notes)]
         segmentedControl.onTabSelected = { [unowned self] index in
             UIView.performWithoutAnimation {
                 self.addItemButton.setTitle(index == 0 ? "Шаг" : "Заметка", for: .normal)
             }
+            // Reload data should be before layoutHeader(). Otherwise there will be a crash because cellForRow will be called without
+            // numberOfRows. But numberOfRows must be called because tab is changed
+            tableView.reloadData()
+            updateRecommendedStepsVisibility()
             if index == 0 {
-                recommendedStepsControl.isHidden = false
                 hideAddNoteView()
             } else {
-                recommendedStepsControl.isHidden = true
                 if isEditingNote {
                     showAddNoteView()
                 }
             }
             updateAddAllSteps()
-            tableView.reloadData()
         }
         
         displayMission()
+        updateRecommendedStepsVisibility()
         
         generator.prepare()
         
         NotificationCenter.default.addObserver(self, selector: #selector(onStepUpdated(notification:)), name: .stepUpdated, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onNoteUpdated(notification:)), name: .noteUpdated, object: nil)
     }
     
     deinit {
+        print("Mission VC DEINIT")
         NotificationCenter.default.removeObserver(self, name: .stepUpdated, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .noteUpdated, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -136,6 +146,15 @@ class MissionViewController: UIViewController {
         }
     }
     
+    private func updateRecommendedStepsVisibility() {
+        recommendedStepsControl.isHidden = segmentedControl.selectedIndex == 1 || mission.templateId <= 0
+    }
+    
+    private func updateAddItemViewVisibility() {
+        addItemView.isHidden = (mission.category == MissionCategory.notes.rawValue)
+        headerBottom.constant = (mission.category == MissionCategory.notes.rawValue) ? 0 : 4
+    }
+    
     private func setupAddNoteView() {
         addNoteView.isHidden = true
         addNoteView.mission = mission
@@ -147,6 +166,7 @@ class MissionViewController: UIViewController {
             view.alpha = 0
             textView.addSubview(view)
             tableView.scrollToViewBottom(view)
+            view.removeFromSuperview()
         }
         addNoteView.onNoteAdded = { [unowned self] note in
             hideAddNoteView()
@@ -195,6 +215,10 @@ class MissionViewController: UIViewController {
         coverImageView.displayMissionCover(mission: mission)
         titleLabel.text = mission.name
         aboutLabel.text = mission.about
+        
+        if mission.category == MissionCategory.notes.rawValue {
+            menuButton.isHidden = true
+        }
     }
     
     private func notifyNoteWillBeDeleted() {
@@ -214,7 +238,23 @@ class MissionViewController: UIViewController {
     }
     
     @objc private func onStepUpdated(notification: Notification) {
+        addedSteps = mission.addedSteps
+        sortAddedSteps()
         tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .none)
+        
+        if let step = notification.object as? MissionStep {
+            print("Step \(step.isDeleted || step.managedObjectContext == nil), \(step.block.id)")
+        }
+        if let step = notification.object as? MissionStep, step.hidden {
+            hiddenSteps.append(step)
+            tableView.reloadSections(IndexSet(arrayLiteral: 1), with: .none)
+        }
+    }
+    
+    @objc func onNoteUpdated(notification: Notification) {
+        addedSteps = mission.addedSteps
+        sortAddedSteps()
+        tableView.reloadData()
     }
     
     @IBAction func backTapped(_ sender: Any) {
@@ -366,11 +406,7 @@ class MissionViewController: UIViewController {
                 tableView.insertRows(at: [IndexPath(row: 0, section: 3)], with: .none)
                 tableView.endUpdates()
                 (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг добавлен", secondaryText: "К шагу →") { [unowned self] in
-                    openStep(step, onStepUpdated: { [unowned self] step in
-                        onStepUpdated(step)
-                    }) { [unowned self] step in
-                        onStepDeleted(step)
-                    }
+                    openStep(step)
                 }
             }
         } else {
@@ -459,24 +495,31 @@ class MissionViewController: UIViewController {
     }
     
     private func onStepDeleted(_ step: MissionStep) {
-//        if let index = addedSteps.firstIndex(where: { $0.id == step.id }) {
-//            addedSteps.remove(at: index)
-            addedSteps = mission.addedSteps
-            sortAddedSteps()
-            tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .automatic)
-            if step.block.id > 0 {
-                hiddenSteps.append(step)
-                tableView.reloadSections(IndexSet(arrayLiteral: 1), with: .none)
-            }
-//        }
+        addedSteps = mission.addedSteps
+        sortAddedSteps()
+        tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .automatic)
+        if step.block.id > 0 {
+            hiddenSteps.append(step)
+            tableView.reloadSections(IndexSet(arrayLiteral: 1), with: .none)
+        }
     }
     
     private func onStepUpdated(_ step: MissionStep) {
-//        if let index = addedSteps.firstIndex(where: { $0.id == step.id }) {
-            addedSteps = mission.addedSteps
-            sortAddedSteps()
-            tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .automatic)
-//        }
+        addedSteps = mission.addedSteps
+        sortAddedSteps()
+        tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .automatic)
+    }
+    
+    private func onNoteChanged(stepDeleted: Bool, missionDeleted: Bool) {
+        if missionDeleted {
+            navigationController?.popViewController(animated: true)
+        } else {
+            if stepDeleted {
+                addedSteps = mission.addedSteps
+                sortAddedSteps()
+            }
+            self.tableView.reloadData()
+        }
     }
 }
 
@@ -537,12 +580,14 @@ extension MissionViewController: UITableViewDataSource {
             let onNoteLongTap: (MissionNote, UIImage, CGRect) -> () = { [unowned self] note, image, rect in
                 self.generator.impactOccurred()
                 self.generator.prepare()
-                self.showNoteMenu(note: note, anchorRect: rect, image: image, onDeleted: { [unowned self] stepDeleted in
-                    if stepDeleted {
+                self.showNoteMenu(note: note, anchorRect: rect, image: image, onDeleted: { [unowned self] stepDeleted, missionDeleted in
+                    self.onNoteChanged(stepDeleted: stepDeleted, missionDeleted: missionDeleted)
+                }, onMoved: { [unowned self] stepDeleted, missionDeleted in
+                    self.onNoteChanged(stepDeleted: stepDeleted, missionDeleted: missionDeleted)
+                    if note.step?.hasFrequency == false {
                         addedSteps = mission.addedSteps
                         sortAddedSteps()
                     }
-                    self.tableView.reloadData()
                 })
             }
             
@@ -582,30 +627,25 @@ extension MissionViewController: UITableViewDataSource {
                 }
             }
             cell.onOpenStep = { [unowned self] step, date, createNote in
-                openStep(step, date: date, createNote: createNote) { [unowned self] step in
-                    onStepUpdated(step)
-                } onStepDeleted: { [unowned self] step in
-                    onStepDeleted(step)
-                }
-
+                openStep(step, date: date, createNote: createNote)
             }
             return cell
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: "RecommendedStepCell", for: indexPath) as! RecommendedStepCell
         let step = recommendedSteps[indexPath.row]
         cell.step = step
-        cell.onStepTapped = {
-            tableView.beginUpdates()
-            tableView.endUpdates()
+        cell.onStepTapped = { [unowned self] in
+            self.tableView.beginUpdates()
+            self.tableView.endUpdates()
         }
         cell.onStepAdded = { [unowned self] step in
             if let index = recommendedSteps.firstIndex(of: step) {
                 recommendedSteps.remove(at: index)
                 addedSteps.insert(step, at: 0)
-                tableView.beginUpdates()
-                tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-                tableView.insertRows(at: [IndexPath(row: 0, section: 3)], with: .automatic)
-                tableView.endUpdates()
+                self.tableView.beginUpdates()
+                self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+                self.tableView.insertRows(at: [IndexPath(row: 0, section: 3)], with: .automatic)
+                self.tableView.endUpdates()
             }
         }
         cell.onLongGesture = { [unowned self] image, rect in
@@ -624,7 +664,7 @@ extension MissionViewController: UITableViewDataSource {
             return hiddenSteps.isEmpty ? 1 : 48
         }
         if indexPath.section == 2 {
-            return addedSteps.isEmpty ? 1 : 66
+            return (mission.templateId <= 0 || addedSteps.isEmpty) ? 1 : 66
         }
         return UITableView.automaticDimension
     }

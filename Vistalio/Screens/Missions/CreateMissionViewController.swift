@@ -38,7 +38,7 @@ class CreateMissionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        closeButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1)
+        closeButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1, bounds: CGRect(x: 0, y: 0, width: 40, height: 40))
         refreshButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 4, cornerRadius: 10, shadowOpacity: 0.1)
         
         nameTextView.delegate = self

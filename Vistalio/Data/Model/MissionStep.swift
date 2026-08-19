@@ -121,6 +121,10 @@ extension MissionStep {
         return text?.replacingOccurrences(of: "\n\n", with: " ").replacingOccurrences(of: "\n", with: " ")
     }
     
+    var hasFrequency: Bool {
+        return id >= 0 && block.mission.category != MissionCategory.notes.rawValue
+    }
+    
     @discardableResult
     class func create(context: NSManagedObjectContext, mission: Mission, name: String, text: String?, frequency: StepFrequency, startDate: Date, endDate: Date?) -> MissionStep? {
         guard let entityDescription = NSEntityDescription.entity(forEntityName: "MissionStep", in: context) else { return nil }
@@ -380,6 +384,62 @@ extension MissionStep {
             return nil
         }
         return implementedSteps?.allObjects.first(where: { ($0 as! ImplementedStep).date == date.toDateString || frequency == StepFrequency.untilDone.rawValue }) as? ImplementedStep
+    }
+    
+    func hasItemForDate(_ date: Date) -> Bool {
+        let date = date.startOfDay
+        let removed = removedSteps?.allObjects.map { ($0 as! RemovedStep).date.toDay } ?? []
+        if removed.contains(date) {
+            return false
+        }
+        
+        guard let startDate = startDate?.toDay else {
+            return false
+        }
+        
+        if frequency == StepFrequency.once.rawValue {
+            return date == startDate
+        }
+        
+        if date < startDate {
+            return false
+        }
+        if let endDate = endDate?.toDay, date > endDate {
+            return false
+        }
+        
+        if frequency == StepFrequency.everyDay.rawValue {
+            return true
+        }
+        if frequency == StepFrequency.untilDone.rawValue {
+            if let implemented = implementedSteps?.allObjects.first as? ImplementedStep {
+                return date <= implemented.date.toDay
+            } else {
+                return true
+            }
+        }
+        if frequency == StepFrequency.everyOtherDay.rawValue || frequency == StepFrequency.everyWeek.rawValue || frequency == StepFrequency.everyTwoWeeks.rawValue {
+            var interval = 2
+            if frequency == StepFrequency.everyWeek.rawValue {
+                interval = 7
+            } else if frequency == StepFrequency.everyTwoWeeks.rawValue {
+                interval = 14
+            }
+            let daysBetween = Calendar.current.dateComponents([.day], from: startDate, to: date).day!
+            return daysBetween % interval == 0
+        }
+        let calendar = Calendar.current
+        if frequency == StepFrequency.everyMonth.rawValue {
+            let monthsBetween = Calendar.current.dateComponents([.month], from: startDate, to: date).month!
+            return calendar.date(byAdding: .month, value: monthsBetween, to: startDate) == date
+        }
+        
+        if frequency == StepFrequency.everyYear.rawValue {
+            let yearsBetween = Calendar.current.dateComponents([.year], from: startDate, to: date).year!
+            return calendar.date(byAdding: .year, value: yearsBetween, to: startDate) == date
+        }
+        
+        return false
     }
     
     @discardableResult

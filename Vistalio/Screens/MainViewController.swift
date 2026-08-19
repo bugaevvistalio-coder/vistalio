@@ -60,6 +60,7 @@ class MainViewController: UIViewController {
         let control = (sender as! UIControl)
         let tab = tabs[control.tag]
         if tab.isTabSelected {
+            UIApplication.topViewController()?.navigationController?.popToRootViewController(animated: true)
             return
         }
         if let tabsDelegate = UIApplication.topViewController() as? TabsDelegate, !tabsDelegate.canSwitchTab(tabIndex: control.tag) {
@@ -67,6 +68,14 @@ class MainViewController: UIViewController {
         }
         
         switchTab(tabIndex: control.tag)
+    }
+    
+    @IBAction func emotionTapped(_ sender: Any) {
+        let sb = UIStoryboard(name: "Missions", bundle: nil)
+        let nc = sb.instantiateViewController(withIdentifier: "SelectEmotionNC") as! UINavigationController
+        let vc = nc.viewControllers.first as! SelectEmotionViewController
+        vc.isNoteCreation = true
+        presentFullScreen(nc)
     }
     
     func switchTab(tabIndex: Int) {

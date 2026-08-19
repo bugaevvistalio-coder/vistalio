@@ -30,7 +30,7 @@ class MissionsViewController: UIViewController {
         navBar.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         navBar.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 30, shadowOpacity: 0.1)
         
-        myMissionsButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1)
+        myMissionsButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1, bounds: CGRect(x: 0, y: 0, width: 40, height: 40))
         addMissionButton.addDashedBorder(color: UIColor.textGrey30, dashPattern: [2, 2], cornerRadius: 18)
         
         tableView.estimatedRowHeight = 380.0
@@ -39,14 +39,17 @@ class MissionsViewController: UIViewController {
         
         updateMyMissions()
         
-        MissionsHolder.shared.loadTemplates()
+        templates = MissionsHolder.shared.templates.filter { $0.hiddenAt == nil }
+        hiddenTemplates = MissionsHolder.shared.templates.filter { $0.hiddenAt != nil }.sorted(by: { $0.hiddenAt! > $1.hiddenAt! })
         
         NotificationCenter.default.addObserver(self, selector: #selector(onMissionUpdated(notification:)), name: .missionUpdated, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onNoteUpdated(notification:)), name: .noteUpdated, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onTemplatesUpdated(notification:)), name: .templatesUpdated, object: nil)
     }
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: .missionUpdated, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .noteUpdated, object: nil)
         NotificationCenter.default.removeObserver(self, name: .templatesUpdated, object: nil)
     }
     
@@ -76,6 +79,13 @@ class MissionsViewController: UIViewController {
     
     @objc func onMissionUpdated(notification: Notification) {
         updateMyMissions()
+    }
+    
+    @objc func onNoteUpdated(notification: Notification) {
+        let notesCategory = MissionCategory.notes.rawValue
+        if let note = notification.object as? MissionNote, note.step?.block.mission.category == notesCategory, myMissions.last?.category != notesCategory {
+            updateMyMissions()
+        }
     }
     
     @objc func onTemplatesUpdated(notification: Notification) {

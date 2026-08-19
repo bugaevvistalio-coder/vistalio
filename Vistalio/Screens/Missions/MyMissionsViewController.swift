@@ -29,7 +29,7 @@ class MyMissionsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        backButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1)
+        backButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1, bounds: CGRect(x: 0, y: 0, width: 40, height: 40))
         emptyArchiveCircle.setShadow(offset: CGSize(width: 0, height: 0), radius: 20, cornerRadius: 20, shadowOpacity: 0.22)
         
         navBar.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
@@ -44,10 +44,12 @@ class MyMissionsViewController: UIViewController {
         generator.prepare()
         
         NotificationCenter.default.addObserver(self, selector: #selector(onMissionUpdated(notification:)), name: .missionUpdated, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onNoteAdded(notification:)), name: .noteUpdated, object: nil)
     }
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: .missionUpdated, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .noteUpdated, object: nil)
     }
     
     @IBAction func backTapped(_ sender: Any) {
@@ -68,6 +70,13 @@ class MyMissionsViewController: UIViewController {
     
     @objc func onMissionUpdated(notification: Notification) {
         updateMissions()
+    }
+    
+    @objc func onNoteAdded(notification: Notification) {
+        let notesCategory = MissionCategory.notes.rawValue
+        if let note = notification.object as? MissionNote, note.step?.block.mission.category == notesCategory, missions.last?.category != notesCategory {
+            updateMissions()
+        }
     }
     
     private func updateMissions() {

@@ -19,6 +19,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        IQKeyboardManager.shared.toolbarConfiguration.previousNextDisplayMode = .alwaysHide
         IQKeyboardManager.shared.resignOnTouchOutside = true
         
+//        AppsFlyerLib.shared().appInviteOneLinkID = "eU8s"
+//            
+//        AppsFlyerLib.shared().oneLinkCustomDomains = ["vistalio.onelink.me"]
+        
         AppsFlyerLib.shared().appsFlyerDevKey = "Msm9X2Sp9ZbqfkdPym4eAF"
         AppsFlyerLib.shared().appleAppID = "1632381333"
         AppsFlyerLib.shared().deepLinkDelegate = self
@@ -30,6 +34,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             AppsFlyerLib.shared().appInviteOneLinkID = "eU8s"
             AppsFlyerLib.shared().start()
         }
+        
+        MissionsHolder.shared.loadTemplates()
         
         return true
     }
@@ -50,6 +56,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func addNotification(text: String, secondaryText: String? = nil, onTapped: (() -> ())? = nil) {
         (UIApplication.shared.keyWindow?.rootViewController as? MainViewController)?.addNotification(text: text, secondaryText: secondaryText, onTapped: onTapped)
+    }
+    
+    func openTemplate(id: Int) {
+        if let template = MissionsHolder.shared.templates.filter({ $0.id == id }).first {
+            let sb = UIStoryboard(name: "Missions", bundle: nil)
+            let vc = sb.instantiateViewController(withIdentifier: "TemplateVC") as! TemplateViewController
+            vc.template = template
+            if let mainVC = UIApplication.shared.mainViewController {
+                mainVC.dismiss(animated: false)
+                mainVC.presentFullScreen(vc)
+            }
+        } else {
+            MissionsHolder.shared.openTemplateId = id
+        }
     }
 }
 
@@ -72,7 +92,7 @@ extension AppDelegate: DeepLinkDelegate {
         }
         
         if deepLink.deeplinkValue == "recommended" && deepLink.clickEvent.keys.contains("deep_link_sub1"), let param = deepLink.clickEvent["deep_link_sub1"] as? String, let templateId = Int(param) {
-//            openTemplate(id: templateId)
+            openTemplate(id: templateId)
         }
         
         

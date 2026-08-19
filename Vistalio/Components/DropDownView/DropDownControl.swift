@@ -41,7 +41,7 @@ class DropDownControl: UIView {
     private func setup() { }
     
     @IBAction func tapped(_ sender: AnyObject) {
-        view.endEditing(true)
+        parentVC.view.endEditing(true)
         
         onBeforeShowItems?()
         

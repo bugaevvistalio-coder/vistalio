@@ -29,4 +29,11 @@ extension UIApplication {
         }
         return controller
     }
+    
+    var mainViewController: MainViewController? {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let mainVC = windowScene.windows.first(where: { $0.isKeyWindow })?.rootViewController as? MainViewController else {
+            return nil
+        }
+        return mainVC
+    }
 }

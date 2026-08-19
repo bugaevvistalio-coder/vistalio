@@ -30,6 +30,9 @@ class NoteToMissionCell: UITableViewCell {
     
     var mission: Mission! {
         didSet {
+            if oldValue?.objectID == mission.objectID {
+                return
+            }
             nameLabel.text = mission.name
             coverImageView.displayMissionCover(mission: mission)
             

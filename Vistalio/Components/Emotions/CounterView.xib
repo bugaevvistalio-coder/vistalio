@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CounterView" customModule="Vistalio" customModuleProvider="target">
+            <connections>
+                <outlet property="counterLabel" destination="OlC-FQ-eKP" id="muT-ob-ORJ"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nEX-cq-b5W" customClass="RoundedView" customModule="Vistalio" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="68" height="28"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="+1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OlC-FQ-eKP">
+                    <rect key="frame" x="27.333333333333332" y="7.0000000000000009" width="13.666666666666668" height="14.333333333333336"/>
+                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="12"/>
+                    <color key="textColor" name="textGrey30"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="Bnp-X8-e86"/>
+            <color key="backgroundColor" white="0.0" alpha="0.040000000000000001" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstAttribute="width" priority="250" constant="28" id="EVa-rX-8UN"/>
+                <constraint firstAttribute="height" constant="28" id="NZt-fB-NSP"/>
+                <constraint firstItem="OlC-FQ-eKP" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="nEX-cq-b5W" secondAttribute="leading" constant="8" id="XCO-tv-8Id"/>
+                <constraint firstItem="OlC-FQ-eKP" firstAttribute="centerX" secondItem="nEX-cq-b5W" secondAttribute="centerX" id="iJC-Ri-f9Y"/>
+                <constraint firstItem="OlC-FQ-eKP" firstAttribute="centerY" secondItem="nEX-cq-b5W" secondAttribute="centerY" id="sRT-14-LSc"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <userDefinedRuntimeAttributes>
+                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                    <real key="value" value="14"/>
+                </userDefinedRuntimeAttribute>
+            </userDefinedRuntimeAttributes>
+            <point key="canvasLocation" x="-908.39694656488541" y="-152.11267605633805"/>
+        </view>
+    </objects>
+    <resources>
+        <namedColor name="textGrey30">
+            <color red="0.019607843137254902" green="0.015686274509803921" blue="0.023529411764705882" alpha="0.30000001192092896" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

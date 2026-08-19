@@ -39,22 +39,12 @@ extension MissionNote {
         note.text = text
         note.step = step
         
-        for e in emotions {
-            if let emotionEntity = NSEntityDescription.entity(forEntityName: "MissionNoteEmotion", in: context) {
-                let emotion = MissionNoteEmotion(entity: emotionEntity, insertInto: context)
-                emotion.date = Date()
-                emotion.emotion = e.rawValue
-                emotion.note = note
-            }
+        emotions.forEach {
+            MissionNoteEmotion.create(context: context, note: note, e: $0)
         }
         
-        for m in media {
-            if let imageEntity = NSEntityDescription.entity(forEntityName: "MissionNoteImage", in: context) {
-                let image = MissionNoteImage(entity: imageEntity, insertInto: context)
-                image.date = Date()
-                image.path = m.path ?? m.image?.saveToDocuments(directory: step.block.mission.name)
-                image.note = note
-            }
+        media.reversed().forEach {
+            MissionNoteImage.create(context: context, note: note, media: $0)
         }
         
         return note
@@ -90,6 +80,21 @@ extension MissionNote {
 
 @objc(MissionNoteImage)
 public class MissionNoteImage: NSManagedObject {
+    
+    var saveImageOnDelete = false
+    
+    @discardableResult
+    class func create(context: NSManagedObjectContext, note: MissionNote, media: MediaData) -> MissionNoteImage? {
+        if let imageEntity = NSEntityDescription.entity(forEntityName: "MissionNoteImage", in: context) {
+            let image = MissionNoteImage(entity: imageEntity, insertInto: context)
+            image.date = Date()
+            image.path = media.path ?? media.image?.saveToDocuments(directory: note.step!.block.mission.name)
+            image.note = note
+            print("Media saved \(image.path ?? "")")
+            return image
+        }
+        return nil
+    }
 }
 
 extension MissionNoteImage {
@@ -101,10 +106,45 @@ extension MissionNoteImage {
     @NSManaged public var date: Date
     @NSManaged public var path: String?
     @NSManaged public var note: MissionNote
+    
+    public override func prepareForDeletion() {
+        if saveImageOnDelete {
+            return
+        }
+        if let path = path, !path.starts(with: "http") {
+            FilesHelper().deleteFile(path: path)
+            print("Media removed \(path)")
+        }
+    }
+    
+    var mediaData: MediaData {
+        let path = path ?? ""
+        let type = (path.lowercased().hasSuffix(".mp4") || path.lowercased().hasSuffix(".mov")) ? "video" : "image"
+        let m = MediaData(type: type, image: nil, path: path)
+        if type == "video" {
+            DispatchQueue.global().async { 
+                let url = FilesHelper().buildFileUrl(path: path)
+                m.image = createVideoSnapshot(from: url)
+            }
+        }
+        return m
+    }
 }
 
 @objc(MissionNoteEmotion)
 public class MissionNoteEmotion: NSManagedObject {
+    
+    @discardableResult
+    class func create(context: NSManagedObjectContext, note: MissionNote, e: MissionEmotion) -> MissionNoteEmotion? {
+        if let emotionEntity = NSEntityDescription.entity(forEntityName: "MissionNoteEmotion", in: context) {
+            let emotion = MissionNoteEmotion(entity: emotionEntity, insertInto: context)
+            emotion.date = Date()
+            emotion.emotion = e.rawValue
+            emotion.note = note
+            return emotion
+        }
+        return nil
+    }
 }
 
 extension MissionNoteEmotion {

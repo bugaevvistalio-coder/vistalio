@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		4A511EFA33FFC9C2B9B129E8 /* Pods_Vistalio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F9044A2C1A96AD9B2258C85 /* Pods_Vistalio.framework */; };
+		C3100B56302A3771003CFF35 /* PlayerControlsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3100B55302A3771003CFF35 /* PlayerControlsView.xib */; };
+		C3100B58302A37BA003CFF35 /* PlayerControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3100B57302A37B7003CFF35 /* PlayerControlsView.swift */; };
+		C31593C6303222F300E2D18E /* NoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C31593C5303222F000E2D18E /* NoteViewController.swift */; };
 		C332CFCB2F8FB4A6002ABF15 /* MyMissionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C332CFCA2F8FB4A0002ABF15 /* MyMissionsViewController.swift */; };
 		C33F22942F80104100EF2A81 /* Vistalio.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C33F22922F80104100EF2A81 /* Vistalio.xcdatamodeld */; };
 		C33F22962F8011F000EF2A81 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22952F8011EC00EF2A81 /* CoreDataStack.swift */; };
@@ -31,6 +34,15 @@
 		C33F22C42F84C75300EF2A81 /* MenuItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22C32F84C74F00EF2A81 /* MenuItemView.swift */; };
 		C33F22C82F84C86500EF2A81 /* MenuView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C33F22C72F84C86500EF2A81 /* MenuView.xib */; };
 		C33F22CA2F84C8B400EF2A81 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22C92F84C8B000EF2A81 /* MenuView.swift */; };
+		C34472823019FA630034F2FA /* CreateNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34472813019FA5C0034F2FA /* CreateNoteViewController.swift */; };
+		C3447284301A1E150034F2FA /* EmotionsFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3447283301A1E0E0034F2FA /* EmotionsFlowView.swift */; };
+		C3447287301A1E830034F2FA /* EmotionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3447286301A1E830034F2FA /* EmotionView.xib */; };
+		C3447289301A1EE40034F2FA /* EmotionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3447288301A1EE20034F2FA /* EmotionView.swift */; };
+		C344728F301A5DB70034F2FA /* CounterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C344728E301A5DB70034F2FA /* CounterView.xib */; };
+		C3447291301A5F830034F2FA /* CounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3447290301A5F810034F2FA /* CounterView.swift */; };
+		C3447295301B5ECE0034F2FA /* NoteBiggerPhotoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3447294301B5ECE0034F2FA /* NoteBiggerPhotoCell.xib */; };
+		C3447297301B61C10034F2FA /* NoteBiggerPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3447296301B61C10034F2FA /* NoteBiggerPhotoCell.swift */; };
+		C344729B301BB8210034F2FA /* CreateNoteNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C344729A301BB81B0034F2FA /* CreateNoteNavigationController.swift */; };
 		C34665B72F783741008648C8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C34665AA2F783741008648C8 /* LaunchScreen.storyboard */; };
 		C34665B82F783741008648C8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C34665AC2F783741008648C8 /* Main.storyboard */; };
 		C34665B92F783741008648C8 /* Map.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C34665AD2F783741008648C8 /* Map.storyboard */; };
@@ -52,6 +64,12 @@
 		C34665CA2F783741008648C8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34665B22F783741008648C8 /* AppDelegate.swift */; };
 		C34665CB2F783741008648C8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34665B52F783741008648C8 /* SceneDelegate.swift */; };
 		C347A5842F98F4320068D5B3 /* HiddenMissionTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C347A5832F98F42E0068D5B3 /* HiddenMissionTemplate.swift */; };
+		C3502350302DBD7F008DA96C /* RingProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C350234F302DBD7A008DA96C /* RingProgressView.swift */; };
+		C3502352302E3022008DA96C /* MediaHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3502351302E301B008DA96C /* MediaHolder.swift */; };
+		C3502357302F5E85008DA96C /* WeeklyView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3502356302F5E85008DA96C /* WeeklyView.xib */; };
+		C3502359302F6029008DA96C /* WeeklyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3502358302F6024008DA96C /* WeeklyView.swift */; };
+		C350235B302F61F3008DA96C /* WeekViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C350235A302F61F0008DA96C /* WeekViewCell.swift */; };
+		C350235D302F61FA008DA96C /* WeekViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C350235C302F61FA008DA96C /* WeekViewCell.xib */; };
 		C35911D52F9F6C780015FDE6 /* UIStackView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C35911D42F9F6C740015FDE6 /* UIStackView+Utils.swift */; };
 		C35911D72F9F81750015FDE6 /* zombi_audio.ogg in Resources */ = {isa = PBXBuildFile; fileRef = C35911D62F9F81750015FDE6 /* zombi_audio.ogg */; };
 		C36B3D022F9692EA00976790 /* missions_list.json in Sources */ = {isa = PBXBuildFile; fileRef = C36B3D012F9692E400976790 /* missions_list.json */; };
@@ -68,7 +86,7 @@
 		C37BB73D3003F47A006BE7EA /* EmotionsPanelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB73C3003F45B006BE7EA /* EmotionsPanelViewController.swift */; };
 		C37BB73F30050458006BE7EA /* NoteBigPhotoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C37BB73E30050458006BE7EA /* NoteBigPhotoCell.xib */; };
 		C37BB7413005227F006BE7EA /* NoteBigPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB7403005227C006BE7EA /* NoteBigPhotoCell.swift */; };
-		C37BB744300559E1006BE7EA /* VideoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB743300559DE006BE7EA /* VideoHelper.swift */; };
+		C37BB744300559E1006BE7EA /* MediaHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB743300559DE006BE7EA /* MediaHelper.swift */; };
 		C37BB7463005612F006BE7EA /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB74530056123006BE7EA /* Helpers.swift */; };
 		C37BB7483006A4EF006BE7EA /* NoteView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C37BB7473006A4EF006BE7EA /* NoteView.xib */; };
 		C37BB74A3006B854006BE7EA /* NoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB7493006B851006BE7EA /* NoteView.swift */; };
@@ -94,6 +112,7 @@
 		C3AE55E22FD5E43F007A5E41 /* Date+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55E12FD5E43C007A5E41 /* Date+Utils.swift */; };
 		C3AE55E42FD81441007A5E41 /* StepViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55E32FD8143C007A5E41 /* StepViewController.swift */; };
 		C3AE55E62FD879A5007A5E41 /* UIScrollView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55E52FD879A1007A5E41 /* UIScrollView+Utils.swift */; };
+		C3B13FA13032BD25000FADD1 /* UITextView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B13FA03032BD20000FADD1 /* UITextView+Utils.swift */; };
 		C3B7D71A2F94A55400562DC2 /* CropImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B7D7192F94A54E00562DC2 /* CropImageViewController.swift */; };
 		C3B7D71C2F95390200562DC2 /* Cover.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B7D71B2F9538FF00562DC2 /* Cover.swift */; };
 		C3BEABB02F9A38ED00359CB6 /* TemplateHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BEABAF2F9A38E900359CB6 /* TemplateHeaderCell.swift */; };
@@ -150,6 +169,9 @@
 		13F426B1D31B72DB7E095C10 /* Pods-Vistalio.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Vistalio.debug.xcconfig"; path = "Target Support Files/Pods-Vistalio/Pods-Vistalio.debug.xcconfig"; sourceTree = "<group>"; };
 		3F9044A2C1A96AD9B2258C85 /* Pods_Vistalio.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Vistalio.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4ACEA687D8838AB39DBDACD0 /* Pods-Vistalio.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Vistalio.release.xcconfig"; path = "Target Support Files/Pods-Vistalio/Pods-Vistalio.release.xcconfig"; sourceTree = "<group>"; };
+		C3100B55302A3771003CFF35 /* PlayerControlsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayerControlsView.xib; sourceTree = "<group>"; };
+		C3100B57302A37B7003CFF35 /* PlayerControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlsView.swift; sourceTree = "<group>"; };
+		C31593C5303222F000E2D18E /* NoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteViewController.swift; sourceTree = "<group>"; };
 		C332CFCA2F8FB4A0002ABF15 /* MyMissionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMissionsViewController.swift; sourceTree = "<group>"; };
 		C33F22932F80104100EF2A81 /* Vistalio.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Vistalio.xcdatamodel; sourceTree = "<group>"; };
 		C33F22952F8011EC00EF2A81 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
@@ -173,6 +195,15 @@
 		C33F22C32F84C74F00EF2A81 /* MenuItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemView.swift; sourceTree = "<group>"; };
 		C33F22C72F84C86500EF2A81 /* MenuView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MenuView.xib; sourceTree = "<group>"; };
 		C33F22C92F84C8B000EF2A81 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
+		C34472813019FA5C0034F2FA /* CreateNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNoteViewController.swift; sourceTree = "<group>"; };
+		C3447283301A1E0E0034F2FA /* EmotionsFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmotionsFlowView.swift; sourceTree = "<group>"; };
+		C3447286301A1E830034F2FA /* EmotionView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EmotionView.xib; sourceTree = "<group>"; };
+		C3447288301A1EE20034F2FA /* EmotionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmotionView.swift; sourceTree = "<group>"; };
+		C344728E301A5DB70034F2FA /* CounterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CounterView.xib; sourceTree = "<group>"; };
+		C3447290301A5F810034F2FA /* CounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterView.swift; sourceTree = "<group>"; };
+		C3447294301B5ECE0034F2FA /* NoteBiggerPhotoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteBiggerPhotoCell.xib; sourceTree = "<group>"; };
+		C3447296301B61C10034F2FA /* NoteBiggerPhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteBiggerPhotoCell.swift; sourceTree = "<group>"; };
+		C344729A301BB81B0034F2FA /* CreateNoteNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNoteNavigationController.swift; sourceTree = "<group>"; };
 		C346659A2F783741008648C8 /* CustomTabItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabItem.swift; sourceTree = "<group>"; };
 		C346659B2F783741008648C8 /* GrowingTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowingTextView.swift; sourceTree = "<group>"; };
 		C346659C2F783741008648C8 /* RoundedControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedControls.swift; sourceTree = "<group>"; };
@@ -195,6 +226,12 @@
 		C34665B42F783741008648C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C34665B52F783741008648C8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		C347A5832F98F42E0068D5B3 /* HiddenMissionTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenMissionTemplate.swift; sourceTree = "<group>"; };
+		C350234F302DBD7A008DA96C /* RingProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingProgressView.swift; sourceTree = "<group>"; };
+		C3502351302E301B008DA96C /* MediaHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaHolder.swift; sourceTree = "<group>"; };
+		C3502356302F5E85008DA96C /* WeeklyView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WeeklyView.xib; sourceTree = "<group>"; };
+		C3502358302F6024008DA96C /* WeeklyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyView.swift; sourceTree = "<group>"; };
+		C350235A302F61F0008DA96C /* WeekViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekViewCell.swift; sourceTree = "<group>"; };
+		C350235C302F61FA008DA96C /* WeekViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WeekViewCell.xib; sourceTree = "<group>"; };
 		C35911D42F9F6C740015FDE6 /* UIStackView+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Utils.swift"; sourceTree = "<group>"; };
 		C35911D62F9F81750015FDE6 /* zombi_audio.ogg */ = {isa = PBXFileReference; lastKnownFileType = file; path = zombi_audio.ogg; sourceTree = "<group>"; };
 		C36B3D012F9692E400976790 /* missions_list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = missions_list.json; sourceTree = "<group>"; };
@@ -210,7 +247,7 @@
 		C37BB73C3003F45B006BE7EA /* EmotionsPanelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmotionsPanelViewController.swift; sourceTree = "<group>"; };
 		C37BB73E30050458006BE7EA /* NoteBigPhotoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteBigPhotoCell.xib; sourceTree = "<group>"; };
 		C37BB7403005227C006BE7EA /* NoteBigPhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteBigPhotoCell.swift; sourceTree = "<group>"; };
-		C37BB743300559DE006BE7EA /* VideoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoHelper.swift; sourceTree = "<group>"; };
+		C37BB743300559DE006BE7EA /* MediaHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaHelper.swift; sourceTree = "<group>"; };
 		C37BB74530056123006BE7EA /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		C37BB7473006A4EF006BE7EA /* NoteView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteView.xib; sourceTree = "<group>"; };
 		C37BB7493006B851006BE7EA /* NoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteView.swift; sourceTree = "<group>"; };
@@ -236,6 +273,7 @@
 		C3AE55E12FD5E43C007A5E41 /* Date+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Utils.swift"; sourceTree = "<group>"; };
 		C3AE55E32FD8143C007A5E41 /* StepViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepViewController.swift; sourceTree = "<group>"; };
 		C3AE55E52FD879A1007A5E41 /* UIScrollView+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Utils.swift"; sourceTree = "<group>"; };
+		C3B13FA03032BD20000FADD1 /* UITextView+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Utils.swift"; sourceTree = "<group>"; };
 		C3B7D7192F94A54E00562DC2 /* CropImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropImageViewController.swift; sourceTree = "<group>"; };
 		C3B7D71B2F9538FF00562DC2 /* Cover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cover.swift; sourceTree = "<group>"; };
 		C3BEABAF2F9A38E900359CB6 /* TemplateHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateHeaderCell.swift; sourceTree = "<group>"; };
@@ -304,6 +342,7 @@
 			children = (
 				C33F22982F80128600EF2A81 /* Model */,
 				C33F22952F8011EC00EF2A81 /* CoreDataStack.swift */,
+				C3502351302E301B008DA96C /* MediaHolder.swift */,
 				C33F22A92F8238C100EF2A81 /* MissionsHolder.swift */,
 				C33F22922F80104100EF2A81 /* Vistalio.xcdatamodeld */,
 			);
@@ -329,7 +368,7 @@
 			children = (
 				C33F22A02F80145A00EF2A81 /* FilesHelper.swift */,
 				C3F47EC92FA0BB6600F17AC8 /* AppsFlyerHelper.swift */,
-				C37BB743300559DE006BE7EA /* VideoHelper.swift */,
+				C37BB743300559DE006BE7EA /* MediaHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -366,26 +405,41 @@
 			path = Menu;
 			sourceTree = "<group>";
 		};
+		C3447285301A1E240034F2FA /* Emotions */ = {
+			isa = PBXGroup;
+			children = (
+				C3447283301A1E0E0034F2FA /* EmotionsFlowView.swift */,
+				C3447286301A1E830034F2FA /* EmotionView.xib */,
+				C3447288301A1EE20034F2FA /* EmotionView.swift */,
+				C344728E301A5DB70034F2FA /* CounterView.xib */,
+				C3447290301A5F810034F2FA /* CounterView.swift */,
+				C37BB733300157C7006BE7EA /* EmotionCircleView.xib */,
+				C37BB73530015C18006BE7EA /* EmotionCircleView.swift */,
+			);
+			path = Emotions;
+			sourceTree = "<group>";
+		};
 		C346659E2F783741008648C8 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				C37BB74230053AA4006BE7EA /* AddNoteView */,
 				C3AE55D42FD490BE007A5E41 /* CalendarView */,
 				C346659A2F783741008648C8 /* CustomTabItem.swift */,
 				C3AE55C72FD1E8AF007A5E41 /* DropDownView */,
+				C3447285301A1E240034F2FA /* Emotions */,
 				C3F47ECF2FA0FA6B00F17AC8 /* GalleryView */,
 				C346659B2F783741008648C8 /* GrowingTextView.swift */,
 				C3D34ADF2FA1D9ED007E5CAF /* ImageScrollView.swift */,
 				C33F22C02F84C6C600EF2A81 /* Menu */,
+				C37BB74230053AA4006BE7EA /* Notes */,
 				C3D5425B2F928B350093D819 /* NotificationView.xib */,
 				C3D5425D2F928C4B0093D819 /* NotificationView.swift */,
+				C350234F302DBD7A008DA96C /* RingProgressView.swift */,
 				C346659C2F783741008648C8 /* RoundedControls.swift */,
 				C33F22B32F82CE9800EF2A81 /* SegmentedControl */,
 				C346659D2F783741008648C8 /* StyledControls.swift */,
 				C3D542592F91F61E0093D819 /* TooltipView.xib */,
 				C3D542572F91F5F90093D819 /* TooltipView.swift */,
-				C37BB733300157C7006BE7EA /* EmotionCircleView.xib */,
-				C37BB73530015C18006BE7EA /* EmotionCircleView.swift */,
+				C3502355302F5E5F008DA96C /* WeeklyView */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -405,6 +459,7 @@
 				C35911D42F9F6C740015FDE6 /* UIStackView+Utils.swift */,
 				C346659F2F783741008648C8 /* UITableView+Utils.swift */,
 				C34665A02F783741008648C8 /* UITextField+Utils.swift */,
+				C3B13FA03032BD20000FADD1 /* UITextView+Utils.swift */,
 				C34665A12F783741008648C8 /* UIView+Utils.swift */,
 				C3CF26F12F7936DD0008718D /* UIViewController+Utils.swift */,
 			);
@@ -429,7 +484,6 @@
 			isa = PBXGroup;
 			children = (
 				C33F22A42F80250F00EF2A81 /* Common */,
-				C37BB73A3003F425006BE7EA /* Emotions */,
 				C34665A52F783741008648C8 /* Missions */,
 				C37BB752300C9DAA006BE7EA /* Notes */,
 				C3CABD6C2FF83E980067CA73 /* Steps */,
@@ -471,6 +525,17 @@
 			path = Vistalio;
 			sourceTree = "<group>";
 		};
+		C3502355302F5E5F008DA96C /* WeeklyView */ = {
+			isa = PBXGroup;
+			children = (
+				C3502356302F5E85008DA96C /* WeeklyView.xib */,
+				C3502358302F6024008DA96C /* WeeklyView.swift */,
+				C350235C302F61FA008DA96C /* WeekViewCell.xib */,
+				C350235A302F61F0008DA96C /* WeekViewCell.swift */,
+			);
+			path = WeeklyView;
+			sourceTree = "<group>";
+		};
 		C36B3D002F9692CB00976790 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -497,27 +562,7 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		C37BB73A3003F425006BE7EA /* Emotions */ = {
-			isa = PBXGroup;
-			children = (
-				C3CABD702FF84DE10067CA73 /* SelectEmotionViewController.swift */,
-				C37BB73730035EA9006BE7EA /* EmotionSettingsViewController.swift */,
-				C37BB73C3003F45B006BE7EA /* EmotionsPanelViewController.swift */,
-				C37BB73B3003F434006BE7EA /* Cells */,
-			);
-			path = Emotions;
-			sourceTree = "<group>";
-		};
-		C37BB73B3003F434006BE7EA /* Cells */ = {
-			isa = PBXGroup;
-			children = (
-				C3CABD6E2FF844400067CA73 /* SelectEmotionCell.swift */,
-				C3CABD742FFAE70C0067CA73 /* EmotionsModeCell.swift */,
-			);
-			path = Cells;
-			sourceTree = "<group>";
-		};
-		C37BB74230053AA4006BE7EA /* AddNoteView */ = {
+		C37BB74230053AA4006BE7EA /* Notes */ = {
 			isa = PBXGroup;
 			children = (
 				C3CABD652FF5B0EC0067CA73 /* AddNoteView.xib */,
@@ -526,7 +571,7 @@
 				C37BB7493006B851006BE7EA /* NoteView.swift */,
 				C37BB75130077909006BE7EA /* Cells */,
 			);
-			path = AddNoteView;
+			path = Notes;
 			sourceTree = "<group>";
 		};
 		C37BB75130077909006BE7EA /* Cells */ = {
@@ -535,6 +580,8 @@
 				C37BB74F300778CD006BE7EA /* NotePhotoCell.swift */,
 				C37BB73E30050458006BE7EA /* NoteBigPhotoCell.xib */,
 				C37BB7403005227C006BE7EA /* NoteBigPhotoCell.swift */,
+				C3447294301B5ECE0034F2FA /* NoteBiggerPhotoCell.xib */,
+				C3447296301B61C10034F2FA /* NoteBiggerPhotoCell.swift */,
 				C37BB74D30077821006BE7EA /* NoteSmallPhotoCell.xib */,
 				C37BB74B300777A1006BE7EA /* NoteSmallPhotoCell.swift */,
 			);
@@ -544,7 +591,13 @@
 		C37BB752300C9DAA006BE7EA /* Notes */ = {
 			isa = PBXGroup;
 			children = (
+				C344729A301BB81B0034F2FA /* CreateNoteNavigationController.swift */,
+				C3CABD702FF84DE10067CA73 /* SelectEmotionViewController.swift */,
+				C37BB73730035EA9006BE7EA /* EmotionSettingsViewController.swift */,
+				C37BB73C3003F45B006BE7EA /* EmotionsPanelViewController.swift */,
+				C34472813019FA5C0034F2FA /* CreateNoteViewController.swift */,
 				C37BB753300C9DB8006BE7EA /* MoveNoteViewController.swift */,
+				C31593C5303222F000E2D18E /* NoteViewController.swift */,
 				C37BB755300C9E49006BE7EA /* Cells */,
 			);
 			path = Notes;
@@ -553,6 +606,8 @@
 		C37BB755300C9E49006BE7EA /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				C3CABD6E2FF844400067CA73 /* SelectEmotionCell.swift */,
+				C3CABD742FFAE70C0067CA73 /* EmotionsModeCell.swift */,
 				C37BB756300CB784006BE7EA /* NoteToMissionCell.swift */,
 				C37BB758300CB793006BE7EA /* NoteToStepCell.swift */,
 			);
@@ -662,6 +717,8 @@
 				C3F47ECB2FA0F7D100F17AC8 /* GalleryView.swift */,
 				C3F47ED02FA0FA8400F17AC8 /* GalleryCell.xib */,
 				C3D34ADD2FA0FB5C007E5CAF /* GalleryCell.swift */,
+				C3100B55302A3771003CFF35 /* PlayerControlsView.xib */,
+				C3100B57302A37B7003CFF35 /* PlayerControlsView.swift */,
 			);
 			path = GalleryView;
 			sourceTree = "<group>";
@@ -750,21 +807,27 @@
 				C3BEABD92F9BC01100359CB6 /* mission_14.json in Resources */,
 				C3AE55CB2FD1E8D3007A5E41 /* DropDownItemView.xib in Resources */,
 				C3BEABD22F9BB50000359CB6 /* mission_16.json in Resources */,
+				C344728F301A5DB70034F2FA /* CounterView.xib in Resources */,
 				C36B3D072F97DC9100976790 /* missions_list.json in Resources */,
 				C34665B72F783741008648C8 /* LaunchScreen.storyboard in Resources */,
 				C3BEABC82F9BB12700359CB6 /* mission_11.json in Resources */,
 				C3BEABCA2F9BB14300359CB6 /* mission_12.json in Resources */,
 				C33F22C82F84C86500EF2A81 /* MenuView.xib in Resources */,
+				C3502357302F5E85008DA96C /* WeeklyView.xib in Resources */,
+				C3447295301B5ECE0034F2FA /* NoteBiggerPhotoCell.xib in Resources */,
 				C3BEABB82F9BB03500359CB6 /* mission_3.json in Resources */,
 				C3D5425A2F91F61E0093D819 /* TooltipView.xib in Resources */,
 				C3CABD662FF5B0EC0067CA73 /* AddNoteView.xib in Resources */,
+				C350235D302F61FA008DA96C /* WeekViewCell.xib in Resources */,
 				C34665B82F783741008648C8 /* Main.storyboard in Resources */,
 				C37BB7483006A4EF006BE7EA /* NoteView.xib in Resources */,
 				C3AE55CF2FD1F42F007A5E41 /* DropDownView.xib in Resources */,
 				C35911D72F9F81750015FDE6 /* zombi_audio.ogg in Resources */,
 				C33F22B02F82CA7E00EF2A81 /* SegmentedControl.xib in Resources */,
+				C3447287301A1E830034F2FA /* EmotionView.xib in Resources */,
 				C3D5425C2F928B350093D819 /* NotificationView.xib in Resources */,
 				C3BEABD02F9BB35A00359CB6 /* mission_15.json in Resources */,
+				C3100B56302A3771003CFF35 /* PlayerControlsView.xib in Resources */,
 				C34665B92F783741008648C8 /* Map.storyboard in Resources */,
 				C3BEABC02F9BB0C300359CB6 /* mission_7.json in Resources */,
 				C33F22C22F84C6D700EF2A81 /* MenuItemView.xib in Resources */,
@@ -869,6 +932,7 @@
 			files = (
 				C3D542582F91F5FC0093D819 /* TooltipView.swift in Sources */,
 				C3AE55CD2FD1F412007A5E41 /* DropDownView.swift in Sources */,
+				C3502359302F6029008DA96C /* WeeklyView.swift in Sources */,
 				C3CF26F22F7936E20008718D /* UIViewController+Utils.swift in Sources */,
 				C3CABD752FFAE71B0067CA73 /* EmotionsModeCell.swift in Sources */,
 				C34665BF2F783741008648C8 /* CustomTabItem.swift in Sources */,
@@ -876,9 +940,11 @@
 				C3AE55E22FD5E43F007A5E41 /* Date+Utils.swift in Sources */,
 				C37BB754300C9DBF006BE7EA /* MoveNoteViewController.swift in Sources */,
 				C3D34AE02FA1D9F0007E5CAF /* ImageScrollView.swift in Sources */,
+				C3447284301A1E150034F2FA /* EmotionsFlowView.swift in Sources */,
 				C3CF26EE2F7929120008718D /* CoverCell.swift in Sources */,
 				C3CABD682FF5B94F0067CA73 /* AddNoteView.swift in Sources */,
 				C35911D52F9F6C780015FDE6 /* UIStackView+Utils.swift in Sources */,
+				C344729B301BB8210034F2FA /* CreateNoteNavigationController.swift in Sources */,
 				C33F22962F8011F000EF2A81 /* CoreDataStack.swift in Sources */,
 				C3AE55C92FD1E8BF007A5E41 /* DropDownItemView.swift in Sources */,
 				C3CABD712FF84DED0067CA73 /* SelectEmotionViewController.swift in Sources */,
@@ -896,7 +962,9 @@
 				C3B7D71C2F95390200562DC2 /* Cover.swift in Sources */,
 				C3CABD642FF28F7C0067CA73 /* MoveStepViewController.swift in Sources */,
 				C34665C22F783741008648C8 /* StyledControls.swift in Sources */,
+				C3447289301A1EE40034F2FA /* EmotionView.swift in Sources */,
 				C3D542562F9125370093D819 /* NotificationNames.swift in Sources */,
+				C350235B302F61F3008DA96C /* WeekViewCell.swift in Sources */,
 				C3AE55D62FD490D0007A5E41 /* CalendarView.swift in Sources */,
 				C34665C32F783741008648C8 /* UITableView+Utils.swift in Sources */,
 				C37BB73D3003F47A006BE7EA /* EmotionsPanelViewController.swift in Sources */,
@@ -905,6 +973,7 @@
 				C3CABD6A2FF7D8920067CA73 /* SelectDateViewController.swift in Sources */,
 				C3CABD732FF9708C0067CA73 /* MissionEmotion.swift in Sources */,
 				C3F47EC82F9FCAB300F17AC8 /* MissionNote.swift in Sources */,
+				C3B13FA13032BD25000FADD1 /* UITextView+Utils.swift in Sources */,
 				C37BB74C300777A8006BE7EA /* NoteSmallPhotoCell.swift in Sources */,
 				C3BEABC42F9BB0F200359CB6 /* mission_9.json in Sources */,
 				C3BEABC62F9BB10600359CB6 /* mission_10.json in Sources */,
@@ -920,10 +989,12 @@
 				C34665C42F783741008648C8 /* UITextField+Utils.swift in Sources */,
 				C3F47ECA2FA0BBB600F17AC8 /* AppsFlyerHelper.swift in Sources */,
 				C37BB757300CB78F006BE7EA /* NoteToMissionCell.swift in Sources */,
+				C3447297301B61C10034F2FA /* NoteBiggerPhotoCell.swift in Sources */,
 				C33F22AE2F82A43E00EF2A81 /* UIImageView+Utils.swift in Sources */,
+				C34472823019FA630034F2FA /* CreateNoteViewController.swift in Sources */,
 				C36B3D062F97D71D00976790 /* TemplateCell.swift in Sources */,
 				C34665C52F783741008648C8 /* UIView+Utils.swift in Sources */,
-				C37BB744300559E1006BE7EA /* VideoHelper.swift in Sources */,
+				C37BB744300559E1006BE7EA /* MediaHelper.swift in Sources */,
 				C37BB74A3006B854006BE7EA /* NoteView.swift in Sources */,
 				C36B3D092F9884F100976790 /* EmotionCell.swift in Sources */,
 				C33F22942F80104100EF2A81 /* Vistalio.xcdatamodeld in Sources */,
@@ -932,6 +1003,7 @@
 				C3BEABDD2F9E7E3800359CB6 /* TemplateNoteCell.swift in Sources */,
 				C3AE55DC2FD49664007A5E41 /* CalendarViewCell.swift in Sources */,
 				C33F22A12F80145B00EF2A81 /* FilesHelper.swift in Sources */,
+				C3502350302DBD7F008DA96C /* RingProgressView.swift in Sources */,
 				C3AE55D32FD2BA62007A5E41 /* DropDownControl.swift in Sources */,
 				C3AE55E02FD49BDE007A5E41 /* DayView.swift in Sources */,
 				C3D34ADE2FA0FB5F007E5CAF /* GalleryCell.swift in Sources */,
@@ -939,15 +1011,18 @@
 				C34665C62F783741008648C8 /* CreateMissionViewController.swift in Sources */,
 				C332CFCB2F8FB4A6002ABF15 /* MyMissionsViewController.swift in Sources */,
 				C37309D52FB0D2DA004F7ED8 /* AddedStepCell.swift in Sources */,
+				C3502352302E3022008DA96C /* MediaHolder.swift in Sources */,
 				C36B3D022F9692EA00976790 /* missions_list.json in Sources */,
 				C37309D32FAF7B7E004F7ED8 /* HiddenStepsViewController.swift in Sources */,
 				C34665C72F783741008648C8 /* MissionsViewController.swift in Sources */,
 				C34665C82F783741008648C8 /* MainViewController.swift in Sources */,
+				C3100B58302A37BA003CFF35 /* PlayerControlsView.swift in Sources */,
 				C33F229E2F80134A00EF2A81 /* Mission.swift in Sources */,
 				C3F47EC52F9FCA1A00F17AC8 /* MissionStep.swift in Sources */,
 				C34665C92F783741008648C8 /* StyledNavigationController.swift in Sources */,
 				C33F22BD2F83F48C00EF2A81 /* UILabel+Utils.swift in Sources */,
 				C3AE55E62FD879A5007A5E41 /* UIScrollView+Utils.swift in Sources */,
+				C3447291301A5F830034F2FA /* CounterView.swift in Sources */,
 				C3CF26F02F7929C00008718D /* CoverViewController.swift in Sources */,
 				C3BEABB22F9A39C300359CB6 /* TemplateViewController.swift in Sources */,
 				C33F22A82F82376B00EF2A81 /* UIImage+Utils.swift in Sources */,
@@ -956,6 +1031,7 @@
 				C34665CB2F783741008648C8 /* SceneDelegate.swift in Sources */,
 				C3AE55E42FD81441007A5E41 /* StepViewController.swift in Sources */,
 				C3BEABB02F9A38ED00359CB6 /* TemplateHeaderCell.swift in Sources */,
+				C31593C6303222F300E2D18E /* NoteViewController.swift in Sources */,
 				C33F22B72F83893E00EF2A81 /* UIColor+Utils.swift in Sources */,
 				C3CABD6F2FF844430067CA73 /* SelectEmotionCell.swift in Sources */,
 			);
@@ -990,6 +1066,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Vistalio/Vistalio.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = K3TB65CDP6;
@@ -1010,6 +1087,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ab.vistalio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1023,6 +1101,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Vistalio/Vistalio.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = K3TB65CDP6;
@@ -1043,6 +1122,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ab.vistalio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

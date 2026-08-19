@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -18,20 +18,46 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="35Q-fF-iz3" customClass="ImageScrollView" customModule="Vistalio" customModuleProvider="target">
-                        <rect key="frame" x="16" y="0.0" width="342" height="571"/>
+                        <rect key="frame" x="16" y="0.0" width="342" height="513"/>
                         <viewLayoutGuide key="contentLayoutGuide" id="gf8-nH-q4z"/>
                         <viewLayoutGuide key="frameLayoutGuide" id="q2q-ld-fcl"/>
                     </scrollView>
+                    <view clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mcD-nl-xN5" customClass="RoundedView" customModule="Vistalio" customModuleProvider="target">
+                        <rect key="frame" x="16" y="80" width="342" height="411"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                <real key="value" value="12"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                                <color key="value" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                <real key="value" value="0.0"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
                     <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="qzb-Oq-5I6">
                         <rect key="frame" x="168.66666666666666" y="267" width="37" height="37"/>
                         <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </activityIndicatorView>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="D07-8y-2Fm" customClass="PlayerControlsView" customModule="Vistalio" customModuleProvider="target">
+                        <rect key="frame" x="16" y="507" width="342" height="44"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="44" id="HTY-w1-yKx"/>
+                        </constraints>
+                    </view>
                 </subviews>
                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 <constraints>
+                    <constraint firstItem="D07-8y-2Fm" firstAttribute="top" secondItem="35Q-fF-iz3" secondAttribute="bottom" constant="16" id="44U-M0-AXm"/>
+                    <constraint firstItem="D07-8y-2Fm" firstAttribute="leading" secondItem="Fd8-4l-CzV" secondAttribute="leading" constant="16" id="AVk-Dk-LUe"/>
                     <constraint firstItem="qzb-Oq-5I6" firstAttribute="centerY" secondItem="Fd8-4l-CzV" secondAttribute="centerY" id="J40-Pt-ue3"/>
-                    <constraint firstAttribute="bottom" secondItem="35Q-fF-iz3" secondAttribute="bottom" id="Mas-ic-lDg"/>
-                    <constraint firstItem="35Q-fF-iz3" firstAttribute="top" secondItem="Fd8-4l-CzV" secondAttribute="top" id="g0Y-zb-WNp"/>
+                    <constraint firstAttribute="trailing" secondItem="D07-8y-2Fm" secondAttribute="trailing" constant="16" id="JvQ-2S-Sr6"/>
+                    <constraint firstAttribute="bottom" secondItem="35Q-fF-iz3" secondAttribute="bottom" constant="80" id="Mas-ic-lDg"/>
+                    <constraint firstItem="35Q-fF-iz3" firstAttribute="top" secondItem="Fd8-4l-CzV" secondAttribute="top" constant="80" id="g0Y-zb-WNp"/>
                     <constraint firstItem="35Q-fF-iz3" firstAttribute="leading" secondItem="Fd8-4l-CzV" secondAttribute="leading" constant="16" id="sLH-SK-HGJ"/>
                     <constraint firstAttribute="trailing" secondItem="35Q-fF-iz3" secondAttribute="trailing" constant="16" id="xes-G1-AS6"/>
                     <constraint firstItem="qzb-Oq-5I6" firstAttribute="centerX" secondItem="Fd8-4l-CzV" secondAttribute="centerX" id="zYY-tU-ecA"/>
@@ -42,6 +68,8 @@
             <connections>
                 <outlet property="imageScrollView" destination="35Q-fF-iz3" id="x3b-d7-OEz"/>
                 <outlet property="loadIndicator" destination="qzb-Oq-5I6" id="S7F-Lm-Ksm"/>
+                <outlet property="playerControlsView" destination="D07-8y-2Fm" id="gbY-c5-J3J"/>
+                <outlet property="videoContainerView" destination="mcD-nl-xN5" id="wxI-sS-zta"/>
             </connections>
             <point key="canvasLocation" x="19.847328244274809" y="265.84507042253523"/>
         </collectionViewCell>

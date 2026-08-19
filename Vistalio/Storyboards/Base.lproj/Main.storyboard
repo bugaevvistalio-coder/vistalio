@@ -114,6 +114,9 @@
                                                     <constraint firstItem="Noi-hU-HZd" firstAttribute="top" secondItem="fVM-RT-QIt" secondAttribute="top" id="RM4-ns-udA"/>
                                                     <constraint firstAttribute="trailing" secondItem="Noi-hU-HZd" secondAttribute="trailing" id="XOj-2p-DC8"/>
                                                 </constraints>
+                                                <connections>
+                                                    <action selector="emotionTapped:" destination="h0j-uh-UtZ" eventType="touchUpInside" id="X58-lp-S0C"/>
+                                                </connections>
                                             </view>
                                             <view tag="2" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NYQ-e1-SUE" customClass="CustomTabItem" customModule="Vistalio" customModuleProvider="target">
                                                 <rect key="frame" x="216.66666666666666" y="0.0" width="71.999999999999972" height="84"/>
