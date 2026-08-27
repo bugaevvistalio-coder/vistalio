@@ -13,9 +13,11 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="WeeklyView" customModule="Vistalio" customModuleProvider="target">
             <connections>
                 <outlet property="collectionView" destination="Er1-vG-sw1" id="cOz-YC-K2b"/>
+                <outlet property="collectionViewHeight" destination="ghv-iN-3u1" id="RBj-m4-Bl8"/>
                 <outlet property="nextMonthButton" destination="TSU-zY-32M" id="bfb-Qg-Ibc"/>
                 <outlet property="previousMonthButton" destination="GNN-kh-n4s" id="JHT-fJ-h8z"/>
                 <outlet property="weekLabel" destination="RsH-NP-unZ" id="Sqg-gK-gZV"/>
+                <outlet property="weeksTop" destination="mMN-C0-tgQ" id="ggG-pO-9wm"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -97,9 +99,9 @@
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="QQ9-bJ-We2" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="DfY-84-Vxu"/>
-                <constraint firstItem="Er1-vG-sw1" firstAttribute="top" secondItem="QQ9-bJ-We2" secondAttribute="bottom" constant="10" id="JQx-fi-70Q"/>
                 <constraint firstItem="QQ9-bJ-We2" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="OUF-Qa-Ym1"/>
                 <constraint firstItem="Er1-vG-sw1" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="j48-kp-9Nj"/>
+                <constraint firstItem="Er1-vG-sw1" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="46" id="mMN-C0-tgQ"/>
                 <constraint firstAttribute="trailing" secondItem="Er1-vG-sw1" secondAttribute="trailing" id="qsH-vw-hRI"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>

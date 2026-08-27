@@ -17,6 +17,8 @@ class EmotionSettingsViewController: UIViewController {
     @IBOutlet weak var manualOptionHeight: NSLayoutConstraint!
     @IBOutlet weak var saveButton: UIButton!
     
+    @IBOutlet weak var bottomGradientView: UIView!
+    
     private var savedEmotions = [SelectedEmotion]()
     private lazy var mode: String = {
         return UserDefaults.standard.string(forKey: "EmotionsMode") ?? "auto"
@@ -29,6 +31,7 @@ class EmotionSettingsViewController: UIViewController {
         
         closeButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1, bounds: CGRect(x: 0, y: 0, width: 40, height: 40))
         setupBottomConstraint(saveButton)
+        bottomGradientView.applyBottomGradient(color: .white)
         
         let window = UIApplication.shared.windows.first
         var bottom = window?.safeAreaInsets.bottom ?? 0

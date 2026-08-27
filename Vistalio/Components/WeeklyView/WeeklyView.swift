@@ -11,17 +11,33 @@ class WeeklyView: UIView {
     
     var selectedDate: Date?
     var onDateSelected: ((Date) -> ())?
+    var showWeekTitle = true {
+        didSet {
+            updateWeekTitleVisibility()
+        }
+    }
+    var showEmotions = false {
+        didSet {
+            let smallScreen = (UIScreen.main.bounds.width <= 320)
+            (collectionView.collectionViewLayout as! UICollectionViewFlowLayout).itemSize = CGSize(width: smallScreen ? 44 : 48, height: showEmotions ? 104 : 72)
+            collectionViewHeight.constant = showEmotions ? 104 : 72
+        }
+    }
+    
+    var notes = [MissionNote]()
     
     @IBOutlet private weak var weekLabel: UILabel!
     @IBOutlet private weak var previousMonthButton: UIButton!
     @IBOutlet private weak var nextMonthButton: UIButton!
     @IBOutlet private weak var collectionView: UICollectionView!
+    @IBOutlet private weak var weeksTop: NSLayoutConstraint!
+    @IBOutlet private weak var collectionViewHeight: NSLayoutConstraint!
     
     private var view: UIView!
     
     private var weeks = [Date]()
     private var previousPage = 0
-    private let pageWidth: CGFloat = 336
+    private var pageWidth: CGFloat = 336
     
     private var weekIndex = 0 {
         didSet {
@@ -32,6 +48,16 @@ class WeeklyView: UIView {
             } else {
                 previousMonthButton.isEnabled = true
                 previousMonthButton.tintColor = UIColor.black
+            }
+            if let date = selectedDate?.startOfDay {
+                let calendar = Calendar.current
+                let startDate = weeks[weekIndex]
+                let endDate = calendar.date(byAdding: .day, value: 6, to: startDate)!
+                if date < startDate || date > endDate {
+                    let weekday = calendar.component(.weekday, from: date)
+                    selectedDate = calendar.date(byAdding: .day, value: (weekday + 5) % 7, to: startDate)!
+                    onDateSelected?(selectedDate!)
+                }
             }
         }
     }
@@ -51,11 +77,17 @@ class WeeklyView: UIView {
     private func setup() {
         view.backgroundColor = .clear
         
+        if UIScreen.main.bounds.width <= 320 {
+            pageWidth = 308
+        }
+        
         previousMonthButton.transform = CGAffineTransform(rotationAngle: -.pi/2)
         nextMonthButton.transform = CGAffineTransform(rotationAngle: .pi/2)
         
         let nib = UINib(nibName: "WeekViewCell", bundle: nil)
         collectionView.register(nib, forCellWithReuseIdentifier: "WeekViewCell")
+        
+        updateWeekTitleVisibility()
     }
     
     func generateWeeks() {
@@ -88,6 +120,16 @@ class WeeklyView: UIView {
     
     private func addWeekAfter(w: Date) {
         weeks.append(w)
+    }
+    
+    private func updateWeekTitleVisibility() {
+        if showWeekTitle {
+            weeksTop.constant = 46
+            weekLabel.superview?.isHidden = false
+        } else {
+            weeksTop.constant = -2
+            weekLabel.superview?.isHidden = true
+        }
     }
     
     private func displayWeekName(index: Int) {
@@ -135,11 +177,27 @@ extension WeeklyView: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WeekViewCell", for: indexPath) as! WeekViewCell
         cell.day = Calendar.current.date(byAdding: .day, value: indexPath.row, to: weeks.first!)
-        cell.isSelectedDate = selectedDate != nil && cell.day.isSameDay(selectedDate!)
+        
+        let calendar = Calendar.current
+        let sameWeekday = selectedDate != nil && calendar.component(.weekday, from: selectedDate!) == calendar.component(.weekday, from: cell.day)
+        
+        cell.isSelectedDate = sameWeekday
         cell.onDateSelected = { [unowned self] date in
             selectedDate = date
             collectionView.reloadData()
             onDateSelected?(date)
+        }
+        if showEmotions {
+            let notes = notes.filter { $0.date?.startOfDay == cell.day }
+            cell.emotions = notes.flatMap { $0.emotions?.allObjects.map { $0 as! MissionNoteEmotion } ?? [] }
+            cell.onEmotionTapped = { [unowned self] day, emotion in
+                let sb = UIStoryboard(name: "MyDay", bundle: nil)
+                let vc = sb.instantiateViewController(withIdentifier: "DayNotesVC") as! DayNotesViewController
+                vc.day = day
+                vc.emotion = emotion
+                vc.notes = self.notes.filter { $0.date?.startOfDay == day }
+                parentViewController?.presentFullScreen(vc)
+            }
         }
         return cell
     }

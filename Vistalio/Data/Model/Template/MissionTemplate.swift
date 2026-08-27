@@ -22,16 +22,32 @@ class MissionTemplate: Codable {
     let maxHours: Int?
     let minAge: Int?
     var hiddenAt: Date?
+    let showCompleted: Bool?
+    let canCreateSteps: Bool?
+    let skipRecommend: Bool?
 }
-
-
 
 class BlocksList: Codable {
     let blocks: [TemplateBlock]
 }
 
+enum NextBlockAppearRule: String, Codable {
+    case onDoneWithPreview
+}
+
+enum BlockDoneCriteria: String, Codable {
+    case photo
+    case video
+    case geo
+    case searchText
+}
+
 class TemplateBlock: Codable {
     let steps: [TemplateStep]
+    let nextAppears: NextBlockAppearRule?
+    let doneCriteria: [BlockDoneCriteria]?
+    let photoMin: Int?
+    let searchText: String?
 }
 
 class TemplateStep: Codable {
@@ -39,6 +55,7 @@ class TemplateStep: Codable {
     let description: String?
     let preview: Bool?
     var expanded: Bool?
+    let editable: Bool?
     let notes: [TemplateNote]?
     
     var shortDescription: String? {

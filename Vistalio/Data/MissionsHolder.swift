@@ -42,7 +42,7 @@ class MissionsHolder {
     
     func getMyMissions() -> [Mission] {
         let missionsRequest = Mission.missionFetchRequest()
-        missionsRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        missionsRequest.sortDescriptors = [NSSortDescriptor(key: "sortOrder", ascending: false), NSSortDescriptor(key: "creationDate", ascending: false)]
         do {
             return try CoreDataStack.shared.mainContext.fetch(missionsRequest)
         } catch {

@@ -124,7 +124,6 @@ open class GrowingTextView: UITextView {
             if let delegate = delegate as? GrowingTextViewDelegate {
                 delegate.textViewDidChangeHeight?(self, height: height)
             }
-            print("New height \(height)")
         } else if shouldScrollAfterHeightChanged {
             shouldScrollAfterHeightChanged = false
             scrollToCorrectPosition()

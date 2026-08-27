@@ -19,8 +19,78 @@
                 <rect key="frame" x="0.0" y="0.0" width="150" height="180"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3v1-qH-tCM" customClass="RoundedView" customModule="Vistalio" customModuleProvider="target">
+                        <rect key="frame" x="57" y="48" width="36" height="84"/>
+                        <color key="backgroundColor" name="lightBlue"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="84" id="da4-BX-ieV"/>
+                            <constraint firstAttribute="width" constant="36" id="gIp-Kn-vsg"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                <real key="value" value="18"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                <real key="value" value="2"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kaz-KP-tiE" customClass="UIControl">
+                        <rect key="frame" x="59" y="50" width="32" height="80"/>
+                        <subviews>
+                            <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ey7-IB-shd">
+                                <rect key="frame" x="1" y="1" width="30" height="78"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="noEmotion" translatesAutoresizingMaskIntoConstraints="NO" id="Qmk-BD-U7r">
+                                <rect key="frame" x="6" y="54" width="20" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="ET9-mC-4bE"/>
+                                    <constraint firstAttribute="width" constant="20" id="tso-Ms-oky"/>
+                                </constraints>
+                            </imageView>
+                            <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2qJ-s0-Axk" customClass="RoundedView" customModule="Vistalio" customModuleProvider="target">
+                                <rect key="frame" x="19" y="52" width="12" height="12"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NNp-Tf-grB">
+                                        <rect key="frame" x="2" y="0.6666666666666714" width="8" height="11"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="9"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="12" id="AVb-5j-hZc"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="12" id="BmU-T0-db5"/>
+                                    <constraint firstItem="NNp-Tf-grB" firstAttribute="leading" secondItem="2qJ-s0-Axk" secondAttribute="leading" constant="2" id="Sf8-bQ-oyd"/>
+                                    <constraint firstItem="NNp-Tf-grB" firstAttribute="centerY" secondItem="2qJ-s0-Axk" secondAttribute="centerY" id="qeW-f9-YnV"/>
+                                    <constraint firstAttribute="trailing" secondItem="NNp-Tf-grB" secondAttribute="trailing" constant="2" id="wsn-e5-jnx"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <real key="value" value="6"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="2qJ-s0-Axk" secondAttribute="bottom" constant="16" id="0aC-Ds-JQB"/>
+                            <constraint firstAttribute="bottom" secondItem="Qmk-BD-U7r" secondAttribute="bottom" constant="6" id="64g-j1-sS3"/>
+                            <constraint firstItem="ey7-IB-shd" firstAttribute="leading" secondItem="kaz-KP-tiE" secondAttribute="leading" constant="1" id="Bf6-BC-1L4"/>
+                            <constraint firstItem="Qmk-BD-U7r" firstAttribute="centerX" secondItem="kaz-KP-tiE" secondAttribute="centerX" id="K1g-gN-wtm"/>
+                            <constraint firstAttribute="bottom" secondItem="ey7-IB-shd" secondAttribute="bottom" constant="1" id="QN5-e6-l8l"/>
+                            <constraint firstAttribute="trailing" secondItem="ey7-IB-shd" secondAttribute="trailing" constant="1" id="bRK-O0-mP7"/>
+                            <constraint firstItem="ey7-IB-shd" firstAttribute="top" secondItem="kaz-KP-tiE" secondAttribute="top" constant="1" id="lzx-uM-7xS"/>
+                            <constraint firstAttribute="trailing" secondItem="2qJ-s0-Axk" secondAttribute="trailing" constant="1" id="w0i-6c-Z5D"/>
+                        </constraints>
+                        <connections>
+                            <action selector="emotionTapped:" destination="ZgE-O0-6zA" eventType="touchUpInside" id="hDh-PV-oCp"/>
+                        </connections>
+                    </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wtJ-pU-6wP" customClass="UIControl">
-                        <rect key="frame" x="54" y="64" width="42" height="52"/>
+                        <rect key="frame" x="54" y="48" width="42" height="52"/>
                         <subviews>
                             <stackView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="gKo-QU-Ry0">
                                 <rect key="frame" x="11.33333333333333" y="8" width="19.666666666666671" height="36"/>
@@ -53,13 +123,25 @@
                     </view>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="wtJ-pU-6wP" firstAttribute="centerY" secondItem="YBY-uA-WII" secondAttribute="centerY" id="MUx-e3-itv"/>
+                    <constraint firstItem="3v1-qH-tCM" firstAttribute="top" secondItem="kaz-KP-tiE" secondAttribute="top" constant="-2" id="Hsy-rk-en6"/>
+                    <constraint firstItem="3v1-qH-tCM" firstAttribute="bottom" secondItem="kaz-KP-tiE" secondAttribute="bottom" constant="2" id="IXF-Ev-ybi"/>
+                    <constraint firstItem="3v1-qH-tCM" firstAttribute="leading" secondItem="kaz-KP-tiE" secondAttribute="leading" constant="-2" id="V1a-Be-9xp"/>
                     <constraint firstItem="wtJ-pU-6wP" firstAttribute="centerX" secondItem="YBY-uA-WII" secondAttribute="centerX" id="W65-fV-5af"/>
+                    <constraint firstItem="3v1-qH-tCM" firstAttribute="centerX" secondItem="YBY-uA-WII" secondAttribute="centerX" id="fQz-Qr-bpN"/>
+                    <constraint firstItem="kaz-KP-tiE" firstAttribute="top" secondItem="wtJ-pU-6wP" secondAttribute="top" constant="2" id="kZy-x3-J4Q"/>
+                    <constraint firstItem="3v1-qH-tCM" firstAttribute="centerY" secondItem="YBY-uA-WII" secondAttribute="centerY" id="p9U-yE-rSG"/>
+                    <constraint firstItem="3v1-qH-tCM" firstAttribute="trailing" secondItem="kaz-KP-tiE" secondAttribute="trailing" constant="2" id="qcR-aC-V6Y"/>
                 </constraints>
             </collectionViewCellContentView>
             <size key="customSize" width="150" height="180"/>
             <connections>
                 <outlet property="dateLabel" destination="XK7-ry-oF5" id="h2D-SR-FN0"/>
+                <outlet property="emotionBgView" destination="ey7-IB-shd" id="z9y-sC-BpB"/>
+                <outlet property="emotionBorderView" destination="kaz-KP-tiE" id="kTU-Fj-EkG"/>
+                <outlet property="emotionHeight" destination="da4-BX-ieV" id="Qpc-Tl-Z7s"/>
+                <outlet property="emotionImageView" destination="Qmk-BD-U7r" id="BKF-uh-Dc2"/>
+                <outlet property="emotionOuterView" destination="3v1-qH-tCM" id="oNv-UI-3tH"/>
+                <outlet property="emotionsCounterLabel" destination="NNp-Tf-grB" id="J9X-pj-IqV"/>
                 <outlet property="roundedView" destination="wtJ-pU-6wP" id="yVv-2I-FFW"/>
                 <outlet property="weekdayLabel" destination="LBJ-h8-geM" id="bZl-T5-0Y4"/>
             </connections>
@@ -67,6 +149,10 @@
         </collectionViewCell>
     </objects>
     <resources>
+        <image name="noEmotion" width="20" height="20"/>
+        <namedColor name="lightBlue">
+            <color red="0.94901960784313721" green="0.96470588235294119" blue="0.98039215686274506" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <namedColor name="textGrey60">
             <color red="0.019607843137254902" green="0.015686274509803921" blue="0.023529411764705882" alpha="0.60000002384185791" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class MoveNoteViewController: UIViewController {
     
@@ -20,7 +21,8 @@ class MoveNoteViewController: UIViewController {
     @IBOutlet weak var headerUnderlayView: UIView!
     @IBOutlet weak var headerUnderlayBottom: NSLayoutConstraint!
     
-    var step: MissionStep!
+    @IBOutlet weak var bottomGradientView: UIView!
+    
     var mission: Mission?
     var onMoved: ((Mission, MissionStep?, Bool, Bool) -> ())?
     var showCalendar = false
@@ -30,6 +32,7 @@ class MoveNoteViewController: UIViewController {
     private var selectedMission: Mission?
     private var selectedStep: MissionStep?
     
+    private var allMissions = [Mission]()
     private var missions = [Mission]()
     
     override func viewDidLoad() {
@@ -39,6 +42,7 @@ class MoveNoteViewController: UIViewController {
         backButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1, bounds: CGRect(x: 0, y: 0, width: 40, height: 40))
         setupBottomConstraint(saveButton)
         setupBottomConstraint(addNoteButton)
+        bottomGradientView.applyBottomGradient(color: .bgGrey)
         
         let window = UIApplication.shared.windows.first
         var bottom = window?.safeAreaInsets.bottom ?? 0
@@ -80,6 +84,7 @@ class MoveNoteViewController: UIViewController {
             missions = [mission]
             selectedMission = mission
         } else {
+            allMissions = MissionsHolder.shared.getMyMissions().filter { $0.category != MissionCategory.notes.rawValue }
             if note != nil {
                 titleLabel.text = "Переместить заметку"
                 saveButton.setTitle("Сохранить", for: .normal)
@@ -90,8 +95,8 @@ class MoveNoteViewController: UIViewController {
             } else {
                 titleLabel.text = "Куда поместить заметку?"
             }
-            missions = MissionsHolder.shared.getMyMissions().filter { $0.category != MissionCategory.notes.rawValue }
         }
+        
         updateSteps()
         
         if let nc = navigationController as? CreateNoteNavigationController, nc.stepDate != nil {
@@ -117,8 +122,10 @@ class MoveNoteViewController: UIViewController {
     
     private func updateSteps() {
         if showCalendar, let date = weeklyView.selectedDate {
+            let now = Date().startOfDay
+            missions = allMissions.filter { $0.archivedAt == nil || date < $0.archivedAt!.startOfDay }
             missions.forEach {
-                $0.selectedSteps = $0.addedSteps.filter { $0.id >= 0 && $0.hasItemForDate(date) }
+                $0.selectedSteps = $0.addedSteps.filter { $0.id >= 0 && $0.hasItemForDate(date) && ($0.frequency != StepFrequency.untilDone.rawValue || date <= now) }
             }
         } else {
             missions.forEach {
@@ -133,6 +140,17 @@ class MoveNoteViewController: UIViewController {
         }
     }
     
+    private func getStep(context: NSManagedObjectContext) -> MissionStep? {
+        var step = selectedStep
+        if step == nil {
+            step = selectedMission?.getNotesStep()
+            if step == nil {
+                step = MissionsHolder.shared.getNotesMission(context: context)?.getNotesStep()
+            }
+        }
+        return step
+    }
+    
     @IBAction func backTapped() {
         navigationController?.popViewController(animated: true)
     }
@@ -145,33 +163,39 @@ class MoveNoteViewController: UIViewController {
         var moved = false
         if let mission = mission {
             onMoved?(mission, selectedStep, false, false)
-        } else if let note = note, let selectedMission = selectedMission {
-            if let step = (selectedStep ?? selectedMission.getNotesStep()), step.objectID != note.step?.objectID {
+        } else if let note = note, let selectedMission = selectedMission, let step = (selectedStep ?? selectedMission.getNotesStep()), step.objectID != note.step?.objectID {
                 
-                var missionDeleted = false
-                var stepDeleted = false
+            var missionDeleted = false
+            var stepDeleted = false
+            
+            CoreDataStack.shared.performAndWait { context in
+                let previousStep = note.step
+                note.step = step
                 
-                CoreDataStack.shared.performAndWait { context in
-                    let previousStep = note.step
-                    note.step = step
-                    
-                    if previousStep?.hasFrequency == false && previousStep?.notes?.count == 0 {
-                        if let mission = previousStep?.block.mission, mission.category == MissionCategory.notes.rawValue, mission.addedSteps.count == 1 {
-                            context.delete(mission)
-                            missionDeleted = true
-                        } else {
-                            context.delete(previousStep!)
-                        }
-                        stepDeleted = true
+                if previousStep?.hasFrequency == false && previousStep?.notes?.count == 0 {
+                    if let mission = previousStep?.block.mission, mission.category == MissionCategory.notes.rawValue, mission.addedSteps.count == 1 {
+                        context.delete(mission)
+                        missionDeleted = true
+                    } else {
+                        context.delete(previousStep!)
                     }
+                    stepDeleted = true
                 }
-                onMoved?(selectedMission, selectedStep, stepDeleted, missionDeleted)
-                moved = true
-                
-                print("Mission deleted \(missionDeleted), step deleted \(stepDeleted)")
-                
-                if missionDeleted {
-                    NotificationCenter.default.post(name: .missionUpdated, object: nil)
+            }
+            onMoved?(selectedMission, selectedStep, stepDeleted, missionDeleted)
+            moved = true
+            
+            print("Mission deleted \(missionDeleted), step deleted \(stepDeleted)")
+            
+            if missionDeleted {
+                NotificationCenter.default.post(name: .missionUpdated, object: nil)
+            }
+        } else {
+            CoreDataStack.shared.performAndWait { [unowned self] context in
+                if let step = getStep(context: context) {
+                    DispatchQueue.main.async {
+                        self.onMoved?(step.block.mission, step, false, false)
+                    }
                 }
             }
         }
@@ -191,14 +215,7 @@ class MoveNoteViewController: UIViewController {
         var note: MissionNote?
         
         CoreDataStack.shared.performAndWait { [unowned self] context in
-            var step = selectedStep
-            if step == nil {
-                step = selectedMission?.getNotesStep()
-                if step == nil {
-                    step = MissionsHolder.shared.getNotesMission(context: context)?.getNotesStep()
-                }
-            }
-            if let step = step {
+            if let step = getStep(context: context) {
                 note = MissionNote.create(context: context, step: step, date: nc.date ?? Date(), name: nc.noteTitle, text: nc.body, emotions: nc.emotions, media: nc.mediaHolder.media)
             }
         }

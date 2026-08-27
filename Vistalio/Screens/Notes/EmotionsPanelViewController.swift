@@ -17,6 +17,8 @@ class EmotionsPanelViewController: UIViewController {
     @IBOutlet weak var saveButtonLabel2: UILabel!
     @IBOutlet weak var topGradientView: UIView!
     
+    @IBOutlet weak var bottomGradientView: UIView!
+    
     private var emotions = MissionEmotion.allCases
     private var selectionAvailable = true
     private var selectedEmotions = [MissionEmotion]()
@@ -34,6 +36,7 @@ class EmotionsPanelViewController: UIViewController {
         closeButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1, bounds: CGRect(x: 0, y: 0, width: 40, height: 40))
         setupBottomConstraint(saveButton)
         topGradientView.setGradientLayer(colors: [.white, .white.withAlphaComponent(0.01)], startPoint: CGPoint(x: 0.5, y: 0.0), endPoint: CGPoint(x: 0.5, y: 1.0), cornerRadius: 0)
+        bottomGradientView.applyBottomGradient(color: .white)
         
         let window = UIApplication.shared.windows.first
         var bottom = window?.safeAreaInsets.bottom ?? 0

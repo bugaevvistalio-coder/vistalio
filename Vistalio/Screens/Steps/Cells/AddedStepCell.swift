@@ -10,6 +10,7 @@ import UIKit
 class AddedStepCell: UITableViewCell {
     
     @IBOutlet weak var roundedView: UIView!
+    @IBOutlet private weak var bgView: UIView?
     @IBOutlet weak var nameLabel: UILabel!
     
     @IBOutlet weak var addNoteControl: UIControl!
@@ -17,7 +18,7 @@ class AddedStepCell: UITableViewCell {
     @IBOutlet weak var noteLabel: UILabel!
     
     @IBOutlet weak var checkImageView: UIImageView!
-    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var dateLabel: UILabel?
     
     @IBOutlet private weak var addNoteLeading: NSLayoutConstraint!
     
@@ -29,7 +30,7 @@ class AddedStepCell: UITableViewCell {
     @IBOutlet private weak var emotion3View: EmotionCircleView!
     @IBOutlet private weak var emotion4View: EmotionCircleView!
     
-    var onLongGesture: ((UIImage, CGRect) -> ())?
+    var onLongGesture: ((MissionStep, UIImage, CGRect) -> ())?
     var onOpenStep: ((MissionStep, Date?, Bool) -> ())?
     
     private lazy var longGestureRecognizer: UILongPressGestureRecognizer = {
@@ -55,12 +56,14 @@ class AddedStepCell: UITableViewCell {
                 roundedView.addGestureRecognizer(longGestureRecognizer)
             }
             if step.hasFrequency {
-                dateLabel.superview?.isHidden = false
-                lastStepItemDate = step.lastDate
-                checkImageView.image = step.isImplementedForDate(lastStepItemDate) ? .checkCircleOn : .checkCircleOff
+                dateLabel?.superview?.isHidden = false
+                if date == nil {
+                    lastStepItemDate = step.lastDate
+                }
+                checkImageView.image = step.isImplementedForDate(date ?? lastStepItemDate) ? .checkCircleOn : .checkCircleOff
                 addNoteControl.isHidden = false
             } else {
-                dateLabel.superview?.isHidden = true
+                dateLabel?.superview?.isHidden = true
                 checkImageView.isHidden = true
                 addNoteControl.isHidden = true
             }
@@ -69,15 +72,28 @@ class AddedStepCell: UITableViewCell {
         }
     }
     
+    var isLastStep: Bool = false {
+        didSet {
+            bgView?.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            bgView?.layer.cornerRadius = isLastStep ? 30 : 0
+        }
+    }
+    
+    var date: Date?
+    
     private var lastStepItemDate: Date? {
         didSet {
-            dateLabel.text = lastStepItemDate?.formatted2
+            dateLabel?.text = lastStepItemDate?.formatted2
             checkImageView.isHidden = lastStepItemDate == nil || step.frequency == StepFrequency.untilDone.rawValue && lastStepItemDate! > Date().startOfDay
         }
     }
     
     private func displayEmotions() {
-        let notes = step.notes?.allObjects.map { $0 as! MissionNote }.sorted { ($0.date ?? Date()) > ($1.date ?? Date()) } ?? []
+        var allNotes = step.notes?.allObjects.map { $0 as! MissionNote } ?? []
+        if let date = date {
+            allNotes = allNotes.filter { $0.date?.startOfDay == date }
+        }
+        let notes = allNotes.sorted { ($0.date ?? Date()) > ($1.date ?? Date()) }
         let emotions = notes.compactMap { $0.emotions?.allObjects.map { $0 as! MissionNoteEmotion }.sorted { $0.date < $1.date }.first }
         let displayedEmotions = emotions.prefix(4)
         
@@ -120,22 +136,22 @@ class AddedStepCell: UITableViewCell {
             if let origin = roundedView.superview?.convert(roundedView.frame.origin, to: nil) {
                 roundedView.backgroundColor = .white
                 DispatchQueue.main.async {
-                    self.onLongGesture?(self.roundedView.toImage(rect: self.roundedView.bounds), CGRect(origin: origin, size: self.roundedView.frame.size))
+                    self.onLongGesture?(self.step, self.roundedView.toImage(rect: self.roundedView.bounds), CGRect(origin: origin, size: self.roundedView.frame.size))
                 }
             }
         }
     }
     
     @IBAction func tapped(_ sender: Any) {
-        onOpenStep?(step, lastStepItemDate, false)
+        onOpenStep?(step, date ?? lastStepItemDate, false)
     }
     
     @IBAction func addNoteTapped(_ sender: Any) {
-        onOpenStep?(step, lastStepItemDate, true)
+        onOpenStep?(step, date ?? lastStepItemDate, true)
     }
     
     @objc func checkImageTapped(_ gesture: UITapGestureRecognizer) {
-        guard let date = lastStepItemDate else {
+        guard let date = date ?? lastStepItemDate else {
             return
         }
         parentViewController?.switchStepImplemented(step, date: date) { [unowned self] checked in

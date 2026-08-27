@@ -179,7 +179,7 @@ extension UIView {
     }
     
     func setGradientLayer(colors: [UIColor], startPoint: CGPoint, endPoint: CGPoint, cornerRadius: CGFloat, bounds: CGRect? = nil) {
-        layer.sublayers?.filter({ $0.name == "GradientLayer" }).forEach({ $0.removeFromSuperlayer() })
+        removeGradientLayer()
         
         let gradientLayer = CAGradientLayer()
         gradientLayer.name = "GradientLayer"
@@ -192,7 +192,7 @@ extension UIView {
     }
     
     func setGradientLayer(colors: [UIColor], locations: [NSNumber], cornerRadius: CGFloat, bounds: CGRect? = nil) {
-        layer.sublayers?.filter({ $0.name == "GradientLayer" }).forEach({ $0.removeFromSuperlayer() })
+        removeGradientLayer()
         
         let gradientLayer = CAGradientLayer()
         gradientLayer.name = "GradientLayer"
@@ -201,5 +201,15 @@ extension UIView {
         gradientLayer.frame = bounds ?? self.bounds
         gradientLayer.cornerRadius = cornerRadius
         layer.insertSublayer(gradientLayer, at: 0)
+    }
+    
+    func removeGradientLayer() {
+        layer.sublayers?.filter({ $0.name == "GradientLayer" }).forEach({ $0.removeFromSuperlayer() })
+    }
+    
+    func applyBottomGradient(color: UIColor) {
+        let colors = [color.withAlphaComponent(0.01), color.withAlphaComponent(0.08), color]
+        let bottom = UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
+        setGradientLayer(colors: colors, startPoint: CGPoint(x: 0.5, y: 0.0), endPoint: CGPoint(x: 0.5, y: 1.0), cornerRadius: 0, bounds: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 66 + bottom))
     }
 }

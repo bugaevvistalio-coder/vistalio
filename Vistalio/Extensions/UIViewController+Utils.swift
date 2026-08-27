@@ -82,14 +82,18 @@ extension UIViewController {
     func openArchiveMission(_ mission: Mission) {
         let sb = UIStoryboard(name: "Main", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
-        vc.popupTitle = mission.archived ? "Убрать миссию из архива?" : "Убрать миссию в архив?"
-        vc.popupText = mission.archived ? "Снова начнём напоминать о её шагах и предлагать новые. Можно отменить в любой момент." : "Мы перестанем напоминать о её шагах и предлагать новые. Можно отменить в любой момент."
+        vc.popupTitle = mission.archivedAt != nil ? "Убрать миссию из архива?" : "Убрать миссию в архив?"
+        vc.popupText = mission.archivedAt != nil ? "Снова начнём напоминать о её шагах и предлагать новые. Можно отменить в любой момент." : "Мы перестанем напоминать о её шагах и предлагать новые. Можно отменить в любой момент."
         vc.buttons = [
-            ActionButton(type: mission.archived ? .blue : .red, title: mission.archived ? "Убрать из архива" : "Убрать в архив", action: { _ in CoreDataStack.shared.performAndWait { context in
-                    mission.archived = !mission.archived
+            ActionButton(type: mission.archivedAt != nil ? .blue : .red, title: mission.archivedAt != nil ? "Убрать из архива" : "Убрать в архив", action: { _ in CoreDataStack.shared.performAndWait { context in
+                if mission.archivedAt != nil {
+                    mission.archivedAt = nil
+                } else {
+                    mission.archivedAt = Date()
+                }
                 }
                 NotificationCenter.default.post(name: .missionUpdated, object: nil)
-                (UIApplication.shared.delegate as! AppDelegate).addNotification(text: mission.archived ? "Миссия перемещена в архив" : "Миссия убрана из архива")
+                (UIApplication.shared.delegate as! AppDelegate).addNotification(text: mission.archivedAt != nil ? "Миссия перемещена в архив" : "Миссия убрана из архива")
             }),
             ActionButton(type: .secondary, title: "Отменить", action: { _ in })
         ]
@@ -190,7 +194,7 @@ extension UIViewController {
                             context.delete(implemented)
                         }
                     }
-                    if !checked {
+                    if !checked && (step.notes?.count ?? 0) > 0 {
                         step.moveNotesToNotesStep(context: context, date: date, afterDate: false)
                     }
                 }
@@ -212,7 +216,7 @@ extension UIViewController {
                                 context.delete(implemented)
                             }
                         }
-                        if !checked {
+                        if !checked && (step.notes?.count ?? 0) > 0 {
                             step.moveNotesToNotesStep(context: context, date: date, afterDate: true)
                         }
                     }
@@ -357,10 +361,14 @@ extension UIViewController {
     }
     
     func showNoteMenu(note: MissionNote, anchorRect: CGRect, image: UIImage, onDeleted: @escaping (Bool, Bool) -> (), onMoved: @escaping (Bool, Bool) -> ()) {
-        let mainVC = (UIApplication.shared.keyWindow?.rootViewController as! MainViewController)
-        let menuUnderlayControl = mainVC.addMenuUnderlayControl(color: .black.withAlphaComponent(0.25))
+        let mainVC = UIApplication.shared.mainViewController!
+        showNoteMenu(note: note, from: mainVC, anchorRect: anchorRect, image: image, onDeleted: onDeleted, onMoved: onMoved)
+    }
+    
+    func showNoteMenu(note: MissionNote, from vc: UIViewController, anchorRect: CGRect, image: UIImage, hMargin: CGFloat = 10, onDeleted: @escaping (Bool, Bool) -> (), onMoved: @escaping (Bool, Bool) -> ()) {
+        let menuUnderlayControl = vc.addMenuUnderlayControl(color: .black.withAlphaComponent(0.25))
         let items = getNoteMenuItems(note: note, menuUnderlayControl: menuUnderlayControl, onDeleted: onDeleted, onMoved: onMoved)
-        showMenu(items: items, menuUnderlayControl: menuUnderlayControl, anchorRect: anchorRect, image: image, hMargin: 10)
+        showMenu(items: items, menuUnderlayControl: menuUnderlayControl, anchorRect: anchorRect, image: image, hMargin: hMargin)
     }
     
     func getNoteMenuItems(note: MissionNote, menuUnderlayControl: UIView, onDeleted: @escaping (Bool, Bool) -> (), onMoved: @escaping (Bool, Bool) -> ()) -> [MenuItemData] {
@@ -419,6 +427,7 @@ extension UIViewController {
                 if missionDeleted {
                     NotificationCenter.default.post(name: .missionUpdated, object: nil)
                 }
+                NotificationCenter.default.post(name: .noteUpdated, object: note)
             }),
             ActionButton(type: .secondary, title: "Отменить", action: { _ in })
         ]
@@ -451,5 +460,12 @@ extension UIViewController {
         galleryView.onDismiss = { [unowned self] in
             self.view.gestureRecognizers?.first { $0 is UIPanGestureRecognizer }?.isEnabled = true
         }
+    }
+    
+    func openTemplate(_ template: MissionTemplate) {
+        let sb = UIStoryboard(name: "Missions", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "TemplateVC") as! TemplateViewController
+        vc.template = template
+        presentFullScreen(vc)
     }
 }

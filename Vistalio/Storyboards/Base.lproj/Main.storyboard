@@ -235,10 +235,10 @@
             </objects>
             <point key="canvasLocation" x="-628" y="-165"/>
         </scene>
-        <!--MyDayTabVC-->
+        <!--MyDayTabNC-->
         <scene sceneID="FTl-iI-bKd">
             <objects>
-                <viewControllerPlaceholder storyboardName="MyDay" referencedIdentifier="MyDayTabVC" id="0E2-5c-d1h" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="MyDay" referencedIdentifier="MyDayTabNC" id="0E2-5c-d1h" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rMS-Y3-Tmj" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-5" y="-165"/>

@@ -12,6 +12,7 @@ class CreateMissionViewController: UIViewController {
     
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var closeButton: UIButton!
+    @IBOutlet weak var underlayBottom: NSLayoutConstraint!
     
     @IBOutlet weak var coverImageView: UIImageView!
     @IBOutlet weak var refreshButton: UIButton!
@@ -22,6 +23,8 @@ class CreateMissionViewController: UIViewController {
     @IBOutlet weak var descriptionTextView: GrowingTextView!
     
     @IBOutlet weak var continueButton: UIButton!
+    
+    @IBOutlet weak var bottomGradientView: UIView!
     
     private var coverPath: String?
     private var category: MissionCategory?
@@ -40,6 +43,7 @@ class CreateMissionViewController: UIViewController {
         
         closeButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1, bounds: CGRect(x: 0, y: 0, width: 40, height: 40))
         refreshButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 4, cornerRadius: 10, shadowOpacity: 0.1)
+        bottomGradientView.applyBottomGradient(color: .bgGrey)
         
         nameTextView.delegate = self
         descriptionTextView.delegate = self
@@ -263,8 +267,19 @@ extension CreateMissionViewController: UITableViewDataSource, UITableViewDelegat
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
-        hiddenTemplatesExpanded = !hiddenTemplatesExpanded
-        tableView.reloadSections(IndexSet(arrayLiteral: 1, 2), with: .automatic)
+        if indexPath.section == 1 {
+            hiddenTemplatesExpanded = !hiddenTemplatesExpanded
+            tableView.reloadSections(IndexSet(arrayLiteral: 1, 2), with: .automatic)
+        } else {
+            let templates = indexPath.section == 0 ? self.templates : hiddenTemplates
+            let vc = storyboard!.instantiateViewController(withIdentifier: "TemplateVC") as! TemplateViewController
+            vc.template = templates[indexPath.row]
+            navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        underlayBottom.constant = min(0, tableView.contentOffset.y)
     }
 }
 

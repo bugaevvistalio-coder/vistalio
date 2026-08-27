@@ -39,7 +39,7 @@ class MyMissionsViewController: UIViewController {
         emptyArchiveView.isHidden = true
         
         allMissions = MissionsHolder.shared.getMyMissions()
-        missions = allMissions.filter { !$0.archived }
+        missions = allMissions.filter { $0.archivedAt == nil }
         
         generator.prepare()
         
@@ -62,10 +62,7 @@ class MyMissionsViewController: UIViewController {
         vc.onMissionCreated = { [unowned self] mission in
             self.openMission(mission)
         }
-        
-        let window = UIApplication.shared.windows.first
-        let top = (window?.safeAreaInsets.top ?? 20)
-        presentBottomSheet(nc, height: UIScreen.main.bounds.height - top)
+        presentFullScreen(nc)
     }
     
     @objc func onMissionUpdated(notification: Notification) {
@@ -81,7 +78,7 @@ class MyMissionsViewController: UIViewController {
     
     private func updateMissions() {
         self.allMissions = MissionsHolder.shared.getMyMissions()
-        self.missions = self.allMissions.filter { tabSelected == 1 ? $0.archived : !$0.archived }
+        self.missions = self.allMissions.filter { tabSelected == 1 ? ($0.archivedAt != nil) : ($0.archivedAt == nil) }
         self.collectionView.reloadData()
         self.emptyArchiveView.isHidden = tabSelected != 1 || !self.missions.isEmpty
     }
@@ -97,7 +94,7 @@ class MyMissionsViewController: UIViewController {
                 menuUnderlayControl.removeFromSuperview()
                 openEditMission(mission, onMissionUpdated: nil)
             }),
-            MenuItemData(text: mission.archived ? "Убрать из архива" : "В архив", image: mission.archived ? .unarchive : .archive, type: .normal, action: { [unowned self] in
+            MenuItemData(text: mission.archivedAt != nil ? "Убрать из архива" : "В архив", image: mission.archivedAt != nil ? .unarchive : .archive, type: .normal, action: { [unowned self] in
                 menuUnderlayControl.removeFromSuperview()
                 openArchiveMission(mission)
             }),
@@ -159,7 +156,7 @@ extension MyMissionsViewController: UICollectionViewDataSource, UICollectionView
                 segmentedControl?.onTabSelected = { [unowned self] index in
                     self.tabSelected = index
                     self.addMissionButton?.superview?.isHidden = (index == 1)
-                    self.missions = self.allMissions.filter { index == 1 ? $0.archived : !$0.archived }
+                    self.missions = self.allMissions.filter { index == 1 ? ($0.archivedAt != nil) : ($0.archivedAt == nil) }
                     self.collectionView.reloadData()
                     self.emptyArchiveView.isHidden = index != 1 || !self.missions.isEmpty
                 }
@@ -201,7 +198,7 @@ extension MyMissionsViewController: UICollectionViewDataSource, UICollectionView
             return CGSize(width: width - 20, height: tabSelected == 1 ? 88 : 148)
         }
         let size = (width - 24) / 2
-        return CGSize(width: size, height: 194)
+        return CGSize(width: size, height: 200)
     }
     
     private func getMission(index: Int) -> Mission? {

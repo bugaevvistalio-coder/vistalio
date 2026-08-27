@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "Mission icons.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -150,7 +150,14 @@ class NoteView: UIView {
     }
     
     @IBAction func tapped(_ sender: Any) {
-        parentViewController?.openNote(note)
+        if parentViewController?.sheetViewController != nil {
+            let note = note!
+            parentViewController?.dismiss(animated: false) {
+                UIApplication.topViewController()?.openNote(note)
+            }
+        } else {
+            parentViewController?.openNote(note)
+        }
     }
     
     private lazy var longGestureRecognizer: UILongPressGestureRecognizer = {

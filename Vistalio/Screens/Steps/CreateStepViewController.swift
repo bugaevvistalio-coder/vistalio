@@ -33,6 +33,8 @@ class CreateStepViewController: UIViewController {
     
     @IBOutlet weak var saveButton: UIButton!
     
+    @IBOutlet weak var bottomGradientView: UIView!
+    
     var mission: Mission!
     var step: MissionStep?
     var onStepSaved: ((MissionStep) -> ())?
@@ -74,6 +76,7 @@ class CreateStepViewController: UIViewController {
         saveButton.isEnabled = false
         saveButton.superview!.bringSubviewToFront(saveButton)
         setupBottomConstraint(saveButton)
+        bottomGradientView.applyBottomGradient(color: .white)
         
         backToOriginalButton.superview!.isHidden = step == nil || step!.isOriginal
         

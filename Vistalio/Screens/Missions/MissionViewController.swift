@@ -82,6 +82,7 @@ class MissionViewController: UIViewController {
             UIView.performWithoutAnimation {
                 self.addItemButton.setTitle(index == 0 ? "Шаг" : "Заметка", for: .normal)
             }
+            updateAddItemViewVisibility()
             // Reload data should be before layoutHeader(). Otherwise there will be a crash because cellForRow will be called without
             // numberOfRows. But numberOfRows must be called because tab is changed
             tableView.reloadData()
@@ -101,12 +102,14 @@ class MissionViewController: UIViewController {
         
         generator.prepare()
         
+        NotificationCenter.default.addObserver(self, selector: #selector(onMissionsUpdated(notification:)), name: .missionUpdated, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onStepUpdated(notification:)), name: .stepUpdated, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onNoteUpdated(notification:)), name: .noteUpdated, object: nil)
     }
     
     deinit {
         print("Mission VC DEINIT")
+        NotificationCenter.default.removeObserver(self, name: .missionUpdated, object: nil)
         NotificationCenter.default.removeObserver(self, name: .stepUpdated, object: nil)
         NotificationCenter.default.removeObserver(self, name: .noteUpdated, object: nil)
     }
@@ -147,12 +150,13 @@ class MissionViewController: UIViewController {
     }
     
     private func updateRecommendedStepsVisibility() {
-        recommendedStepsControl.isHidden = segmentedControl.selectedIndex == 1 || mission.templateId <= 0
+        recommendedStepsControl.isHidden = segmentedControl.selectedIndex == 1 || mission.templateId <= 0 || mission.skipRecommend
     }
     
     private func updateAddItemViewVisibility() {
-        addItemView.isHidden = (mission.category == MissionCategory.notes.rawValue)
-        headerBottom.constant = (mission.category == MissionCategory.notes.rawValue) ? 0 : 4
+        let hide = (mission.category == MissionCategory.notes.rawValue || (!mission.canCreateSteps && segmentedControl.selectedIndex == 0))
+        addItemView.isHidden = hide
+        headerBottom.constant = hide ? 0 : 4
     }
     
     private func setupAddNoteView() {
@@ -198,10 +202,12 @@ class MissionViewController: UIViewController {
     }
     
     private func updateSteps() {
-        let block = (mission.blocks?.allObjects as? [StepsBlock])?.filter { $0.id >= 0 }.sorted(by: { $0.id < $1.id }).first
-        let steps = (block?.steps?.allObjects as? [MissionStep]) ?? []
-        recommendedSteps = steps.filter { !$0.hidden && $0.addedDate == nil }.sorted(by: { $0.id < $1.id })
-        hiddenSteps = steps.filter { $0.hidden }
+        if !mission.skipRecommend {
+            let blocks = (mission.blocks?.allObjects as? [StepsBlock])?.filter { $0.id >= 0 && $0.unlocked }.sorted(by: { $0.id < $1.id }) ?? []
+            let steps = blocks.flatMap { $0.steps?.allObjects as? [MissionStep] ?? [] }
+            recommendedSteps = steps.filter { !$0.hidden && $0.addedDate == nil }.sorted(by: { $0.id < $1.id })
+            hiddenSteps = steps.filter { $0.hidden }
+        }
         addedSteps = mission.addedSteps
         sortAddedSteps()
         updateAddAllSteps()
@@ -235,6 +241,25 @@ class MissionViewController: UIViewController {
             })
         ]
         presentBottomSheet(vc, height: 200)
+    }
+    
+    @objc private func onMissionsUpdated(notification: Notification) {
+        let context = mission.managedObjectContext
+        let deleted = mission.isDeleted
+        if context == nil || deleted {
+            if let nc = navigationController {
+                var controller: UIViewController?
+                for vc in nc.viewControllers {
+                    if vc === self {
+                        break
+                    }
+                    controller = vc
+                }
+                if let vc = controller {
+                    nc.popToViewController(vc, animated: true)
+                }
+            }
+        }
     }
     
     @objc private func onStepUpdated(notification: Notification) {
@@ -330,7 +355,7 @@ class MissionViewController: UIViewController {
                 }
             }))
         }
-        items.append(MenuItemData(text: mission.archived ? "Убрать из архива" : "В архив", image: mission.archived ? .unarchive : .archive, type: .normal, action: { [unowned self] in
+        items.append(MenuItemData(text: mission.archivedAt != nil ? "Убрать из архива" : "В архив", image: mission.archivedAt != nil ? .unarchive : .archive, type: .normal, action: { [unowned self] in
             menuUnderlayControl.removeFromSuperview()
             openArchiveMission(mission)
         }))
@@ -406,7 +431,7 @@ class MissionViewController: UIViewController {
                 tableView.insertRows(at: [IndexPath(row: 0, section: 3)], with: .none)
                 tableView.endUpdates()
                 (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг добавлен", secondaryText: "К шагу →") { [unowned self] in
-                    openStep(step)
+                    UIApplication.topViewController()?.openStep(step)
                 }
             }
         } else {
@@ -619,8 +644,8 @@ extension MissionViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "StepCell", for: indexPath) as! AddedStepCell
             let step = addedSteps[indexPath.row]
             cell.step = step
-            cell.onLongGesture = { [unowned self] image, rect in
-                if step.id >= 0 {
+            cell.onLongGesture = { [unowned self] step, image, rect in
+                if step.id >= 0 && (step.editable || (addedSteps.count > 1 && indexPath.row > 0)) {
                     self.generator.impactOccurred()
                     self.generator.prepare()
                     self.showMenu(step: step, anchorRect: rect, image: image)
@@ -664,7 +689,7 @@ extension MissionViewController: UITableViewDataSource {
             return hiddenSteps.isEmpty ? 1 : 48
         }
         if indexPath.section == 2 {
-            return (mission.templateId <= 0 || addedSteps.isEmpty) ? 1 : 66
+            return (mission.templateId <= 0 || addedSteps.isEmpty || mission.skipRecommend) ? 1 : 66
         }
         return UITableView.automaticDimension
     }

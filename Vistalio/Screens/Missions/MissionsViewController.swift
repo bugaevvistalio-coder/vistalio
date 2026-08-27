@@ -60,7 +60,7 @@ class MissionsViewController: UIViewController {
     }
     
     private func updateMyMissions() {
-        myMissions = MissionsHolder.shared.getMyMissions().filter { !$0.archived }
+        myMissions = MissionsHolder.shared.getMyMissions().filter { $0.archivedAt == nil }
         myMissionsCollectionView.reloadData()
         myMissionsCollectionView.isHidden = myMissions.isEmpty
         myMissionsSpacing.constant = myMissions.isEmpty ? 24 : 16
@@ -142,9 +142,7 @@ extension MissionsViewController: UITableViewDataSource, UITableViewDelegate {
             let templates = indexPath.section == 0 ? self.templates : hiddenTemplates
             let vc = storyboard!.instantiateViewController(withIdentifier: "TemplateVC") as! TemplateViewController
             vc.template = templates[indexPath.row]
-            let window = UIApplication.shared.windows.first
-            let top = (window?.safeAreaInsets.top ?? 20)
-            presentBottomSheet(vc, height: UIScreen.main.bounds.height - top)
+            presentFullScreen(vc)
         }
     }
 }

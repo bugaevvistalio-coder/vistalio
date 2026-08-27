@@ -13,6 +13,8 @@ class MoveStepViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var saveButton: UIButton!
     
+    @IBOutlet weak var bottomGradientView: UIView!
+    
     var step: MissionStep!
     var onMoved: (() -> ())?
     
@@ -28,6 +30,7 @@ class MoveStepViewController: UIViewController {
         
         closeButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1, bounds: CGRect(x: 0, y: 0, width: 40, height: 40))
         setupBottomConstraint(saveButton)
+        bottomGradientView.applyBottomGradient(color: .bgGrey)
         
         let window = UIApplication.shared.windows.first
         var bottom = window?.safeAreaInsets.bottom ?? 0
@@ -37,11 +40,11 @@ class MoveStepViewController: UIViewController {
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70 + bottom, right: 0)
         
         allMissions = MissionsHolder.shared.getMyMissions()
-        if step.block.mission.archived {
-            missions = allMissions.filter { $0.archived }
+        if step.block.mission.archivedAt != nil {
+            missions = allMissions.filter { $0.archivedAt != nil }
             tabSelected = 1
         } else {
-            missions = allMissions.filter { !$0.archived }
+            missions = allMissions.filter { $0.archivedAt == nil }
         }
         
         selectedMission = step.block.mission
@@ -104,10 +107,10 @@ extension MoveStepViewController: UICollectionViewDataSource, UICollectionViewDe
                 segmentedControl?.tabs = [SegmentedTabData(text: "Активные", image: .bell), SegmentedTabData(text: "Архив", image: .archive, tooltip: "Здесь собраны неактивные или завершённые миссии и «Общие заметки». Они не появляются в рекомендациях и для них отключены напоминания.")]
                 segmentedControl?.onTabSelected = { [unowned self] index in
                     self.tabSelected = index
-                    self.missions = self.allMissions.filter { index == 1 ? $0.archived : !$0.archived }
+                    self.missions = self.allMissions.filter { index == 1 ? ($0.archivedAt != nil) : ($0.archivedAt == nil) }
                     self.collectionView.reloadData()
                     
-                    if let mission = selectedMission, mission.archived == (index == 1) {
+                    if let mission = selectedMission, (mission.archivedAt != nil) == (index == 1) {
                         let selectionIndex = missions.firstIndex { $0.objectID == mission.objectID } ?? 0
                         let indexPath = IndexPath(row: selectionIndex, section: 1)
                         collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .left)

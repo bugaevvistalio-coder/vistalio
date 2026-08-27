@@ -75,7 +75,7 @@ class TemplateCell: UITableViewCell, UICollectionViewDataSource, UICollectionVie
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
-        roundedView.backgroundColor = highlighted ? .textGrey20 : .white
+        roundedView.alpha = highlighted ? 0.5 : 1
     }
     
     @IBAction func eyeButtonTapped(_ sender: Any) {

@@ -48,7 +48,7 @@ class MainViewController: UIViewController {
     
     private func buildControllers() {
         let storyboards = ["MyDay", "Missions", "Map", "Me"]
-        let ids = ["MyDayTabVC", "MissionsTabNC", "MapTabVC", "MeTabVC"]
+        let ids = ["MyDayTabNC", "MissionsTabNC", "MapTabNC", "MeTabVC"]
         for i in 0..<4 {
             let sb = UIStoryboard(name: storyboards[i], bundle: nil)
             let vc = sb.instantiateViewController(withIdentifier: ids[i])
@@ -78,7 +78,7 @@ class MainViewController: UIViewController {
         presentFullScreen(nc)
     }
     
-    func switchTab(tabIndex: Int) {
+    func switchTab(tabIndex: Int, toRoot: Bool = false) {
         for (i, tab) in tabs.enumerated() {
             tab.isTabSelected = (i == tabIndex)
             if i == tabIndex {
@@ -89,6 +89,9 @@ class MainViewController: UIViewController {
                 }
                 
                 let childVC = controllers[tabIndex]
+                if toRoot, let nc = childVC as? UINavigationController {
+                    nc.popToRootViewController(animated: false)
+                }
                 addChild(childVC)
 
                 containerView.addSubview(childVC.view)

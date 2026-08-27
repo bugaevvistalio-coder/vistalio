@@ -36,6 +36,7 @@ class AddNoteView: UIView {
     var onHeightChanged: (() -> ())?
     var onCursorPositionChanged: ((UITextView, CGRect) -> ())?
     var onNoteAdded: ((MissionNote) -> ())?
+    var onTappedInside: (() -> ())?
     
     var emotions = [MissionEmotion]() {
         didSet {
@@ -139,6 +140,7 @@ class AddNoteView: UIView {
                     DispatchQueue.main.async {
                         self.clear()
                         self.onNoteAdded?(note)
+                        NotificationCenter.default.post(name: .noteUpdated, object: note)
                     }
                 }
             }
@@ -154,6 +156,7 @@ class AddNoteView: UIView {
     
     @IBAction func changeDateTapped(_ sender: UIButton) {
         endEditing(true)
+        onTappedInside?()
         
         let sb = UIStoryboard(name: "Main", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "SelectDateVC") as! SelectDateViewController
@@ -169,6 +172,7 @@ class AddNoteView: UIView {
     
     @IBAction func emotionTapped(_ sender: UIButton) {
         endEditing(true)
+        onTappedInside?()
         
         let sb = UIStoryboard(name: "Missions", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "SelectEmotionVC") as! SelectEmotionViewController
@@ -180,6 +184,8 @@ class AddNoteView: UIView {
     }
     
     @IBAction func addPhotoTapped(_ sender: Any) {
+        onTappedInside?()
+        
         if titleTextView.isFirstResponder || bodyTextView.isFirstResponder {
             endEditing(true)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
@@ -191,8 +197,8 @@ class AddNoteView: UIView {
     }
     
     private func showMediaMenu(sender: Any) {
-        let mainVC = (UIApplication.shared.keyWindow?.rootViewController as! MainViewController)
-        let menuUnderlayControl = mainVC.addMenuUnderlayControl(color: .clear)
+        let vc = parentViewController?.sheetViewController ?? UIApplication.shared.mainViewController!
+        let menuUnderlayControl = vc.addMenuUnderlayControl(color: .clear)
         
         let menuView = MenuView()
         menuView.items = [
@@ -227,21 +233,29 @@ class AddNoteView: UIView {
     
     @IBAction func addLocationTapped(_ sender: Any) {
         endEditing(true)
+        onTappedInside?()
     }
     
     @IBAction func addAudioTapped(_ sender: Any) {
         endEditing(true)
+        onTappedInside?()
     }
     
     @IBAction func okTapped(_ sender: Any) {
         endEditing(true)
+        onTappedInside?()
+        
         if step != nil {
             save(step: step)
         } else {
             let sb = UIStoryboard(name: "Missions", bundle: nil)
             let vc = sb.instantiateViewController(identifier: "MoveNoteVC") as! MoveNoteViewController
-            vc.step = step
-            vc.mission = mission
+            if let mission = mission {
+                vc.mission = mission
+            } else {
+                vc.showCalendar = true
+                vc.date = date
+            }
             vc.onMoved = { [unowned self] mission, step, stepDeleted, missionDeleted in
                 self.save(step: step)
             }
@@ -273,6 +287,10 @@ extension AddNoteView: GrowingTextViewDelegate {
             let cursorRect = textView.caretRect(for: selectedRange.start)
             onCursorPositionChanged?(textView, cursorRect)
         }
+    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        onTappedInside?()
     }
 }
 

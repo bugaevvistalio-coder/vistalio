@@ -115,6 +115,7 @@ class StepViewController: UIViewController {
             addNoteButton.superview?.alpha = 0
             stackViewBottom.constant = -42
         } else {
+            menuButton.isHidden = !step.editable
             setupAddNoteView()
         }
         
@@ -149,6 +150,9 @@ class StepViewController: UIViewController {
             addNoteView.layer.cornerRadius = 30
             addNoteView.layer.borderColor = UIColor.lightBlue1.cgColor
             addNoteView.layer.borderWidth = 3
+            addNoteView.onTappedInside = { [unowned self] in
+                removeCreateNoteShadows()
+            }
         }
         
         generator.prepare()
@@ -175,6 +179,16 @@ class StepViewController: UIViewController {
             addNoteView.addShadow(offset: CGSize(width: 0, height: -2), radius: 3, cornerRadius: 30, color: UIColor(hex: "#EE6B57"), shadowOpacity: 0.5, layerName: "RedShadow")
             addNoteView.addShadow(offset: CGSize(width: 0, height: 1.5), radius: 1, cornerRadius: 30, color: .black, shadowOpacity: 0.18)
         }
+    }
+    
+    private func removeCreateNoteShadows() {
+        createNote = false
+        addNoteView.layer.sublayers?.filter({ $0.name == "GreenShadow" }).forEach({ $0.removeFromSuperlayer() })
+        addNoteView.layer.sublayers?.filter({ $0.name == "BlueShadow" }).forEach({ $0.removeFromSuperlayer() })
+        addNoteView.layer.sublayers?.filter({ $0.name == "YellowShadow" }).forEach({ $0.removeFromSuperlayer() })
+        addNoteView.layer.sublayers?.filter({ $0.name == "RedShadow" }).forEach({ $0.removeFromSuperlayer() })
+        addNoteView.layer.sublayers?.filter({ $0.name == "ShadowLayer" }).forEach({ $0.removeFromSuperlayer() })
+        addNoteView.layer.borderWidth = 0
     }
     
     private func setupAddNoteView() {

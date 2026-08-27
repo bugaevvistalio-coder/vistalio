@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		4A511EFA33FFC9C2B9B129E8 /* Pods_Vistalio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F9044A2C1A96AD9B2258C85 /* Pods_Vistalio.framework */; };
+		C30C868030360EC300297A4D /* MyDayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30C867F30360EBC00297A4D /* MyDayViewController.swift */; };
+		C30C86833036C9EC00297A4D /* DayMissionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30C86823036C9E900297A4D /* DayMissionCell.swift */; };
+		C30C86853039E6DB00297A4D /* NoMissionsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30C86843039E6D700297A4D /* NoMissionsCell.swift */; };
+		C30C8687303CA1DD00297A4D /* DayNotesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30C8686303CA1D600297A4D /* DayNotesViewController.swift */; };
+		C30C868A303DFA7300297A4D /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30C8689303DFA6F00297A4D /* MapViewController.swift */; };
 		C3100B56302A3771003CFF35 /* PlayerControlsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3100B55302A3771003CFF35 /* PlayerControlsView.xib */; };
 		C3100B58302A37BA003CFF35 /* PlayerControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3100B57302A37B7003CFF35 /* PlayerControlsView.swift */; };
 		C31593C6303222F300E2D18E /* NoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C31593C5303222F000E2D18E /* NoteViewController.swift */; };
@@ -169,6 +174,11 @@
 		13F426B1D31B72DB7E095C10 /* Pods-Vistalio.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Vistalio.debug.xcconfig"; path = "Target Support Files/Pods-Vistalio/Pods-Vistalio.debug.xcconfig"; sourceTree = "<group>"; };
 		3F9044A2C1A96AD9B2258C85 /* Pods_Vistalio.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Vistalio.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4ACEA687D8838AB39DBDACD0 /* Pods-Vistalio.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Vistalio.release.xcconfig"; path = "Target Support Files/Pods-Vistalio/Pods-Vistalio.release.xcconfig"; sourceTree = "<group>"; };
+		C30C867F30360EBC00297A4D /* MyDayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyDayViewController.swift; sourceTree = "<group>"; };
+		C30C86823036C9E900297A4D /* DayMissionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayMissionCell.swift; sourceTree = "<group>"; };
+		C30C86843039E6D700297A4D /* NoMissionsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoMissionsCell.swift; sourceTree = "<group>"; };
+		C30C8686303CA1D600297A4D /* DayNotesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayNotesViewController.swift; sourceTree = "<group>"; };
+		C30C8689303DFA6F00297A4D /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		C3100B55302A3771003CFF35 /* PlayerControlsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayerControlsView.xib; sourceTree = "<group>"; };
 		C3100B57302A37B7003CFF35 /* PlayerControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlsView.swift; sourceTree = "<group>"; };
 		C31593C5303222F000E2D18E /* NoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteViewController.swift; sourceTree = "<group>"; };
@@ -337,6 +347,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C30C867E30360EAB00297A4D /* MyDay */ = {
+			isa = PBXGroup;
+			children = (
+				C30C867F30360EBC00297A4D /* MyDayViewController.swift */,
+				C30C8686303CA1D600297A4D /* DayNotesViewController.swift */,
+				C30C86813036C9E300297A4D /* Cells */,
+			);
+			path = MyDay;
+			sourceTree = "<group>";
+		};
+		C30C86813036C9E300297A4D /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				C30C86823036C9E900297A4D /* DayMissionCell.swift */,
+				C30C86843039E6D700297A4D /* NoMissionsCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		C30C8688303DF83100297A4D /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				C30C8689303DFA6F00297A4D /* MapViewController.swift */,
+			);
+			path = Map;
+			sourceTree = "<group>";
+		};
 		C33F22972F80127500EF2A81 /* Data */ = {
 			isa = PBXGroup;
 			children = (
@@ -485,6 +522,8 @@
 			children = (
 				C33F22A42F80250F00EF2A81 /* Common */,
 				C34665A52F783741008648C8 /* Missions */,
+				C30C8688303DF83100297A4D /* Map */,
+				C30C867E30360EAB00297A4D /* MyDay */,
 				C37BB752300C9DAA006BE7EA /* Notes */,
 				C3CABD6C2FF83E980067CA73 /* Steps */,
 				C34665A62F783741008648C8 /* MainViewController.swift */,
@@ -940,6 +979,7 @@
 				C3AE55E22FD5E43F007A5E41 /* Date+Utils.swift in Sources */,
 				C37BB754300C9DBF006BE7EA /* MoveNoteViewController.swift in Sources */,
 				C3D34AE02FA1D9F0007E5CAF /* ImageScrollView.swift in Sources */,
+				C30C868030360EC300297A4D /* MyDayViewController.swift in Sources */,
 				C3447284301A1E150034F2FA /* EmotionsFlowView.swift in Sources */,
 				C3CF26EE2F7929120008718D /* CoverCell.swift in Sources */,
 				C3CABD682FF5B94F0067CA73 /* AddNoteView.swift in Sources */,
@@ -966,6 +1006,7 @@
 				C3D542562F9125370093D819 /* NotificationNames.swift in Sources */,
 				C350235B302F61F3008DA96C /* WeekViewCell.swift in Sources */,
 				C3AE55D62FD490D0007A5E41 /* CalendarView.swift in Sources */,
+				C30C86833036C9EC00297A4D /* DayMissionCell.swift in Sources */,
 				C34665C32F783741008648C8 /* UITableView+Utils.swift in Sources */,
 				C37BB73D3003F47A006BE7EA /* EmotionsPanelViewController.swift in Sources */,
 				C3AE55C52FD09D12007A5E41 /* CreateStepViewController.swift in Sources */,
@@ -974,6 +1015,7 @@
 				C3CABD732FF9708C0067CA73 /* MissionEmotion.swift in Sources */,
 				C3F47EC82F9FCAB300F17AC8 /* MissionNote.swift in Sources */,
 				C3B13FA13032BD25000FADD1 /* UITextView+Utils.swift in Sources */,
+				C30C868A303DFA7300297A4D /* MapViewController.swift in Sources */,
 				C37BB74C300777A8006BE7EA /* NoteSmallPhotoCell.swift in Sources */,
 				C3BEABC42F9BB0F200359CB6 /* mission_9.json in Sources */,
 				C3BEABC62F9BB10600359CB6 /* mission_10.json in Sources */,
@@ -981,6 +1023,7 @@
 				C37309D12FAE04A7004F7ED8 /* RecommendedStepCell.swift in Sources */,
 				C3BEABCE2F9BB23800359CB6 /* mission_14.json in Sources */,
 				C37BB73830035EB1006BE7EA /* EmotionSettingsViewController.swift in Sources */,
+				C30C8687303CA1DD00297A4D /* DayNotesViewController.swift in Sources */,
 				C33F22B92F838A1200EF2A81 /* SegmentedControl.swift in Sources */,
 				C3B7D71A2F94A55400562DC2 /* CropImageViewController.swift in Sources */,
 				C37BB750300778D0006BE7EA /* NotePhotoCell.swift in Sources */,
@@ -1006,6 +1049,7 @@
 				C3502350302DBD7F008DA96C /* RingProgressView.swift in Sources */,
 				C3AE55D32FD2BA62007A5E41 /* DropDownControl.swift in Sources */,
 				C3AE55E02FD49BDE007A5E41 /* DayView.swift in Sources */,
+				C30C86853039E6DB00297A4D /* NoMissionsCell.swift in Sources */,
 				C3D34ADE2FA0FB5F007E5CAF /* GalleryCell.swift in Sources */,
 				C37BB73630015C1E006BE7EA /* EmotionCircleView.swift in Sources */,
 				C34665C62F783741008648C8 /* CreateMissionViewController.swift in Sources */,
@@ -1068,7 +1112,7 @@
 				CODE_SIGN_ENTITLEMENTS = Vistalio/Vistalio.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 26;
 				DEVELOPMENT_TEAM = K3TB65CDP6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Vistalio/Info.plist;
@@ -1084,13 +1128,15 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ab.vistalio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -1103,7 +1149,7 @@
 				CODE_SIGN_ENTITLEMENTS = Vistalio/Vistalio.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 26;
 				DEVELOPMENT_TEAM = K3TB65CDP6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Vistalio/Info.plist;
@@ -1119,13 +1165,15 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ab.vistalio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

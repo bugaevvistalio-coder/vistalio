@@ -16,6 +16,8 @@ class SelectEmotionViewController: UIViewController {
     @IBOutlet weak var buttonsStackView: UIStackView!
     @IBOutlet weak var addNoteButton: UIControl!
     
+    @IBOutlet weak var bottomGradientView: UIView!
+    
     private var panelEmotions = [MissionEmotion]()
     private var emotions = [MissionEmotion]()
     
@@ -35,6 +37,7 @@ class SelectEmotionViewController: UIViewController {
         settingsButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1, bounds: CGRect(x: 0, y: 0, width: 40, height: 40))
         setupBottomConstraint(saveButton)
         setupBottomConstraint(buttonsStackView)
+        bottomGradientView.applyBottomGradient(color: .white)
         
         saveButton.isHidden = isNoteCreation
         buttonsStackView.isHidden = !isNoteCreation

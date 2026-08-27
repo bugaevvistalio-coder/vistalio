@@ -1,24 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_12" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Navigation Controller-->
+        <scene sceneID="5tp-bf-BeO">
+            <objects>
+                <navigationController storyboardIdentifier="MapTabNC" navigationBarHidden="YES" id="Isa-0U-TbF" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="0yx-Ks-2Rv">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="Y6W-OH-hqX" kind="relationship" relationship="rootViewController" id="14u-js-QQv"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="GVe-3c-O4z" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-724" y="4"/>
+        </scene>
+        <!--Map View Controller-->
         <scene sceneID="s0d-6b-0kx">
             <objects>
-                <viewController storyboardIdentifier="MapTabVC" id="Y6W-OH-hqX" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MapTabVC" id="Y6W-OH-hqX" customClass="MapViewController" customModule="Vistalio" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="COb-X4-gQ4">
+                                <rect key="frame" x="0.0" y="25" width="320" height="518"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Раздел карты эмоций в разработке" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ykr-hj-y56">
+                                        <rect key="frame" x="34" y="0.0" width="252" height="57.5"/>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="24"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OnG-fe-aJL" customClass="RoundedControl" customModule="Vistalio" customModuleProvider="target">
+                                        <rect key="frame" x="34" y="73.5" width="252" height="72"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Отмечайте локации в заметках и подготовьтесь к запуску →" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wCL-RE-fPK">
+                                                <rect key="frame" x="0.0" y="0.0" width="252" height="72"/>
+                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
+                                                <color key="textColor" name="highlightBlue"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="wCL-RE-fPK" secondAttribute="trailing" id="2t4-va-mhP"/>
+                                            <constraint firstItem="wCL-RE-fPK" firstAttribute="leading" secondItem="OnG-fe-aJL" secondAttribute="leading" id="MYc-Mt-r3k"/>
+                                            <constraint firstAttribute="bottom" secondItem="wCL-RE-fPK" secondAttribute="bottom" id="eay-l6-p3q"/>
+                                            <constraint firstItem="wCL-RE-fPK" firstAttribute="top" secondItem="OnG-fe-aJL" secondAttribute="top" id="ewO-vT-7NR"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="highlightOnTap" value="YES"/>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="createNoteTapped:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="f3e-hj-ZCj"/>
+                                        </connections>
+                                    </view>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mapPlaceholder" translatesAutoresizingMaskIntoConstraints="NO" id="mWs-Ks-Pgx">
+                                        <rect key="frame" x="1" y="177.5" width="318" height="340.5"/>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="OnG-fe-aJL" secondAttribute="trailing" constant="34" id="Cbe-bd-esu"/>
+                                    <constraint firstItem="mWs-Ks-Pgx" firstAttribute="top" secondItem="OnG-fe-aJL" secondAttribute="bottom" constant="32" id="Fdg-4f-Tux"/>
+                                    <constraint firstItem="mWs-Ks-Pgx" firstAttribute="centerX" secondItem="COb-X4-gQ4" secondAttribute="centerX" id="GhH-0X-X1Y"/>
+                                    <constraint firstItem="Ykr-hj-y56" firstAttribute="leading" secondItem="COb-X4-gQ4" secondAttribute="leading" constant="34" id="LPq-WY-tLM"/>
+                                    <constraint firstAttribute="bottom" secondItem="mWs-Ks-Pgx" secondAttribute="bottom" id="SKp-ew-nAA"/>
+                                    <constraint firstItem="OnG-fe-aJL" firstAttribute="leading" secondItem="COb-X4-gQ4" secondAttribute="leading" constant="34" id="V5f-Zn-YWt"/>
+                                    <constraint firstItem="OnG-fe-aJL" firstAttribute="top" secondItem="Ykr-hj-y56" secondAttribute="bottom" constant="16" id="c8z-vb-gCp"/>
+                                    <constraint firstAttribute="trailing" secondItem="Ykr-hj-y56" secondAttribute="trailing" constant="34" id="juj-JH-aqz"/>
+                                    <constraint firstItem="Ykr-hj-y56" firstAttribute="top" secondItem="COb-X4-gQ4" secondAttribute="top" id="rEk-lC-MWx"/>
+                                </constraints>
+                            </view>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
-                        <color key="backgroundColor" systemColor="systemCyanColor"/>
+                        <color key="backgroundColor" name="bgGrey"/>
+                        <constraints>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="COb-X4-gQ4" secondAttribute="trailing" id="SPx-UH-W7J"/>
+                            <constraint firstItem="COb-X4-gQ4" firstAttribute="centerY" secondItem="5EZ-qb-Rvc" secondAttribute="centerY" id="hrr-Wi-gpJ"/>
+                            <constraint firstItem="COb-X4-gQ4" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="l4A-Bp-vX3"/>
+                        </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="Y2l-Q2-Gz6"/>
+                    <connections>
+                        <outlet property="placeholderImageView" destination="mWs-Ks-Pgx" id="LoS-nG-YUB"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -26,8 +102,12 @@
         </scene>
     </scenes>
     <resources>
-        <systemColor name="systemCyanColor">
-            <color red="0.19607843137254902" green="0.67843137254901964" blue="0.90196078431372551" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
+        <image name="mapPlaceholder" width="318" height="340.33334350585938"/>
+        <namedColor name="bgGrey">
+            <color red="0.96078431372549022" green="0.96470588235294119" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="highlightBlue">
+            <color red="0.45490196078431372" green="0.58039215686274515" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
     </resources>
 </document>

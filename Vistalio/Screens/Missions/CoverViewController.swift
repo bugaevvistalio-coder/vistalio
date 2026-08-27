@@ -14,6 +14,7 @@ class CoverViewController: UIViewController {
     @IBOutlet weak var closeButton: UIButton!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var saveButton: UIButton!
+    @IBOutlet weak var bottomGradientView: UIView!
     
     private var createButton: UIButton?
     
@@ -34,6 +35,7 @@ class CoverViewController: UIViewController {
         
         closeButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1, bounds: CGRect(x: 0, y: 0, width: 40, height: 40))
         setupBottomConstraint(saveButton)
+        bottomGradientView.applyBottomGradient(color: .white)
         
         let window = UIApplication.shared.windows.first
         var bottom = window?.safeAreaInsets.bottom ?? 0

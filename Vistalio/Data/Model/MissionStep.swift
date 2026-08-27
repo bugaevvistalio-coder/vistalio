@@ -52,6 +52,13 @@ extension StepsBlock {
     }
     
     @NSManaged public var id: Int
+    
+    @NSManaged public var nextAppears: String?
+    @NSManaged public var doneCriteria: String?
+    @NSManaged public var photoMin: Int16
+    @NSManaged public var searchText: String?
+    @NSManaged public var unlocked: Bool
+    
     @NSManaged public var mission: Mission
     @NSManaged public var steps: NSSet?
     @NSManaged public var movedSteps: NSSet?
@@ -103,6 +110,7 @@ extension MissionStep {
     @NSManaged public var hidden: Bool
     @NSManaged public var addedDate: Date?
     @NSManaged public var sortOrder: Int32
+    @NSManaged public var editable: Bool
     
     @NSManaged public var startDate: String?
     @NSManaged public var endDate: String?
@@ -469,7 +477,7 @@ extension MissionStep {
     
     func delete(withNotes: Bool) {
         CoreDataStack.shared.performAndWait { context in
-            if !withNotes {
+            if !withNotes && (notes?.count ?? 0) > 0 {
                 moveNotesToNotesStep(context: context, date: nil, afterDate: false)
             }
             if block.id == -1 {
@@ -501,6 +509,12 @@ extension MissionStep {
                     }
                 }
             }
+        }
+    }
+    
+    func moveUp() {
+        CoreDataStack.shared.performAndWait { [unowned self] context in
+            sortOrder = (block.mission.addedSteps.max(by: { $0.sortOrder < $1.sortOrder })?.sortOrder ?? 0) + 1
         }
     }
     

@@ -14,6 +14,8 @@ class HiddenStepsViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var notificationsStackView: UIStackView!
     
+    @IBOutlet weak var bottomGradientView: UIView!
+    
     var mission: Mission!
     var onStepHidden: (() -> ())?
     
@@ -24,6 +26,7 @@ class HiddenStepsViewController: UIViewController {
         super.viewDidLoad()
         
         closeButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1, bounds: CGRect(x: 0, y: 0, width: 40, height: 40))
+        bottomGradientView.applyBottomGradient(color: .bgGrey)
         
         steps = (mission.blocks?.allObjects as? [StepsBlock])?.flatMap { ($0.steps?.allObjects as? [MissionStep])?.filter { $0.hidden } ?? []}.sorted(by: { $0.id < $1.id }) ?? []
     }

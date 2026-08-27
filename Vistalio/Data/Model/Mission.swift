@@ -87,6 +87,9 @@ public class Mission: NSManagedObject {
         mission.creationDate = Date()
         mission.updateDate = mission.creationDate
         mission.templateId = template.id
+        mission.showCompleted = template.showCompleted ?? false
+        mission.canCreateSteps = template.canCreateSteps ?? true
+        mission.skipRecommend = template.skipRecommend ?? false
         
         var stepIndex = 0
         var noteIndex = 0
@@ -96,6 +99,11 @@ public class Mission: NSManagedObject {
                 let block = StepsBlock(entity: blockEntity, insertInto: context)
                 block.id = i+1
                 block.mission = mission
+                block.nextAppears = b.nextAppears?.rawValue
+                block.doneCriteria = b.doneCriteria?.map { $0.rawValue }.joined(separator: ",")
+                block.photoMin = Int16(b.photoMin ?? 1)
+                block.searchText = b.searchText
+                block.unlocked = i == 0
                 
                 for s in b.steps {
                     if let stepEntity = NSEntityDescription.entity(forEntityName: "MissionStep", in: context) {
@@ -105,7 +113,14 @@ public class Mission: NSManagedObject {
                         step.id = stepIndex
                         step.name = s.name
                         step.text = s.description
+                        step.editable = s.editable ?? true
                         step.block = block
+                        
+                        if mission.skipRecommend && i == 0 {
+                            step.addedDate = Date()
+                            step.startDate = step.addedDate!.toDateString
+                            step.sortOrder = Int32(stepIndex)
+                        }
                         
                         if let notes = s.notes {
                             for n in notes {
@@ -153,6 +168,15 @@ public class Mission: NSManagedObject {
         return steps.filter { $0.addedDate != nil }
     }
     
+    var addedStepsSorted: [MissionStep] {
+        return addedSteps.sorted {
+            if $0.sortOrder == 0 && $1.sortOrder == 0 {
+                return $0.id > $1.id
+            }
+            return $0.sortOrder > $1.sortOrder
+        }
+    }
+    
     var maxSortOrder: Int32 {
         return (addedSteps.max(by: { $0.sortOrder < $1.sortOrder })?.sortOrder ?? 0)
     }
@@ -183,8 +207,12 @@ extension Mission {
     @NSManaged public var about: String?
     @NSManaged public var category: String?
     @NSManaged public var templateId: Int
-    @NSManaged public var archived: Bool
+    @NSManaged public var archivedAt: Date?
     @NSManaged public var finishedAt: Date?
+    @NSManaged public var sortOrder: Int32
+    @NSManaged public var showCompleted: Bool
+    @NSManaged public var canCreateSteps: Bool
+    @NSManaged public var skipRecommend: Bool
     
     @NSManaged public var blocks: NSSet?
 }

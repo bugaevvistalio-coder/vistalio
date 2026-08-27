@@ -20,6 +20,8 @@ class TemplateViewController: UIViewController {
     @IBOutlet weak var menuButton: UIButton!
     @IBOutlet weak var notificationsStackView: UIStackView!
     
+    @IBOutlet weak var bottomGradientView: UIView!
+    
     var template: MissionTemplate!
     
     private var blocks = [TemplateBlock]()
@@ -35,6 +37,11 @@ class TemplateViewController: UIViewController {
         backButton.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 20, shadowOpacity: 0.1, bounds: CGRect(x: 0, y: 0, width: 40, height: 40))
         progressIndicator.isHidden = true
         setupBottomConstraint(startButton)
+        bottomGradientView.applyBottomGradient(color: .bgGrey)
+        
+        if navigationController == nil || navigationController!.viewControllers.count == 1 {
+            backButton.setImage(.cross, for: .normal)
+        }
         
         loadTemplate()
     }
@@ -78,7 +85,9 @@ class TemplateViewController: UIViewController {
     }
     
     @IBAction func backTapped(_ sender: Any) {
-        if sheetViewController != nil {
+        if let nc = navigationController, nc.viewControllers.count > 1 {
+            nc.popViewController(animated: true)
+        } else if sheetViewController != nil {
             dismiss(animated: true)
         } else {
             navigationController?.popViewController(animated: true)
@@ -152,14 +161,14 @@ class TemplateViewController: UIViewController {
             let mission = unfinished.first!
             let sb = UIStoryboard(name: "Main", bundle: nil)
             let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
-            vc.popupTitle = mission.archived ? "Вы когда-то начинали эту миссию" : "Вы уже начали эту миссию"
-            vc.popupText = mission.archived ? "Прямо сейчас она находится в архиве." : "Прямо сейчас она находится в активных миссиях."
+            vc.popupTitle = mission.archivedAt != nil ? "Вы когда-то начинали эту миссию" : "Вы уже начали эту миссию"
+            vc.popupText = mission.archivedAt != nil ? "Прямо сейчас она находится в архиве." : "Прямо сейчас она находится в активных миссиях."
             vc.showClose = true
             vc.buttons = [
-                ActionButton(type: .primary, title: mission.archived ? "Убрать из архива" : "Открыть существующую", action: { [unowned self] _ in
-                    if mission.archived {
+                ActionButton(type: .primary, title: mission.archivedAt != nil ? "Убрать из архива" : "Открыть существующую", action: { [unowned self] _ in
+                    if mission.archivedAt != nil {
                         CoreDataStack.shared.performAndWait { context in
-                            mission.archived = false
+                            mission.archivedAt = nil
                         }
                         NotificationCenter.default.post(name: .missionUpdated, object: nil)
                         (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Миссия убрана из архива")
