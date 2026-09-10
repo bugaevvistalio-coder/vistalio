@@ -126,6 +126,30 @@ class AddNoteView: UIView {
         return !titleTextView.text.trim().isEmpty || !bodyTextView.text.trim().isEmpty || !mediaHolder.media.isEmpty || !emotions.isEmpty || !date!.isSameDay(Date())
     }
     
+    func fillDefaultData() {
+        if let step = step, let noteTitle = step.block.noteTitle {
+            let notes = step.block.notes
+            if !notes.contains(where: { $0.name == noteTitle }) {
+                titleTextView.text = noteTitle
+                if let placeholder = step.block.textPlaceholder {
+                    bodyTextView.placeholder = placeholder
+                }
+            }
+        }
+    }
+    
+    private func checkDoneCriteriaAndSave(step: MissionStep?) {
+        let photoCount = mediaHolder.media.filter { $0.type == "image" }.count
+        let hasVideo = mediaHolder.media.contains { $0.type == "video" }
+        if let message = step?.block.checkDoneCriteria(title: titleTextView.text, text: bodyTextView.text, photoCount: photoCount, hasVideo: hasVideo) {
+            parentViewController?.showHowToOpenNextStep(message: message) { [unowned self] in
+                save(step: step)
+            }
+        } else {
+            save(step: step)
+        }
+    }
+    
     func save(step: MissionStep?) {
         if mediaHolder.hasUnloadedMedia {
             mediaHolder.warnAboutUnloadedMedia(from: parentViewController!)
@@ -137,10 +161,12 @@ class AddNoteView: UIView {
             let text = bodyTextView.text.trim()
             CoreDataStack.shared.performAndWait { [unowned self] context in
                 if let note = MissionNote.create(context: context, step: step, date: self.date ?? Date(), name: !name.isEmpty ? name : nil, text: !text.isEmpty ? text : nil, emotions: self.emotions, media: self.mediaHolder.media) {
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { [unowned self] in
                         self.clear()
                         self.onNoteAdded?(note)
                         NotificationCenter.default.post(name: .noteUpdated, object: note)
+                        
+                        step.onNoteAdded(from: parentViewController)
                     }
                 }
             }
@@ -246,7 +272,7 @@ class AddNoteView: UIView {
         onTappedInside?()
         
         if step != nil {
-            save(step: step)
+            checkDoneCriteriaAndSave(step: step)
         } else {
             let sb = UIStoryboard(name: "Missions", bundle: nil)
             let vc = sb.instantiateViewController(identifier: "MoveNoteVC") as! MoveNoteViewController
@@ -257,7 +283,7 @@ class AddNoteView: UIView {
                 vc.date = date
             }
             vc.onMoved = { [unowned self] mission, step, stepDeleted, missionDeleted in
-                self.save(step: step)
+                self.checkDoneCriteriaAndSave(step: step)
             }
             parentViewController?.presentFullScreen(vc)
         }

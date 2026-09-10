@@ -17,6 +17,9 @@
 		C3100B58302A37BA003CFF35 /* PlayerControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3100B57302A37B7003CFF35 /* PlayerControlsView.swift */; };
 		C31593C6303222F300E2D18E /* NoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C31593C5303222F000E2D18E /* NoteViewController.swift */; };
 		C332CFCB2F8FB4A6002ABF15 /* MyMissionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C332CFCA2F8FB4A0002ABF15 /* MyMissionsViewController.swift */; };
+		C333212830514E9E00230DCB /* NotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C333212730514E9700230DCB /* NotificationsViewController.swift */; };
+		C333212A3051553800230DCB /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33321293051553500230DCB /* NotificationCell.swift */; };
+		C333212C30515A1800230DCB /* AppNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = C333212B30515A1400230DCB /* AppNotification.swift */; };
 		C33F22942F80104100EF2A81 /* Vistalio.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C33F22922F80104100EF2A81 /* Vistalio.xcdatamodeld */; };
 		C33F22962F8011F000EF2A81 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22952F8011EC00EF2A81 /* CoreDataStack.swift */; };
 		C33F229E2F80134A00EF2A81 /* Mission.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F229C2F80134A00EF2A81 /* Mission.swift */; };
@@ -101,6 +104,8 @@
 		C37BB754300C9DBF006BE7EA /* MoveNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB753300C9DB8006BE7EA /* MoveNoteViewController.swift */; };
 		C37BB757300CB78F006BE7EA /* NoteToMissionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB756300CB784006BE7EA /* NoteToMissionCell.swift */; };
 		C37BB759300CB79F006BE7EA /* NoteToStepCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB758300CB793006BE7EA /* NoteToStepCell.swift */; };
+		C38757973041E673008D3FFD /* ImplementedStepViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38757963041E667008D3FFD /* ImplementedStepViewController.swift */; };
+		C387579B304EAA81008D3FFD /* NotificationsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C387579A304EAA7D008D3FFD /* NotificationsPresenter.swift */; };
 		C3AE55C52FD09D12007A5E41 /* CreateStepViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55C42FD09D08007A5E41 /* CreateStepViewController.swift */; };
 		C3AE55C92FD1E8BF007A5E41 /* DropDownItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55C82FD1E8B9007A5E41 /* DropDownItemView.swift */; };
 		C3AE55CB2FD1E8D3007A5E41 /* DropDownItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3AE55CA2FD1E8D3007A5E41 /* DropDownItemView.xib */; };
@@ -183,6 +188,9 @@
 		C3100B57302A37B7003CFF35 /* PlayerControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlsView.swift; sourceTree = "<group>"; };
 		C31593C5303222F000E2D18E /* NoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteViewController.swift; sourceTree = "<group>"; };
 		C332CFCA2F8FB4A0002ABF15 /* MyMissionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMissionsViewController.swift; sourceTree = "<group>"; };
+		C333212730514E9700230DCB /* NotificationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewController.swift; sourceTree = "<group>"; };
+		C33321293051553500230DCB /* NotificationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
+		C333212B30515A1400230DCB /* AppNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNotification.swift; sourceTree = "<group>"; };
 		C33F22932F80104100EF2A81 /* Vistalio.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Vistalio.xcdatamodel; sourceTree = "<group>"; };
 		C33F22952F8011EC00EF2A81 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		C33F229C2F80134A00EF2A81 /* Mission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mission.swift; sourceTree = "<group>"; };
@@ -267,6 +275,8 @@
 		C37BB753300C9DB8006BE7EA /* MoveNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveNoteViewController.swift; sourceTree = "<group>"; };
 		C37BB756300CB784006BE7EA /* NoteToMissionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteToMissionCell.swift; sourceTree = "<group>"; };
 		C37BB758300CB793006BE7EA /* NoteToStepCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteToStepCell.swift; sourceTree = "<group>"; };
+		C38757963041E667008D3FFD /* ImplementedStepViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImplementedStepViewController.swift; sourceTree = "<group>"; };
+		C387579A304EAA7D008D3FFD /* NotificationsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsPresenter.swift; sourceTree = "<group>"; };
 		C3AE55C42FD09D08007A5E41 /* CreateStepViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateStepViewController.swift; sourceTree = "<group>"; };
 		C3AE55C82FD1E8B9007A5E41 /* DropDownItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownItemView.swift; sourceTree = "<group>"; };
 		C3AE55CA2FD1E8D3007A5E41 /* DropDownItemView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DropDownItemView.xib; sourceTree = "<group>"; };
@@ -352,6 +362,7 @@
 			children = (
 				C30C867F30360EBC00297A4D /* MyDayViewController.swift */,
 				C30C8686303CA1D600297A4D /* DayNotesViewController.swift */,
+				C333212730514E9700230DCB /* NotificationsViewController.swift */,
 				C30C86813036C9E300297A4D /* Cells */,
 			);
 			path = MyDay;
@@ -362,6 +373,7 @@
 			children = (
 				C30C86823036C9E900297A4D /* DayMissionCell.swift */,
 				C30C86843039E6D700297A4D /* NoMissionsCell.swift */,
+				C33321293051553500230DCB /* NotificationCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -389,6 +401,7 @@
 		C33F22982F80128600EF2A81 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				C333212B30515A1400230DCB /* AppNotification.swift */,
 				C3B7D71B2F9538FF00562DC2 /* Cover.swift */,
 				C33F229C2F80134A00EF2A81 /* Mission.swift */,
 				C3CABD722FF9708C0067CA73 /* MissionEmotion.swift */,
@@ -406,6 +419,7 @@
 				C33F22A02F80145A00EF2A81 /* FilesHelper.swift */,
 				C3F47EC92FA0BB6600F17AC8 /* AppsFlyerHelper.swift */,
 				C37BB743300559DE006BE7EA /* MediaHelper.swift */,
+				C387579A304EAA7D008D3FFD /* NotificationsPresenter.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -696,6 +710,7 @@
 				C3AE55C42FD09D08007A5E41 /* CreateStepViewController.swift */,
 				C3AE55E32FD8143C007A5E41 /* StepViewController.swift */,
 				C3CABD632FF28F760067CA73 /* MoveStepViewController.swift */,
+				C38757963041E667008D3FFD /* ImplementedStepViewController.swift */,
 				C3CABD6D2FF83EC60067CA73 /* Cells */,
 			);
 			path = Steps;
@@ -1016,6 +1031,7 @@
 				C3F47EC82F9FCAB300F17AC8 /* MissionNote.swift in Sources */,
 				C3B13FA13032BD25000FADD1 /* UITextView+Utils.swift in Sources */,
 				C30C868A303DFA7300297A4D /* MapViewController.swift in Sources */,
+				C333212830514E9E00230DCB /* NotificationsViewController.swift in Sources */,
 				C37BB74C300777A8006BE7EA /* NoteSmallPhotoCell.swift in Sources */,
 				C3BEABC42F9BB0F200359CB6 /* mission_9.json in Sources */,
 				C3BEABC62F9BB10600359CB6 /* mission_10.json in Sources */,
@@ -1036,11 +1052,13 @@
 				C33F22AE2F82A43E00EF2A81 /* UIImageView+Utils.swift in Sources */,
 				C34472823019FA630034F2FA /* CreateNoteViewController.swift in Sources */,
 				C36B3D062F97D71D00976790 /* TemplateCell.swift in Sources */,
+				C333212A3051553800230DCB /* NotificationCell.swift in Sources */,
 				C34665C52F783741008648C8 /* UIView+Utils.swift in Sources */,
 				C37BB744300559E1006BE7EA /* MediaHelper.swift in Sources */,
 				C37BB74A3006B854006BE7EA /* NoteView.swift in Sources */,
 				C36B3D092F9884F100976790 /* EmotionCell.swift in Sources */,
 				C33F22942F80104100EF2A81 /* Vistalio.xcdatamodeld in Sources */,
+				C333212C30515A1800230DCB /* AppNotification.swift in Sources */,
 				C3BEABD62F9BB88B00359CB6 /* TemplateStepCell.swift in Sources */,
 				C33F22AC2F8299DB00EF2A81 /* MyMissionCell.swift in Sources */,
 				C3BEABDD2F9E7E3800359CB6 /* TemplateNoteCell.swift in Sources */,
@@ -1064,10 +1082,12 @@
 				C33F229E2F80134A00EF2A81 /* Mission.swift in Sources */,
 				C3F47EC52F9FCA1A00F17AC8 /* MissionStep.swift in Sources */,
 				C34665C92F783741008648C8 /* StyledNavigationController.swift in Sources */,
+				C387579B304EAA81008D3FFD /* NotificationsPresenter.swift in Sources */,
 				C33F22BD2F83F48C00EF2A81 /* UILabel+Utils.swift in Sources */,
 				C3AE55E62FD879A5007A5E41 /* UIScrollView+Utils.swift in Sources */,
 				C3447291301A5F830034F2FA /* CounterView.swift in Sources */,
 				C3CF26F02F7929C00008718D /* CoverViewController.swift in Sources */,
+				C38757973041E673008D3FFD /* ImplementedStepViewController.swift in Sources */,
 				C3BEABB22F9A39C300359CB6 /* TemplateViewController.swift in Sources */,
 				C33F22A82F82376B00EF2A81 /* UIImage+Utils.swift in Sources */,
 				C37BB7463005612F006BE7EA /* Helpers.swift in Sources */,

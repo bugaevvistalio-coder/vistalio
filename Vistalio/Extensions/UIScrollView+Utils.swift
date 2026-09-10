@@ -21,4 +21,9 @@ extension UIScrollView {
 //            setContentOffset(offset, animated: true)
 //        }
     }
+    
+    func scrollToViewTop(_ view: UIView) {
+        let viewRect = view.convert(view.bounds, to: self)
+        setContentOffset(CGPoint(x: 0, y: viewRect.minY), animated: true)
+    }
 }

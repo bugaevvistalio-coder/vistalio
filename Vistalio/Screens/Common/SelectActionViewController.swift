@@ -64,6 +64,7 @@ class SelectActionViewController: UIViewController {
     
     var popupTitle: String!
     var popupText: String?
+    var popupAttributedTitle: NSAttributedString?
     var checkText: String?
     var buttons = [ActionButton]()
     var showClose = false
@@ -73,7 +74,11 @@ class SelectActionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        titleLabel.text = popupTitle
+        if let title = popupTitle {
+            titleLabel.text = title
+        } else if let title = popupAttributedTitle {
+            titleLabel.attributedText = title
+        }
         if let text = popupText {
             textLabel.text = text
         } else {
@@ -118,7 +123,7 @@ class SelectActionViewController: UIViewController {
         height += 32
         
         height += titleLabel.frame.height
-        if popupText != nil {
+        if popupText != nil || popupAttributedTitle != nil {
             height += textLabel.frame.height
             height += 8
         }

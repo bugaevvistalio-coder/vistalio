@@ -61,6 +61,7 @@ class AddedStepCell: UITableViewCell {
                     lastStepItemDate = step.lastDate
                 }
                 checkImageView.image = step.isImplementedForDate(date ?? lastStepItemDate) ? .checkCircleOn : .checkCircleOff
+                checkImageView.alpha = step.block.locked ? 0.6 : 1
                 addNoteControl.isHidden = false
             } else {
                 dateLabel?.superview?.isHidden = true
@@ -151,11 +152,31 @@ class AddedStepCell: UITableViewCell {
     }
     
     @objc func checkImageTapped(_ gesture: UITapGestureRecognizer) {
-        guard let date = date ?? lastStepItemDate else {
+        if step.block.locked {
             return
         }
-        parentViewController?.switchStepImplemented(step, date: date) { [unowned self] checked in
-            checkImageView.image = checked ? .checkCircleOn : .checkCircleOff
+        guard let date = date ?? lastStepItemDate, let vc = parentViewController else {
+            return
+        }
+        if step.block.nextAppears == NextBlockAppearRule.onDoneWithPreview.rawValue {
+            if step.block.fitsDoneCriteria {
+                vc.showStepImplementationUncancellable { [unowned self] in
+                    let next = step.block.autoImplement()
+                    checkImageView.image = .checkCircleOn
+                    checkImageView.alpha = 0.6
+                    if let next = next {
+                        vc.showStepImplemented(nextStep: next)
+                    } else {
+                        vc.archiveAndShowMissionCompleted(mission: step.block.mission)
+                    }
+                }
+            } else {
+                onOpenStep?(step, date, true)
+            }
+        } else {
+            vc.switchStepImplemented(step, date: date) { [unowned self] checked in
+                checkImageView.image = checked ? .checkCircleOn : .checkCircleOff
+            }
         }
     }
 }

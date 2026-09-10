@@ -168,7 +168,7 @@ class TemplateViewController: UIViewController {
                 ActionButton(type: .primary, title: mission.archivedAt != nil ? "Убрать из архива" : "Открыть существующую", action: { [unowned self] _ in
                     if mission.archivedAt != nil {
                         CoreDataStack.shared.performAndWait { context in
-                            mission.archivedAt = nil
+                            mission.backFromArchived(context: context, viewController: self)
                         }
                         NotificationCenter.default.post(name: .missionUpdated, object: nil)
                         (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Миссия убрана из архива")
@@ -194,13 +194,13 @@ class TemplateViewController: UIViewController {
         }
         NotificationCenter.default.post(name: .missionUpdated, object: nil)
         if let mission = mission {
-            dismissAndOpenMission(mission)
+            dismissAndOpenMission(mission, justCreated: true)
         }
     }
     
-    private func dismissAndOpenMission(_ mission: Mission) {
+    private func dismissAndOpenMission(_ mission: Mission, justCreated: Bool = false) {
         dismiss(animated: true) {
-            UIApplication.topViewController()?.openMission(mission)
+            UIApplication.topViewController()?.openMission(mission, justCreated: justCreated)
         }
     }
 }

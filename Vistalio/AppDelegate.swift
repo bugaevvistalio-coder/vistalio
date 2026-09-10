@@ -19,10 +19,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        IQKeyboardManager.shared.toolbarConfiguration.previousNextDisplayMode = .alwaysHide
         IQKeyboardManager.shared.resignOnTouchOutside = true
         
-//        AppsFlyerLib.shared().appInviteOneLinkID = "eU8s"
-//            
-//        AppsFlyerLib.shared().oneLinkCustomDomains = ["vistalio.onelink.me"]
-        
         AppsFlyerLib.shared().appsFlyerDevKey = "Msm9X2Sp9ZbqfkdPym4eAF"
         AppsFlyerLib.shared().appleAppID = "1632381333"
         AppsFlyerLib.shared().deepLinkDelegate = self
@@ -35,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             AppsFlyerLib.shared().start()
         }
         
-        MissionsHolder.shared.loadTemplates()
+        setupNotifications()
         
         return true
     }
@@ -54,8 +50,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
     
-    func addNotification(text: String, secondaryText: String? = nil, onTapped: (() -> ())? = nil) {
-        (UIApplication.shared.keyWindow?.rootViewController as? MainViewController)?.addNotification(text: text, secondaryText: secondaryText, onTapped: onTapped)
+    func addNotification(text: String, secondaryText: String? = nil, mission: Mission? = nil, onTapped: (() -> ())? = nil) {
+        (UIApplication.shared.keyWindow?.rootViewController as? MainViewController)?.addNotification(text: text, secondaryText: secondaryText, mission: mission, onTapped: onTapped)
     }
     
     func openTemplate(id: Int) {
@@ -96,6 +92,42 @@ extension AppDelegate: DeepLinkDelegate {
         }
         
         
+    }
+}
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    func setupNotifications() {
+        let notificationCenter = UNUserNotificationCenter.current()
+        let options: UNAuthorizationOptions = [.alert, .sound];
+        
+        notificationCenter.requestAuthorization(options: options) {
+            (granted, error) in
+            if granted {
+                print("Notifications are granted")
+            } else {
+                print("Notifications are not granted")
+            }
+        }
+        notificationCenter.delegate = self
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        if let mainVC = UIApplication.shared.mainViewController {
+            mainVC.dismiss(animated: false)
+            mainVC.switchTab(tabIndex: 1, toRoot: true)
+            if let block = MissionsHolder.shared.getNotificationBlock(notificationId: response.notification.request.identifier) {
+                (mainVC.controllers[1] as! UINavigationController).topViewController?.openMission(block.mission, recommendedExpanded: true)
+            }
+        }
+        
+        completionHandler()
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        MissionsHolder.shared.getNotificationBlock(notificationId: notification.request.identifier)?.unlockNextBlock()
+        completionHandler([.banner, .list, .sound])
     }
 }
 

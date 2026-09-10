@@ -220,7 +220,6 @@ class CreateMissionViewController: UIViewController {
                 NotificationCenter.default.post(name: .missionUpdated, object: nil)
                 self?.dismiss(animated: true) {
                     self?.onMissionCreated?(mission)
-                    (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Миссия добавлена")
                 }
             }
         }

@@ -103,8 +103,8 @@ class MainViewController: UIViewController {
         }
     }
     
-    func addNotification(text: String, secondaryText: String? = nil, onTapped: (() -> ())? = nil) {
-        notificationsStackView.addNotification(text: text, secondaryText: secondaryText, onTapped: onTapped)
+    func addNotification(text: String, secondaryText: String? = nil, mission: Mission? = nil, onTapped: (() -> ())? = nil) {
+        notificationsStackView.addNotification(text: text, secondaryText: secondaryText, mission: mission, onTapped: onTapped)
     }
 }
 

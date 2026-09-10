@@ -23,6 +23,7 @@ extension MissionNote {
     @NSManaged public var text: String?
     @NSManaged public var audio: String?
     @NSManaged public var date: Date?
+    @NSManaged public var byUser: Bool
     
     @NSManaged public var step: MissionStep?
     
@@ -38,6 +39,7 @@ extension MissionNote {
         note.name = name
         note.text = text
         note.step = step
+        note.byUser = true
         
         emotions.forEach {
             MissionNoteEmotion.create(context: context, note: note, e: $0)
@@ -119,7 +121,7 @@ extension MissionNoteImage {
     
     var mediaData: MediaData {
         let path = path ?? ""
-        let type = (path.lowercased().hasSuffix(".mp4") || path.lowercased().hasSuffix(".mov")) ? "video" : "image"
+        let type = self.type
         let m = MediaData(type: type, image: nil, path: path)
         if type == "video" {
             DispatchQueue.global().async { 
@@ -128,6 +130,11 @@ extension MissionNoteImage {
             }
         }
         return m
+    }
+    
+    var type: String {
+        let path = path ?? ""
+        return (path.lowercased().hasSuffix(".mp4") || path.lowercased().hasSuffix(".mov")) ? "video" : "image"
     }
 }
 

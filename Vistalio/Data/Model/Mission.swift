@@ -6,7 +6,7 @@
 //
 //
 
-import Foundation
+import UIKit
 import CoreData
 
 enum MissionCategory: String, CaseIterable {
@@ -72,6 +72,7 @@ public class Mission: NSManagedObject {
         mission.category = category
         mission.creationDate = Date()
         mission.updateDate = mission.creationDate
+        mission.canCreateSteps = true
         
         return mission
     }
@@ -103,7 +104,15 @@ public class Mission: NSManagedObject {
                 block.doneCriteria = b.doneCriteria?.map { $0.rawValue }.joined(separator: ",")
                 block.photoMin = Int16(b.photoMin ?? 1)
                 block.searchText = b.searchText
-                block.unlocked = i == 0
+                block.noteTitle = b.noteTitle
+                block.textPlaceholder = b.textPlaceholder
+                block.answerHint = b.answerHint
+                block.periodDays = Int16(b.periodDays ?? 0)
+                block.nextBlockNotificationTitle = b.nextBlockNotificationTitle
+                block.nextBlockNotificationBody = b.nextBlockNotificationBody
+                if i == 0 {
+                    block.recommendedAt = Date()
+                }
                 
                 for s in b.steps {
                     if let stepEntity = NSEntityDescription.entity(forEntityName: "MissionStep", in: context) {
@@ -116,7 +125,7 @@ public class Mission: NSManagedObject {
                         step.editable = s.editable ?? true
                         step.block = block
                         
-                        if mission.skipRecommend && i == 0 {
+                        if (mission.skipRecommend || template.autoAddFirstBlock == true) && i == 0 {
                             step.addedDate = Date()
                             step.startDate = step.addedDate!.toDateString
                             step.sortOrder = Int32(stepIndex)
@@ -181,6 +190,10 @@ public class Mission: NSManagedObject {
         return (addedSteps.max(by: { $0.sortOrder < $1.sortOrder })?.sortOrder ?? 0)
     }
     
+    var openedBlocks: [StepsBlock] {
+        return (blocks?.allObjects as? [StepsBlock])?.filter { $0.id >= 0 && $0.recommendedAt != nil }.sorted(by: { $0.id < $1.id }) ?? []
+    }
+    
     @discardableResult func getNotesStep() -> MissionStep? {
         var step = addedSteps.first { $0.id == -1 }
         if step == nil {
@@ -191,6 +204,36 @@ public class Mission: NSManagedObject {
             }
         }
         return step
+    }
+    
+    func backFromArchived(context: NSManagedObjectContext, viewController: UIViewController) {
+        archivedAt = nil
+        if let lastOpenedBlock = openedBlocks.last, lastOpenedBlock.nextAppears == NextBlockAppearRule.onNoteRespectPeriod.rawValue || lastOpenedBlock.nextAppears == NextBlockAppearRule.onNote.rawValue {
+            let notes = lastOpenedBlock.notes
+            if !notes.isEmpty {
+                lastOpenedBlock.checkPeriod = false
+                DispatchQueue.main.async {
+                    notes.last!.step?.onNoteAdded(from: viewController)
+                }
+            }
+        }
+        NotificationCenter.default.post(name: .notificationsUpdated, object: nil)
+    }
+    
+    func readNotifications() {
+        var hasRead = false
+        CoreDataStack.shared.performAndWait { context in
+            notifications?.allObjects.forEach {
+                let n = $0 as! AppNotification
+                if !n.isRead {
+                    n.isRead = true
+                    hasRead = true
+                }
+            }
+        }
+        if hasRead {
+            NotificationCenter.default.post(name: .notificationsUpdated, object: nil)
+        }
     }
 }
 
@@ -215,6 +258,7 @@ extension Mission {
     @NSManaged public var skipRecommend: Bool
     
     @NSManaged public var blocks: NSSet?
+    @NSManaged public var notifications: NSSet?
 }
 
 extension Mission {

@@ -13,4 +13,6 @@ extension Notification.Name {
     static let stepUpdated = Notification.Name("stepUpdated")
     static let menuClosed = Notification.Name("menuClosed")
     static let noteUpdated = Notification.Name("noteAdded")
+    static let recommendedStepsUpdated = Notification.Name("recommendedStepsUpdated")
+    static let notificationsUpdated = Notification.Name("notificationsUpdated")
 }

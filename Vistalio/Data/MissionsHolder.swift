@@ -71,40 +71,73 @@ class MissionsHolder {
     }
     
     func loadTemplates() {
-        DispatchQueue.global().async {
-            if let path = Bundle.main.path(forResource: "missions_list", ofType: "json") {
-                do {
-                    let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
-                    
-                    let decoder = JSONDecoder()
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "yyyy-MM-dd"
-                    decoder.dateDecodingStrategy = .formatted(dateFormatter)
-                    
-                    let templatesData = try decoder.decode(MissionTemplatesList.self, from: data)
-                    self.templates = templatesData.missions
-                    
-                    let request = HiddenMissionTemplate.hiddenMissionTemplateFetchRequest()
-                    let hiddenTemplates = try CoreDataStack.shared.backgroundContext.fetch(request)
-                    self.templates.forEach { t in
-                        if let hidden = hiddenTemplates.first(where: { $0.templateId == t.id }) {
-                            t.hiddenAt = hidden.date
-                        }
+        if templates.isEmpty, let path = Bundle.main.path(forResource: "missions_list", ofType: "json") {
+            do {
+                let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
+                
+                let decoder = JSONDecoder()
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+                decoder.dateDecodingStrategy = .formatted(dateFormatter)
+                
+                let templatesData = try decoder.decode(MissionTemplatesList.self, from: data)
+                self.templates = templatesData.missions
+                
+                let request = HiddenMissionTemplate.hiddenMissionTemplateFetchRequest()
+                let hiddenTemplates = try CoreDataStack.shared.backgroundContext.fetch(request)
+                self.templates.forEach { t in
+                    if let hidden = hiddenTemplates.first(where: { $0.templateId == t.id }) {
+                        t.hiddenAt = hidden.date
                     }
-                    
-                    DispatchQueue.main.async {
-                        NotificationCenter.default.post(name: .templatesUpdated, object: nil)
-                        if let templateId = self.openTemplateId {
-                            self.openTemplateId = nil
-                            (UIApplication.shared.delegate as! AppDelegate).openTemplate(id: templateId)
-                        }
+                }
+                
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: .templatesUpdated, object: nil)
+                    if let templateId = self.openTemplateId {
+                        self.openTemplateId = nil
+                        (UIApplication.shared.delegate as! AppDelegate).openTemplate(id: templateId)
                     }
-                    
-                } catch let error as NSError {
-                    print(error)
+                }
+                
+            } catch let error as NSError {
+                print(error)
+            }
+        }
+    }
+
+    func openNextBlocks() {
+        var blocks = [StepsBlock]()
+        CoreDataStack.shared.performAndWait { context in
+            let blocksRequest = StepsBlock.blockFetchRequest()
+            blocksRequest.predicate = NSPredicate(format: "checkPeriod == YES AND mission.archivedAt == nil")
+            do {
+                blocks = try context.fetch(blocksRequest)
+            } catch {
+                print("Failed to retrive missions and folders")
+            }
+        }
+        
+        let now = Date()
+        let calendar = Calendar.current
+        blocks.forEach {
+            print("Check block period")
+            if let recommendedAt = $0.recommendedAt {
+                let daysBetween = calendar.dateComponents([.minute], from: recommendedAt, to: now).minute!
+                if daysBetween >= $0.periodDays {
+                    $0.unlockNextBlock()
                 }
             }
         }
+    }
+    
+    func getNotificationBlock(notificationId: String) -> StepsBlock? {
+        var block: StepsBlock?
+        CoreDataStack.shared.performAndWait { context in
+            let blocksRequest = StepsBlock.blockFetchRequest()
+            blocksRequest.predicate = NSPredicate(format: "notificationId == %@", notificationId)
+            block = (try? context.fetch(blocksRequest))?.first
+        }
+        return block
     }
     
     @discardableResult func getNotesMission(context: NSManagedObjectContext) -> Mission? {
@@ -125,5 +158,17 @@ class MissionsHolder {
             print("Failed to retrive missions and folders")
         }
         return nil
+    }
+    
+    func getNotifications() -> [AppNotification] {
+        let request = AppNotification.appNotificationFetchRequest()
+        request.predicate = NSPredicate(format: "mission.archivedAt == nil")
+        request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+        do {
+            return try CoreDataStack.shared.mainContext.fetch(request)
+        } catch {
+            print("Failed to retrive missions and folders")
+        }
+        return [AppNotification]()
     }
 }

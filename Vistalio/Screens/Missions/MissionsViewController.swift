@@ -70,7 +70,7 @@ class MissionsViewController: UIViewController {
         let nc = storyboard!.instantiateViewController(identifier: "CreateMissionNC") as! UINavigationController
         let vc = nc.viewControllers.first as! CreateMissionViewController
         vc.onMissionCreated = { [unowned self] mission in
-            self.openMission(mission)
+            self.openMission(mission, justCreated: true)
         }
         let window = UIApplication.shared.windows.first
         let top = (window?.safeAreaInsets.top ?? 20)

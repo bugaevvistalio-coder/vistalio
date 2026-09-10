@@ -25,19 +25,25 @@ class MissionTemplate: Codable {
     let showCompleted: Bool?
     let canCreateSteps: Bool?
     let skipRecommend: Bool?
+    let autoAddFirstBlock: Bool?
 }
 
 class BlocksList: Codable {
     let blocks: [TemplateBlock]
+    let reminderNotifications: [ReminderNotification]?
 }
 
 enum NextBlockAppearRule: String, Codable {
     case onDoneWithPreview
+    case onNote
+    case onNoteRespectPeriod
 }
 
 enum BlockDoneCriteria: String, Codable {
+    case note
     case photo
     case video
+    case photoOrVideo
     case geo
     case searchText
 }
@@ -48,6 +54,12 @@ class TemplateBlock: Codable {
     let doneCriteria: [BlockDoneCriteria]?
     let photoMin: Int?
     let searchText: String?
+    let noteTitle: String?
+    let textPlaceholder: String?
+    let answerHint: String?
+    let periodDays: Int?
+    let nextBlockNotificationTitle: String?
+    let nextBlockNotificationBody: String?
 }
 
 class TemplateStep: Codable {
@@ -73,4 +85,10 @@ class TemplateNote: Codable {
     var shortDescription: String? {
         return description?.replacingOccurrences(of: "\n\n", with: " ").replacingOccurrences(of: "\n", with: " ")
     }
+}
+
+class ReminderNotification: Codable {
+    let id: Int
+    let title: String
+    let body: String
 }

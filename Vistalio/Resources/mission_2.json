@@ -8,7 +8,9 @@
                     "editable": false
                 }
             ],
-            "nextAppears": "onDoneWithPreview"
+            "nextAppears": "onDoneWithPreview",
+            "doneCriteria": ["note"],
+            "noteTitle": "Первые впечатления о квесте “Заражение”"
         },
         {
             "steps": [
@@ -20,7 +22,8 @@
                 }
             ],
             "nextAppears": "onDoneWithPreview",
-            "doneCriteria": ["geo", "photo"]
+            "doneCriteria": ["geo", "photo"],
+            "noteTitle": "Начало миссии"
         },
         {
             "steps": [
@@ -32,7 +35,8 @@
                 }
             ],
             "nextAppears": "onDoneWithPreview",
-            "doneCriteria": ["photo"]
+            "doneCriteria": ["photo"],
+            "noteTitle": "Первый зараженный"
         },
         {
             "steps": [
@@ -43,7 +47,8 @@
                 }
             ],
             "nextAppears": "onDoneWithPreview",
-            "doneCriteria": ["video"]
+            "doneCriteria": ["video"],
+            "noteTitle": "Мы — зомби🧟‍♂️"
         },
         {
             "steps": [
@@ -62,7 +67,10 @@
             ],
             "nextAppears": "onDoneWithPreview",
             "doneCriteria": ["searchText"],
-            "searchText": "лаборатория"
+            "searchText": "лаборатория",
+            "noteTitle": "Анаграмма БОРАЯЛАТИОР",
+            "textPlaceholder": "Ваш ответ...",
+            "answerHint": "верный ответ на анаграмму"
         },
         {
             "steps": [
@@ -73,7 +81,8 @@
                 }
             ],
             "nextAppears": "onDoneWithPreview",
-            "doneCriteria": ["geo", "photo"]
+            "doneCriteria": ["geo", "photo"],
+            "noteTitle": "Вход в лабораторию"
         },
         {
             "steps": [
@@ -86,7 +95,8 @@
             ],
             "nextAppears": "onDoneWithPreview",
             "doneCriteria": ["photo"],
-            "photoMin": 4
+            "photoMin": 4,
+            "noteTitle": "Ингредиенты антидота"
         },
         {
             "steps": [
@@ -97,7 +107,8 @@
                 }
             ],
             "nextAppears": "onDoneWithPreview",
-            "doneCriteria": ["photo"]
+            "doneCriteria": ["photo"],
+            "noteTitle": "Формула антидота"
         },
         {
             "steps": [
@@ -108,7 +119,8 @@
                 }
             ],
             "nextAppears": "onDoneWithPreview",
-            "doneCriteria": ["geo", "photo"]
+            "doneCriteria": ["geo", "photo"],
+            "noteTitle": "Точка распыления антидота"
         },
         {
             "steps": [
@@ -119,7 +131,8 @@
                 }
             ],
             "nextAppears": "onDoneWithPreview",
-            "doneCriteria": ["video"]
+            "doneCriteria": ["photoOrVideo"],
+            "noteTitle": "Теряем членов команды"
         },
         {
             "steps": [
@@ -130,7 +143,8 @@
                 }
             ],
             "nextAppears": "onDoneWithPreview",
-            "doneCriteria": ["video"]
+            "doneCriteria": ["video"],
+            "noteTitle": "Проверка антидота"
         },
         {
             "steps": [
@@ -141,7 +155,8 @@
                 }
             ],
             "nextAppears": "onDoneWithPreview",
-            "doneCriteria": ["video"]
+            "doneCriteria": ["video"],
+            "noteTitle": "Распыление антидота"
         },
         {
             "steps": [
@@ -150,7 +165,10 @@
                     "description": "Облако антидота распространилось. Крики затихают. Люди приходят в себя 👩‍🦰👨‍🦱.\n\nВы — герои. Мир никогда не забудет ваш подвиг.\n\n🙌 Спасибо, что выжили. Поделитесь в заметке своими эмоциями и впечатлениями от прохождения квеста.",
                     "editable": false
                 }
-            ]
+            ],
+            "nextAppears": "onDoneWithPreview",
+            "doneCriteria": ["note"],
+            "noteTitle": "Город спасен!"
         }
     ]
 }

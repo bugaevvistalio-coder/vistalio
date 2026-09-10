@@ -60,10 +60,13 @@ extension UIViewController {
         present(picker, animated: true)
     }
     
-    func openMission(_ mission: Mission) {
+    func openMission(_ mission: Mission, justCreated: Bool = false, recommendedExpanded: Bool = false) {
         let sb = UIStoryboard(name: "Missions", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "MissionVC") as! MissionViewController
         vc.mission = mission
+        vc.justCreated = justCreated
+        vc.recommendedExpanded = recommendedExpanded
+        print("From VC \(self)")
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -87,9 +90,13 @@ extension UIViewController {
         vc.buttons = [
             ActionButton(type: mission.archivedAt != nil ? .blue : .red, title: mission.archivedAt != nil ? "Убрать из архива" : "Убрать в архив", action: { _ in CoreDataStack.shared.performAndWait { context in
                 if mission.archivedAt != nil {
-                    mission.archivedAt = nil
+                    mission.backFromArchived(context: context, viewController: self)
                 } else {
                     mission.archivedAt = Date()
+                    let blocks = mission.blocks?.allObjects.map { $0 as! StepsBlock } ?? []
+                    let notificationsToRemove = blocks.filter { $0.checkPeriod }.compactMap { $0.notificationId }
+                    removeScheduledNotifications(notificationsToRemove)
+                    NotificationCenter.default.post(name: .notificationsUpdated, object: nil)
                 }
                 }
                 NotificationCenter.default.post(name: .missionUpdated, object: nil)
@@ -467,5 +474,67 @@ extension UIViewController {
         let vc = sb.instantiateViewController(withIdentifier: "TemplateVC") as! TemplateViewController
         vc.template = template
         presentFullScreen(vc)
+    }
+    
+    func archiveAndShowMissionCompleted(mission: Mission) {
+        if !mission.canCreateSteps {
+            CoreDataStack.shared.performAndWait { context in
+                mission.archivedAt = Date()
+            }
+            NotificationCenter.default.post(name: .missionUpdated, object: nil)
+            (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Миссия перемещена в архив")
+        }
+        
+        let sb = UIStoryboard(name: "Missions", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "MissionCompletedVC") as! ImplementedStepViewController
+        present(vc, animated: true)
+    }
+    
+    func showStepImplemented(nextStep: MissionStep?) {
+        if let step = nextStep {
+            if let _ = sheetViewController ?? presentingViewController {
+                dismiss(animated: true) {
+                    UIApplication.topViewController()?.showStepImplementedVC(nextStep: step)
+                }
+            } else {
+                showStepImplementedVC(nextStep: step)
+            }
+        }
+    }
+    
+    private func showStepImplementedVC(nextStep: MissionStep) {
+        let sb = UIStoryboard(name: "Missions", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "ImplementedStepVC") as! ImplementedStepViewController
+        vc.step = nextStep
+        present(vc, animated: true)
+    }
+    
+    func showStepImplementationUncancellable(onConfirm: @escaping () -> ()) {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
+        vc.popupTitle = "Выполнение этого шага нельзя будет отменить. Продолжить?"
+        vc.showClose = true
+        vc.buttons = [
+            ActionButton(type: .primary, title: "Сделать выполненным", action: { _ in
+                onConfirm()
+            }),
+            ActionButton(type: .secondary, title: "Отменить", action: { _ in })
+        ]
+        presentBottomSheet(vc, height: 200)
+    }
+    
+    func showHowToOpenNextStep(message: NSAttributedString, onSave: @escaping () -> ()) {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "SelectActionVC") as! SelectActionViewController
+        vc.popupAttributedTitle = message
+        vc.popupText = "Или добавьте в новой заметке."
+        vc.showClose = true
+        vc.buttons = [
+            ActionButton(type: .primary, title: "К редактированию", action: { _ in }),
+            ActionButton(type: .secondary, title: "Опубликовать заметку", action: { _ in
+                onSave()
+            })
+        ]
+        presentBottomSheet(vc, height: 200)
     }
 }

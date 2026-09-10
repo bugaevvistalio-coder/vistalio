@@ -11,6 +11,10 @@ class NotificationView: UIView {
     
     @IBOutlet private weak var label: UILabel!
     @IBOutlet private weak var secondaryLabel: UILabel!
+    @IBOutlet private weak var imageView: UIImageView!
+    
+    @IBOutlet private weak var imageWidth: NSLayoutConstraint!
+    @IBOutlet private weak var imageHeight: NSLayoutConstraint!
     
     private var view: UIView!
     
@@ -57,6 +61,17 @@ class NotificationView: UIView {
                 secondaryLabel.text = text
             } else {
                 secondaryLabel.isHidden = true
+            }
+        }
+    }
+    
+    var mission: Mission? {
+        didSet {
+            if let mission = mission {
+                imageWidth.constant = 48
+                imageHeight.constant = 48
+                imageView.contentMode = .scaleAspectFill
+                imageView.displayMissionCover(mission: mission)
             }
         }
     }

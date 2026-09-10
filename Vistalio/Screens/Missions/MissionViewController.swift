@@ -41,10 +41,14 @@ class MissionViewController: UIViewController {
     @IBOutlet weak var recommendedStepsControl: UIControl!
     @IBOutlet weak var recommendedArrow: UIImageView!
     @IBOutlet weak var addAllStepsView: UIView!
+    @IBOutlet weak var noRecommendedStepsView: UIView!
+    @IBOutlet weak var noRecommendedStepsLabel: UILabel!
     
     @IBOutlet weak var headerBottom: NSLayoutConstraint!
     
     var mission: Mission!
+    var justCreated = false
+    var recommendedExpanded = false
     
     private var hasNavBarShadow = false
     private var isHeaderExpanded = false
@@ -52,7 +56,7 @@ class MissionViewController: UIViewController {
     private var recommendedSteps = [MissionStep]()
     private var hiddenSteps = [MissionStep]()
     private var addedSteps = [MissionStep]()
-    private var recommendedExpanded = true
+    private var currentBlock: StepsBlock?
     
     private var isEditingNote = false
     
@@ -67,6 +71,7 @@ class MissionViewController: UIViewController {
         navBar.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         navBar.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 30, shadowOpacity: 0)
         progressIndicator.isHidden = true
+        recommendedArrow.transform = CGAffineTransform(rotationAngle: recommendedExpanded ? 0 : .pi)
         
         headerControl.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         headerShadowView.setShadow(offset: CGSize(width: 0, height: 0), radius: 10, cornerRadius: 30, shadowOpacity: 0.1)
@@ -87,6 +92,7 @@ class MissionViewController: UIViewController {
             // numberOfRows. But numberOfRows must be called because tab is changed
             tableView.reloadData()
             updateRecommendedStepsVisibility()
+            updateNoRecommendedStepsVisibility()
             if index == 0 {
                 hideAddNoteView()
             } else {
@@ -100,11 +106,25 @@ class MissionViewController: UIViewController {
         displayMission()
         updateRecommendedStepsVisibility()
         
+        if justCreated {
+            (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Миссия добавлена")
+        }
+        if recommendedExpanded {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+                if let `self` = self {
+                    let viewRect = self.recommendedStepsControl.convert(view.bounds, to: self.tableView)
+                    self.tableView.setContentOffset(CGPoint(x: 0, y: viewRect.minY - 84), animated: true)
+                }
+            }
+            mission.readNotifications()
+        }
+        
         generator.prepare()
         
         NotificationCenter.default.addObserver(self, selector: #selector(onMissionsUpdated(notification:)), name: .missionUpdated, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onStepUpdated(notification:)), name: .stepUpdated, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onNoteUpdated(notification:)), name: .noteUpdated, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onRecommendedStepsUpdated(notification:)), name: .recommendedStepsUpdated, object: nil)
     }
     
     deinit {
@@ -112,6 +132,7 @@ class MissionViewController: UIViewController {
         NotificationCenter.default.removeObserver(self, name: .missionUpdated, object: nil)
         NotificationCenter.default.removeObserver(self, name: .stepUpdated, object: nil)
         NotificationCenter.default.removeObserver(self, name: .noteUpdated, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .recommendedStepsUpdated, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -179,8 +200,8 @@ class MissionViewController: UIViewController {
             sortAddedSteps()
             tableView.reloadData()
             
-            (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Заметка добавлена", secondaryText: "К заметке →") { [unowned self] in
-                openNote(note)
+            (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Заметка добавлена", secondaryText: "К заметке →") { 
+                UIApplication.topViewController()?.openNote(note)
             }
         }
     }
@@ -202,15 +223,62 @@ class MissionViewController: UIViewController {
     }
     
     private func updateSteps() {
-        if !mission.skipRecommend {
-            let blocks = (mission.blocks?.allObjects as? [StepsBlock])?.filter { $0.id >= 0 && $0.unlocked }.sorted(by: { $0.id < $1.id }) ?? []
-            let steps = blocks.flatMap { $0.steps?.allObjects as? [MissionStep] ?? [] }
-            recommendedSteps = steps.filter { !$0.hidden && $0.addedDate == nil }.sorted(by: { $0.id < $1.id })
-            hiddenSteps = steps.filter { $0.hidden }
+        if mission.skipRecommend {
+            noRecommendedStepsView.isHidden = true
+        } else {
+            updateRecommendedSteps()
         }
         addedSteps = mission.addedSteps
         sortAddedSteps()
         updateAddAllSteps()
+    }
+    
+    private func updateRecommendedSteps() {
+        let blocks = mission.openedBlocks
+        let steps = blocks.flatMap { $0.steps?.allObjects as? [MissionStep] ?? [] }
+        recommendedSteps = steps.filter { !$0.hidden && $0.addedDate == nil }.sorted(by: { $0.id < $1.id })
+        hiddenSteps = steps.filter { $0.hidden }
+        currentBlock = blocks.last
+        updateNoRecommendedStepsVisibility()
+    }
+    
+    private func updateNoRecommendedStepsVisibility() {
+        if segmentedControl.selectedIndex == 1 || mission.templateId <= 0 || mission.skipRecommend || !recommendedSteps.isEmpty || !recommendedExpanded {
+            noRecommendedStepsView.isHidden = true
+            tableView.layoutHeader()
+            return
+        }
+        
+        noRecommendedStepsView.isHidden = false
+        noRecommendedStepsView.isUserInteractionEnabled = false
+        
+        if currentBlock?.nextBlock != nil {
+            if currentBlock?.nextAppears == NextBlockAppearRule.onNote.rawValue || currentBlock?.nextAppears == NextBlockAppearRule.onNoteRespectPeriod.rawValue {
+                
+                noRecommendedStepsLabel.textColor = .textGrey60
+                
+                if mission.archivedAt != nil {
+                    noRecommendedStepsLabel.text = "Разархивируйте миссию, чтобы стали доступны новые шаги"
+                } else if currentBlock?.notes.isEmpty ?? true {
+                    noRecommendedStepsLabel.text = "Добавьте заметку к любому шагу, чтобы открыть новые"
+                } else if let recommendedAt = currentBlock?.recommendedAt {
+                    let date = Calendar.current.date(byAdding: .day, value: Int(currentBlock!.periodDays), to: recommendedAt)!
+                    noRecommendedStepsLabel.text = "Новые шаги откроются \(date.formatted3.lowercased())"
+                }
+            } else {
+                noRecommendedStepsView.isHidden = true
+            }
+        } else if mission.canCreateSteps {
+            noRecommendedStepsLabel.textColor = .highlightBlue
+            noRecommendedStepsLabel.text = "Вы добавили все готовые шаги миссии!\nДобавьте свои →"
+            noRecommendedStepsView.isUserInteractionEnabled = true
+        } else {
+            noRecommendedStepsLabel.textColor = .textGrey60
+            noRecommendedStepsLabel.text = "Вы добавили все готовые шаги миссии!"
+        }
+        DispatchQueue.main.async {
+            self.tableView.layoutHeader()
+        }
     }
     
     private func updateAddAllSteps() {
@@ -259,26 +327,41 @@ class MissionViewController: UIViewController {
                     nc.popToViewController(vc, animated: true)
                 }
             }
+        } else {
+            updateNoRecommendedStepsVisibility()
         }
     }
     
     @objc private func onStepUpdated(notification: Notification) {
         addedSteps = mission.addedSteps
         sortAddedSteps()
-        tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .none)
+        if segmentedControl.selectedIndex == 0 {
+            tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .none)
+        }
         
         if let step = notification.object as? MissionStep {
             print("Step \(step.isDeleted || step.managedObjectContext == nil), \(step.block.id)")
         }
         if let step = notification.object as? MissionStep, step.hidden {
             hiddenSteps.append(step)
-            tableView.reloadSections(IndexSet(arrayLiteral: 1), with: .none)
+            if segmentedControl.selectedIndex == 0 {
+                tableView.reloadSections(IndexSet(arrayLiteral: 1), with: .none)
+            }
+        }
+    }
+    
+    @objc private func onRecommendedStepsUpdated(notification: Notification) {
+        updateRecommendedSteps()
+        updateAddAllSteps()
+        if segmentedControl.selectedIndex == 0 {
+            tableView.reloadSections(IndexSet(arrayLiteral: 0), with: .none)
         }
     }
     
     @objc func onNoteUpdated(notification: Notification) {
         addedSteps = mission.addedSteps
         sortAddedSteps()
+        updateNoRecommendedStepsVisibility()
         tableView.reloadData()
     }
     
@@ -380,6 +463,7 @@ class MissionViewController: UIViewController {
         recommendedExpanded = !recommendedExpanded
         addAllStepsView.superview?.superview?.isHidden = !recommendedExpanded || recommendedSteps.isEmpty
         recommendedArrow.transform = CGAffineTransform(rotationAngle: recommendedExpanded ? 0 : .pi)
+        updateNoRecommendedStepsVisibility()
         tableView.layoutHeader()
         tableView.reloadData()
     }
@@ -425,15 +509,7 @@ class MissionViewController: UIViewController {
     
     @IBAction func addItemTapped(_ sender: Any) {
         if segmentedControl.selectedIndex == 0 {
-            openEditStep(mission: mission) { [unowned self] step in
-                addedSteps.insert(step, at: 0)
-                tableView.beginUpdates()
-                tableView.insertRows(at: [IndexPath(row: 0, section: 3)], with: .none)
-                tableView.endUpdates()
-                (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг добавлен", secondaryText: "К шагу →") { [unowned self] in
-                    UIApplication.topViewController()?.openStep(step)
-                }
-            }
+            openCreateStep()
         } else {
             showAddNoteView()
             isEditingNote = true
@@ -441,6 +517,22 @@ class MissionViewController: UIViewController {
                 if let `self` = self {
                     self.tableView.scrollToViewBottom(self.addNoteView)
                 }
+            }
+        }
+    }
+    
+    @IBAction func noRecommendedStepsTapped(_ sender: Any) {
+        openCreateStep()
+    }
+    
+    private func openCreateStep() {
+        openEditStep(mission: mission) { [unowned self] step in
+            addedSteps.insert(step, at: 0)
+            tableView.beginUpdates()
+            tableView.insertRows(at: [IndexPath(row: 0, section: 3)], with: .none)
+            tableView.endUpdates()
+            (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг добавлен", secondaryText: "К шагу →") { [unowned self] in
+                UIApplication.topViewController()?.openStep(step)
             }
         }
     }

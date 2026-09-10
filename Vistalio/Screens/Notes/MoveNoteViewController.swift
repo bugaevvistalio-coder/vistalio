@@ -121,15 +121,15 @@ class MoveNoteViewController: UIViewController {
     }
     
     private func updateSteps() {
-        if showCalendar, let date = weeklyView.selectedDate {
+        if showCalendar, let date = weeklyView.selectedDate?.startOfDay {
             let now = Date().startOfDay
             missions = allMissions.filter { $0.archivedAt == nil || date < $0.archivedAt!.startOfDay }
             missions.forEach {
-                $0.selectedSteps = $0.addedSteps.filter { $0.id >= 0 && $0.hasItemForDate(date) && ($0.frequency != StepFrequency.untilDone.rawValue || date <= now) }
+                $0.selectedSteps = $0.addedStepsSorted.filter { $0.id >= 0 && $0.hasItemForDate(date) && ($0.frequency != StepFrequency.untilDone.rawValue || date <= now) }
             }
         } else {
             missions.forEach {
-                $0.selectedSteps = $0.addedSteps.filter { $0.id >= 0 }
+                $0.selectedSteps = $0.addedStepsSorted.filter { $0.id >= 0 }
             }
         }
     }
@@ -212,6 +212,22 @@ class MoveNoteViewController: UIViewController {
             return
         }
         
+        let photoCount = nc.mediaHolder.media.filter { $0.type == "image" }.count
+        let hasVideo = nc.mediaHolder.media.contains { $0.type == "video" }
+        if let message = selectedStep?.block.checkDoneCriteria(title: nc.noteTitle, text: nc.body, photoCount: photoCount, hasVideo: hasVideo) {
+            showHowToOpenNextStep(message: message) { [unowned self] in
+                save()
+            }
+        } else {
+            save()
+        }
+    }
+    
+    private func save() {
+        guard let nc = navigationController as? CreateNoteNavigationController else {
+            return
+        }
+        
         var note: MissionNote?
         
         CoreDataStack.shared.performAndWait { [unowned self] context in
@@ -231,6 +247,8 @@ class MoveNoteViewController: UIViewController {
                 (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Заметка добавлена", secondaryText: "К заметке →") {
                     presenting?.openNote(note)
                 }
+                
+                note.step!.onNoteAdded(from: presenting)
             }
         }
     }

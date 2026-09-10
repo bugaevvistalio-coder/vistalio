@@ -56,18 +56,21 @@ class MyDayViewController: UIViewController {
         
         update()
         updateNotes()
+        updateBellBadge()
         
         generator.prepare()
         
         NotificationCenter.default.addObserver(self, selector: #selector(onMissionUpdated(notification:)), name: .missionUpdated, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onTemplatesUpdated(notification:)), name: .templatesUpdated, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onNoteUpdated(notification:)), name: .noteUpdated, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onNotificationsUpdated(notification:)), name: .notificationsUpdated, object: nil)
     }
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: .missionUpdated, object: nil)
         NotificationCenter.default.removeObserver(self, name: .templatesUpdated, object: nil)
         NotificationCenter.default.removeObserver(self, name: .noteUpdated, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .notificationsUpdated, object: nil)
     }
     
     override func viewDidLayoutSubviews() {
@@ -98,6 +101,10 @@ class MyDayViewController: UIViewController {
         updateNotes()
     }
     
+    @objc func onNotificationsUpdated(notification: Notification) {
+        updateBellBadge()
+    }
+    
     private func update() {
         allMissions = MissionsHolder.shared.getMyMissions()
         updateSteps()
@@ -107,6 +114,11 @@ class MyDayViewController: UIViewController {
     private func updateNotes() {
         weeklyView.notes = allMissions.flatMap { $0.addedSteps }.flatMap { ($0.notes?.allObjects ?? []).map { $0 as! MissionNote } }
         weeklyView.refresh()
+    }
+    
+    private func updateBellBadge() {
+        let hasUnread = allMissions.filter { $0.archivedAt == nil }.flatMap { $0.notifications?.allObjects ?? [] }.map { $0 as! AppNotification }.contains { !$0.isRead }
+        bellBadge.isHidden = !hasUnread
     }
     
     private func updateSteps() {

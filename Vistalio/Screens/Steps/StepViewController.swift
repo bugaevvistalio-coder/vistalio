@@ -142,26 +142,25 @@ class StepViewController: UIViewController {
         
         let checkTapGesture = UITapGestureRecognizer(target: self, action: #selector(checkImageTapped))
         checkImageView.addGestureRecognizer(checkTapGesture)
+        if step.block.locked {
+            checkImageView.alpha = 0.6
+        }
         
         displayStep()
         
         if createNote {
-            addNoteTapped(addNoteButton!)
-            addNoteView.layer.cornerRadius = 30
-            addNoteView.layer.borderColor = UIColor.lightBlue1.cgColor
-            addNoteView.layer.borderWidth = 3
-            addNoteView.onTappedInside = { [unowned self] in
-                removeCreateNoteShadows()
-            }
+            showCreateNote()
         }
         
         generator.prepare()
         
         NotificationCenter.default.addObserver(self, selector: #selector(onNoteUpdated(notification:)), name: .noteUpdated, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onStepUpdated(notification:)), name: .stepUpdated, object: nil)
     }
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: .noteUpdated, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .stepUpdated, object: nil)
     }
     
     override func viewDidLayoutSubviews() {
@@ -169,6 +168,16 @@ class StepViewController: UIViewController {
         tableView.layoutHeader()
         addNoteButton.addDashedBorder(color: UIColor.textGrey30, dashPattern: [2, 2], cornerRadius: 18)
         updateAddNoteViewShadows()
+    }
+    
+    private func showCreateNote() {
+        addNoteTapped(addNoteButton!)
+        addNoteView.layer.cornerRadius = 30
+        addNoteView.layer.borderColor = UIColor.lightBlue1.cgColor
+        addNoteView.layer.borderWidth = 3
+        addNoteView.onTappedInside = { [unowned self] in
+            removeCreateNoteShadows()
+        }
     }
     
     private func updateAddNoteViewShadows() {
@@ -220,8 +229,8 @@ class StepViewController: UIViewController {
             calendarView.generateMonths()
             calendarView.refresh()
             
-            (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Заметка добавлена", secondaryText: "К заметке →") { [unowned self] in
-                openNote(note)
+            (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Заметка добавлена", secondaryText: "К заметке →") {
+                UIApplication.topViewController()?.openNote(note)
             }
         }
     }
@@ -384,6 +393,7 @@ class StepViewController: UIViewController {
     @IBAction func addNoteTapped(_ sender: Any) {
         addNoteButton.superview!.isHidden = true
         addNoteView.isHidden = false
+        addNoteView.fillDefaultData()
         addNoteViewBottom.priority = .defaultHigh
         addNoteButtonBottom.priority = .defaultLow
         tableView.layoutHeader()
@@ -420,12 +430,35 @@ class StepViewController: UIViewController {
     }
     
     @objc func checkImageTapped(_ gesture: UITapGestureRecognizer) {
+        if step.block.locked {
+            return
+        }
         guard let date = (step.frequency == StepFrequency.once.rawValue ? step.startDate?.toDay : selectedDate) else {
             return
         }
-        switchStepImplemented(step, date: date) { [unowned self] checked in
-            checkImageView.image = checked ? .checkCircleOn : .checkCircleOff
-            calendarView.refresh()
+        
+        if step.block.nextAppears == NextBlockAppearRule.onDoneWithPreview.rawValue {
+            if step.block.fitsDoneCriteria {
+                showStepImplementationUncancellable { [unowned self] in
+                    let next = step.block.autoImplement()
+                    checkImageView.image = .checkCircleOn
+                    checkImageView.alpha = 0.6
+                    if let next = next {
+                        showStepImplemented(nextStep: next)
+                    } else {
+                        archiveAndShowMissionCompleted(mission: step.block.mission)
+                    }
+                }
+            } else {
+                createNote = true
+                showCreateNote()
+                updateAddNoteViewShadows()
+            }
+        } else {
+            switchStepImplemented(step, date: date) { [unowned self] checked in
+                checkImageView.image = checked ? .checkCircleOn : .checkCircleOff
+                calendarView.refresh()
+            }
         }
     }
     
@@ -435,6 +468,13 @@ class StepViewController: UIViewController {
         }
         if selectedDate == nil || selectedDate?.startOfDay == note.date?.startOfDay {
             updateNotes()
+        }
+    }
+    
+    @objc func onStepUpdated(notification: Notification) {
+        if step.block.locked {
+            checkImageView.image = .checkCircleOn
+            checkImageView.alpha = 0.6
         }
     }
     
