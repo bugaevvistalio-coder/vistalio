@@ -236,7 +236,12 @@ class MissionViewController: UIViewController {
     private func updateRecommendedSteps() {
         let blocks = mission.openedBlocks
         let steps = blocks.flatMap { $0.steps?.allObjects as? [MissionStep] ?? [] }
-        recommendedSteps = steps.filter { !$0.hidden && $0.addedDate == nil }.sorted(by: { $0.id < $1.id })
+        recommendedSteps = steps.filter { !$0.hidden && $0.addedDate == nil }.sorted(by: {
+            if $0.block.id != $1.block.id, let d1 = $0.block.recommendedAt, let d2 = $1.block.recommendedAt {
+                return d1 < d2
+            }
+            return $0.id < $1.id
+        })
         hiddenSteps = steps.filter { $0.hidden }
         currentBlock = blocks.last
         updateNoRecommendedStepsVisibility()

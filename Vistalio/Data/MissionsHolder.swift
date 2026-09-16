@@ -122,22 +122,24 @@ class MissionsHolder {
         blocks.forEach {
             print("Check block period")
             if let recommendedAt = $0.recommendedAt {
-                let daysBetween = calendar.dateComponents([.minute], from: recommendedAt, to: now).minute!
-                if daysBetween >= $0.periodDays {
-                    $0.unlockNextBlock()
+                let nextBlockDate = calendar.date(byAdding: .minute, value: Int($0.periodDays), to: recommendedAt)!
+                if nextBlockDate <= Date() {
+                    $0.unlockNextBlock(date: nextBlockDate)
                 }
             }
         }
     }
     
     func getNotificationBlock(notificationId: String) -> StepsBlock? {
-        var block: StepsBlock?
-        CoreDataStack.shared.performAndWait { context in
-            let blocksRequest = StepsBlock.blockFetchRequest()
-            blocksRequest.predicate = NSPredicate(format: "notificationId == %@", notificationId)
-            block = (try? context.fetch(blocksRequest))?.first
-        }
-        return block
+        let blocksRequest = StepsBlock.blockFetchRequest()
+        blocksRequest.predicate = NSPredicate(format: "notificationId == %@", notificationId)
+        return (try? CoreDataStack.shared.context.fetch(blocksRequest))?.first
+    }
+    
+    func getNotificationMission(notificationId: String) -> Mission? {
+        let request = Mission.missionFetchRequest()
+        request.predicate = NSPredicate(format: "reminderNotificationRequestId == %@", notificationId)
+        return (try? CoreDataStack.shared.context.fetch(request))?.first
     }
     
     @discardableResult func getNotesMission(context: NSManagedObjectContext) -> Mission? {
@@ -170,5 +172,60 @@ class MissionsHolder {
             print("Failed to retrive missions and folders")
         }
         return [AppNotification]()
+    }
+    
+    func scheduleReminderNotificationOnStepImplemented(mission: Mission, date: Date = Date()) {
+        print("Reminder \(mission.reminderNotificationRequestId), \(mission.reminders?.count ?? 0)")
+        guard let reminders = mission.remindersSorted, reminders.count > 0, let requestId = mission.reminderNotificationRequestId else {
+            return
+        }
+        let lastNotificationId = mission.reminderNotificationId
+        
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+            
+            var reminder: Reminder?
+            
+            if let _ = requests.first(where: { $0.identifier == requestId }) {
+                reminder = reminders.first { $0.id == lastNotificationId }
+            } else {
+                reminder = reminders.first { $0.id > lastNotificationId } ?? reminders.first
+            }
+            
+            if let reminder = reminder {
+                let calendar = Calendar.current
+                var triggerDate = calendar.date(byAdding: .hour, value: 2, to: date)!
+                if triggerDate < Date() {
+                    triggerDate = Date()
+                    addNotification(title: reminder.title ?? "", body: reminder.body ?? "", notificationId: requestId, userInfo: ["isReminder": true])
+                } else {
+                    print("Scheduled at trigger date \(triggerDate)")
+                    let components = calendar.dateComponents([.day, .month, .year, .hour, .minute, .second], from: triggerDate)
+                    let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
+                    addNotification(title: reminder.title ?? "", body: reminder.body ?? "", notificationId: requestId, userInfo: ["isReminder": true], trigger: trigger)
+                }
+                
+                CoreDataStack.shared.performAndWait { context in
+                    let m = context.object(with: mission.objectID) as! Mission
+                    m.reminderNotificationId = reminder.id
+                    m.lastReminderAt = triggerDate
+                }
+            }
+        }
+    }
+    
+    func scheduleReminders() {
+        
+        let missionsRequest = Mission.missionFetchRequest()
+        missionsRequest.predicate = NSPredicate(format: "lastReminderAt != nil AND archivedAt == nil")
+        let missions = (try? CoreDataStack.shared.mainContext.fetch(missionsRequest)) ?? []
+
+        print("Scheduled? Missions count \(missions.count)")
+        let now = Date()
+        
+        missions.forEach {
+            if $0.lastReminderAt! < now {
+                scheduleReminderNotificationOnStepImplemented(mission: $0, date: $0.lastReminderAt!)
+            }
+        }
     }
 }

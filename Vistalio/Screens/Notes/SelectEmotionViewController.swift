@@ -164,6 +164,8 @@ class SelectEmotionViewController: UIViewController {
             (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Заметка добавлена", secondaryText: "К заметке →") {
                 presenting?.openNote(note)
             }
+            
+            note.step?.block.mission.checkEmotionsToOpenSpecialSteps()
         }
         self.dismiss(animated: true)
     }

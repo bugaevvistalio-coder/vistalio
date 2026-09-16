@@ -93,8 +93,11 @@ extension UIViewController {
                     mission.backFromArchived(context: context, viewController: self)
                 } else {
                     mission.archivedAt = Date()
-                    let blocks = mission.blocks?.allObjects.map { $0 as! StepsBlock } ?? []
-                    let notificationsToRemove = blocks.filter { $0.checkPeriod }.compactMap { $0.notificationId }
+                    let blocks = mission.mainBlocks
+                    var notificationsToRemove = blocks.filter { $0.checkPeriod }.compactMap { $0.notificationId }
+                    if let reminderId = mission.reminderNotificationRequestId {
+                        notificationsToRemove.append(reminderId)
+                    }
                     removeScheduledNotifications(notificationsToRemove)
                     NotificationCenter.default.post(name: .notificationsUpdated, object: nil)
                 }
@@ -327,6 +330,9 @@ extension UIViewController {
             } else {
                 ImplementedStep.create(context: context, step: step, date: date)
                 checked = true
+                if step.block.mission.templateId > 0 {
+                    MissionsHolder.shared.scheduleReminderNotificationOnStepImplemented(mission: step.block.mission)
+                }
             }
         }
         onSwitched(checked)

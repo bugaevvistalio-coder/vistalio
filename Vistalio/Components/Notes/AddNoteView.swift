@@ -127,7 +127,7 @@ class AddNoteView: UIView {
     }
     
     func fillDefaultData() {
-        if let step = step, let noteTitle = step.block.noteTitle {
+        if let step = step, let noteTitle = step.noteTitle {
             let notes = step.block.notes
             if !notes.contains(where: { $0.name == noteTitle }) {
                 titleTextView.text = noteTitle
@@ -171,6 +171,8 @@ class AddNoteView: UIView {
                 }
             }
             mediaHolder.media.forEach { $0.saved = true }
+            
+            step.block.mission.checkEmotionsToOpenSpecialSteps()
         }
     }
     

@@ -78,7 +78,7 @@ public class Mission: NSManagedObject {
     }
     
     @discardableResult
-    class func create(context: NSManagedObjectContext, template: MissionTemplate, blocks: [TemplateBlock]) -> Mission? {
+    class func create(context: NSManagedObjectContext, template: MissionTemplate, blocks: [TemplateBlock], reminders: [TemplateReminder]?) -> Mission? {
         guard let entityDescription = NSEntityDescription.entity(forEntityName: "Mission", in: context) else { return nil }
         
         let mission =  Mission(entity: entityDescription, insertInto: context)
@@ -91,6 +91,7 @@ public class Mission: NSManagedObject {
         mission.showCompleted = template.showCompleted ?? false
         mission.canCreateSteps = template.canCreateSteps ?? true
         mission.skipRecommend = template.skipRecommend ?? false
+        mission.reminderNotificationRequestId = UUID().uuidString
         
         var stepIndex = 0
         var noteIndex = 0
@@ -104,14 +105,15 @@ public class Mission: NSManagedObject {
                 block.doneCriteria = b.doneCriteria?.map { $0.rawValue }.joined(separator: ",")
                 block.photoMin = Int16(b.photoMin ?? 1)
                 block.searchText = b.searchText
-                block.noteTitle = b.noteTitle
                 block.textPlaceholder = b.textPlaceholder
                 block.answerHint = b.answerHint
                 block.periodDays = Int16(b.periodDays ?? 0)
                 block.nextBlockNotificationTitle = b.nextBlockNotificationTitle
                 block.nextBlockNotificationBody = b.nextBlockNotificationBody
+                block.emotionGroup = b.emotionGroup
+                block.emotionsCountToOpenBlock = Int16(b.emotionsCountToOpenBlock ?? 0)
                 if i == 0 {
-                    block.recommendedAt = Date()
+                    block.unlock()
                 }
                 
                 for s in b.steps {
@@ -123,6 +125,7 @@ public class Mission: NSManagedObject {
                         step.name = s.name
                         step.text = s.description
                         step.editable = s.editable ?? true
+                        step.noteTitle = s.noteTitle
                         step.block = block
                         
                         if (mission.skipRecommend || template.autoAddFirstBlock == true) && i == 0 {
@@ -159,6 +162,10 @@ public class Mission: NSManagedObject {
                     }
                 }
             }
+        }
+        
+        for r in (reminders ?? []) {
+            Reminder.create(context: context, templateReminder: r, mission: mission)
         }
         
         return mission
@@ -208,16 +215,25 @@ public class Mission: NSManagedObject {
     
     func backFromArchived(context: NSManagedObjectContext, viewController: UIViewController) {
         archivedAt = nil
-        if let lastOpenedBlock = openedBlocks.last, lastOpenedBlock.nextAppears == NextBlockAppearRule.onNoteRespectPeriod.rawValue || lastOpenedBlock.nextAppears == NextBlockAppearRule.onNote.rawValue {
-            let notes = lastOpenedBlock.notes
-            if !notes.isEmpty {
-                lastOpenedBlock.checkPeriod = false
-                DispatchQueue.main.async {
-                    notes.last!.step?.onNoteAdded(from: viewController)
+        if let lastOpenedBlock = openedBlocks.last {
+            if lastOpenedBlock.nextAppears == NextBlockAppearRule.onNoteRespectPeriod.rawValue || lastOpenedBlock.nextAppears == NextBlockAppearRule.onNote.rawValue {
+                let notes = lastOpenedBlock.notes
+                if !notes.isEmpty {
+                    lastOpenedBlock.checkPeriod = false
+                    DispatchQueue.main.async {
+                        notes.last!.step?.onNoteAdded(from: viewController)
+                    }
+                }
+            } else if lastOpenedBlock.nextAppears == NextBlockAppearRule.respectPeriod.rawValue {
+                let daysBetween = Calendar.current.dateComponents([.minute], from: lastOpenedBlock.recommendedAt!, to: Date()).minute!
+                if daysBetween >= Int(lastOpenedBlock.periodDays) {
+                    lastOpenedBlock.unlockNextBlock()
                 }
             }
         }
         NotificationCenter.default.post(name: .notificationsUpdated, object: nil)
+        
+        MissionsHolder.shared.scheduleReminderNotificationOnStepImplemented(mission: self)
     }
     
     func readNotifications() {
@@ -233,6 +249,45 @@ public class Mission: NSManagedObject {
         }
         if hasRead {
             NotificationCenter.default.post(name: .notificationsUpdated, object: nil)
+        }
+    }
+    
+    var remindersSorted: [Reminder]? {
+        return reminders?.allObjects.map { $0 as! Reminder }.sorted {
+            return $0.id < $1.id
+        }
+    }
+    
+    var mainBlocks: [StepsBlock] {
+        return blocks?.allObjects.map({ $0 as! StepsBlock }).filter { $0.emotionGroup == nil }.sorted(by: { $0.id < $1.id }) ?? []
+    }
+    
+    var emotionBlocks: [StepsBlock] {
+        return blocks?.allObjects.map({ $0 as! StepsBlock }).filter { $0.emotionGroup != nil } ?? []
+    }
+    
+    func checkEmotionsToOpenSpecialSteps() {
+        let blocks = emotionBlocks
+        if blocks.isEmpty {
+            return
+        }
+        let notes = self.blocks?.allObjects.flatMap({ ($0 as! StepsBlock).notes }) ?? []
+        let emotions = notes.flatMap({ $0.emotions?.allObjects.map { $0 as! MissionNoteEmotion } ?? [] }).map { MissionEmotion(rawValue:  $0.emotion)! }
+        var blocksOpen = false
+        
+        for b in blocks {
+            if b.recommendedAt == nil, let group = b.emotionGroup {
+                let count = emotions.count { $0.group.rawValue == group }
+                if count >= b.emotionsCountToOpenBlock {
+                    blocksOpen = true
+                    CoreDataStack.shared.performAndWait { _ in
+                        b.recommendedAt = Date()
+                    }
+                }
+            }
+        }
+        if blocksOpen {
+            NotificationCenter.default.post(name: .recommendedStepsUpdated, object: nil)
         }
     }
 }
@@ -256,9 +311,14 @@ extension Mission {
     @NSManaged public var showCompleted: Bool
     @NSManaged public var canCreateSteps: Bool
     @NSManaged public var skipRecommend: Bool
+    @NSManaged public var lastReminderAt: Date?
+    
+    @NSManaged public var reminderNotificationId: Int16
+    @NSManaged public var reminderNotificationRequestId: String?
     
     @NSManaged public var blocks: NSSet?
     @NSManaged public var notifications: NSSet?
+    @NSManaged public var reminders: NSSet?
 }
 
 extension Mission {

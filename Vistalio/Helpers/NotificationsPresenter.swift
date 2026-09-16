@@ -22,7 +22,7 @@ func addNotification(title: String, body: String, notificationId: String, userIn
         if let error = error {
             print("ERROR!!! Notification \(error.localizedDescription)")
         } else {
-            print("Notification scheduled =\(title)= =\(body)= =\(notificationId)= \(userInfo?["fireDate"] ?? "now")")
+            print("\(Date()) Notification scheduled =\(title)= =\(body)= =\(notificationId)= \(userInfo?["fireDate"] ?? "now")")
         }
     }
 }

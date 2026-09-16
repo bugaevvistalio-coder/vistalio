@@ -20,6 +20,7 @@
 		C333212830514E9E00230DCB /* NotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C333212730514E9700230DCB /* NotificationsViewController.swift */; };
 		C333212A3051553800230DCB /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33321293051553500230DCB /* NotificationCell.swift */; };
 		C333212C30515A1800230DCB /* AppNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = C333212B30515A1400230DCB /* AppNotification.swift */; };
+		C333212E3053F50900230DCB /* Reminder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C333212D3053F50600230DCB /* Reminder.swift */; };
 		C33F22942F80104100EF2A81 /* Vistalio.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C33F22922F80104100EF2A81 /* Vistalio.xcdatamodeld */; };
 		C33F22962F8011F000EF2A81 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22952F8011EC00EF2A81 /* CoreDataStack.swift */; };
 		C33F229E2F80134A00EF2A81 /* Mission.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F229C2F80134A00EF2A81 /* Mission.swift */; };
@@ -191,6 +192,7 @@
 		C333212730514E9700230DCB /* NotificationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewController.swift; sourceTree = "<group>"; };
 		C33321293051553500230DCB /* NotificationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
 		C333212B30515A1400230DCB /* AppNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNotification.swift; sourceTree = "<group>"; };
+		C333212D3053F50600230DCB /* Reminder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reminder.swift; sourceTree = "<group>"; };
 		C33F22932F80104100EF2A81 /* Vistalio.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Vistalio.xcdatamodel; sourceTree = "<group>"; };
 		C33F22952F8011EC00EF2A81 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		C33F229C2F80134A00EF2A81 /* Mission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mission.swift; sourceTree = "<group>"; };
@@ -407,6 +409,7 @@
 				C3CABD722FF9708C0067CA73 /* MissionEmotion.swift */,
 				C3F47EC72F9FCAB100F17AC8 /* MissionNote.swift */,
 				C3F47EC42F9FCA1700F17AC8 /* MissionStep.swift */,
+				C333212D3053F50600230DCB /* Reminder.swift */,
 				C37BB74530056123006BE7EA /* Helpers.swift */,
 				C3F47EC62F9FCA9F00F17AC8 /* Template */,
 			);
@@ -1033,6 +1036,7 @@
 				C30C868A303DFA7300297A4D /* MapViewController.swift in Sources */,
 				C333212830514E9E00230DCB /* NotificationsViewController.swift in Sources */,
 				C37BB74C300777A8006BE7EA /* NoteSmallPhotoCell.swift in Sources */,
+				C333212E3053F50900230DCB /* Reminder.swift in Sources */,
 				C3BEABC42F9BB0F200359CB6 /* mission_9.json in Sources */,
 				C3BEABC62F9BB10600359CB6 /* mission_10.json in Sources */,
 				C3D5425E2F928C4F0093D819 /* NotificationView.swift in Sources */,
@@ -1132,7 +1136,7 @@
 				CODE_SIGN_ENTITLEMENTS = Vistalio/Vistalio.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_TEAM = K3TB65CDP6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Vistalio/Info.plist;
@@ -1169,7 +1173,7 @@
 				CODE_SIGN_ENTITLEMENTS = Vistalio/Vistalio.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_TEAM = K3TB65CDP6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Vistalio/Info.plist;

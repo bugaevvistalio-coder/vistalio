@@ -25,6 +25,7 @@ class TemplateViewController: UIViewController {
     var template: MissionTemplate!
     
     private var blocks = [TemplateBlock]()
+    private var reminders: [TemplateReminder]?
     private var steps = [TemplateStep]()
     private var numberOfSteps = 0
     
@@ -65,6 +66,7 @@ class TemplateViewController: UIViewController {
                     let templateData = try decoder.decode(BlocksList.self, from: data)
                     
                     self.blocks = templateData.blocks
+                    self.reminders = templateData.reminderNotifications
                     let steps = templateData.blocks.flatMap({ $0.steps })
                     self.numberOfSteps = steps.count
                     self.steps = steps.filter { $0.preview == true }
@@ -190,10 +192,11 @@ class TemplateViewController: UIViewController {
     private func startMission() {
         var mission: Mission?
         CoreDataStack.shared.performAndWait { [unowned self] context in
-            mission = Mission.create(context: context, template: template, blocks: blocks)
+            mission = Mission.create(context: context, template: template, blocks: blocks, reminders: reminders)
         }
         NotificationCenter.default.post(name: .missionUpdated, object: nil)
         if let mission = mission {
+            MissionsHolder.shared.scheduleReminderNotificationOnStepImplemented(mission: mission)
             dismissAndOpenMission(mission, justCreated: true)
         }
     }

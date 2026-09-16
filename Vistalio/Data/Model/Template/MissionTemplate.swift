@@ -30,13 +30,14 @@ class MissionTemplate: Codable {
 
 class BlocksList: Codable {
     let blocks: [TemplateBlock]
-    let reminderNotifications: [ReminderNotification]?
+    let reminderNotifications: [TemplateReminder]?
 }
 
 enum NextBlockAppearRule: String, Codable {
     case onDoneWithPreview
     case onNote
     case onNoteRespectPeriod
+    case respectPeriod
 }
 
 enum BlockDoneCriteria: String, Codable {
@@ -54,12 +55,13 @@ class TemplateBlock: Codable {
     let doneCriteria: [BlockDoneCriteria]?
     let photoMin: Int?
     let searchText: String?
-    let noteTitle: String?
     let textPlaceholder: String?
     let answerHint: String?
     let periodDays: Int?
     let nextBlockNotificationTitle: String?
     let nextBlockNotificationBody: String?
+    let emotionGroup: String?
+    let emotionsCountToOpenBlock: Int?
 }
 
 class TemplateStep: Codable {
@@ -68,6 +70,7 @@ class TemplateStep: Codable {
     let preview: Bool?
     var expanded: Bool?
     let editable: Bool?
+    let noteTitle: String?
     let notes: [TemplateNote]?
     
     var shortDescription: String? {
@@ -87,7 +90,7 @@ class TemplateNote: Codable {
     }
 }
 
-class ReminderNotification: Codable {
+class TemplateReminder: Codable {
     let id: Int
     let title: String
     let body: String

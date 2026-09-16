@@ -240,6 +240,7 @@ class MoveNoteViewController: UIViewController {
         
         if let note = note {
             NotificationCenter.default.post(name: .noteUpdated, object: note)
+            note.step?.block.mission.checkEmotionsToOpenSpecialSteps()
         }
         let presenting = presentingViewController
         self.dismiss(animated: true) {

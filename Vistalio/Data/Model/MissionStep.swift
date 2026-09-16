@@ -59,12 +59,13 @@ extension StepsBlock {
     @NSManaged public var searchText: String?
     @NSManaged public var recommendedAt: Date?
     @NSManaged public var locked: Bool
-    @NSManaged public var noteTitle: String?
     @NSManaged public var textPlaceholder: String?
     @NSManaged public var answerHint: String?
     @NSManaged public var periodDays: Int16
     @NSManaged public var checkPeriod: Bool
     @NSManaged public var notificationId: String?
+    @NSManaged public var emotionGroup: String?
+    @NSManaged public var emotionsCountToOpenBlock: Int16
     
     @NSManaged public var nextBlockNotificationTitle: String?
     @NSManaged public var nextBlockNotificationBody: String?
@@ -122,14 +123,14 @@ extension StepsBlock {
     }
     
     @discardableResult
-    func unlockNextBlock() -> Bool {
+    func unlockNextBlock(date: Date? = nil) -> Bool {
         guard let nextBlock = nextBlock, nextBlock.recommendedAt == nil else {
             print("Skip next block unlock")
             return false
         }
         print("Next block unlocked")
         CoreDataStack.shared.performAndWait { context in
-            nextBlock.recommendedAt = Date()
+            nextBlock.unlock(date: date)
             checkPeriod = false
             
             AppNotification.create(context: context, title: nextBlockNotificationTitle ?? mission.name ?? "", text: nextBlockNotificationBody ?? "Открылись новые шаги", isRead: false, mission: mission, type: .newSteps)
@@ -141,8 +142,26 @@ extension StepsBlock {
         return true
     }
     
+    func unlock(date: Date? = nil) {
+        recommendedAt = date ?? Date()
+        if nextAppears == NextBlockAppearRule.respectPeriod.rawValue {
+            let nextBlockDate = Calendar.current.date(byAdding: .minute, value: Int(periodDays), to: recommendedAt!)!
+            if nextBlockDate <= Date() {
+                DispatchQueue.global().async {
+                    self.unlockNextBlock(date: nextBlockDate)
+                }
+                addNotification(title: nextBlockNotificationTitle ?? mission.name ?? "", body: nextBlockNotificationBody ?? "Открылись новые шаги", notificationId: UUID().uuidString)
+            } else {
+                checkPeriod = true
+                DispatchQueue.global().async { [weak self] in
+                    self?.scheduleAppearNotification()
+                }
+            }
+        }
+    }
+    
     var nextBlock: StepsBlock? {
-        return mission.blocks?.allObjects.map({ $0 as! StepsBlock }).sorted(by: { $0.id < $1.id }).first(where: { $0.id > id })
+        return mission.mainBlocks.first(where: { $0.id > id })
     }
     
     func autoImplement() -> MissionStep? {
@@ -158,7 +177,7 @@ extension StepsBlock {
             }
             
             if let nextBlock = nextBlock, nextBlock.recommendedAt == nil {
-                nextBlock.recommendedAt = Date()
+                nextBlock.unlock()
                 checkPeriod = false
                 nextBlock.steps?.allObjects.forEach {
                     let step = $0 as! MissionStep
@@ -248,7 +267,7 @@ extension StepsBlock {
         let calendar = Calendar.current
         let date = calendar.date(byAdding: .minute, value: Int(periodDays), to: recommendedAt)!
         let userInfo: [AnyHashable: Any] = ["fireDate": date]
-        //TODO: Убрать seconds, заменить .minute на .day
+
         let components = calendar.dateComponents([.day, .month, .year, .hour, .minute, .second], from: date)
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
         addNotification(title: nextBlockNotificationTitle ?? mission.name ?? "", body: nextBlockNotificationBody ?? "Открылись новые шаги", notificationId: notificationId, userInfo: userInfo, trigger: trigger)
@@ -299,6 +318,8 @@ extension MissionStep {
     @NSManaged public var startDate: String?
     @NSManaged public var endDate: String?
     @NSManaged public var frequency: Int16
+    
+    @NSManaged public var noteTitle: String?
     
     @NSManaged public var block: StepsBlock
     @NSManaged public var notes: NSSet?

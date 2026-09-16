@@ -53,7 +53,7 @@ class CoreDataStack {
         }
     }
     
-    private var context: NSManagedObjectContext {
+    var context: NSManagedObjectContext {
         get {
             if Thread.isMainThread {
                 return mainContext

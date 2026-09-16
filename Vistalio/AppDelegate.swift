@@ -112,10 +112,18 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        
+        let isReminder = response.notification.request.content.userInfo["isReminder"] as? Bool ?? false
+        
         if let mainVC = UIApplication.shared.mainViewController {
             mainVC.dismiss(animated: false)
             mainVC.switchTab(tabIndex: 1, toRoot: true)
-            if let block = MissionsHolder.shared.getNotificationBlock(notificationId: response.notification.request.identifier) {
+            
+            if isReminder {
+                if let mission = MissionsHolder.shared.getNotificationMission(notificationId: response.notification.request.identifier) {
+                    (mainVC.controllers[1] as! UINavigationController).topViewController?.openMission(mission)
+                }
+            } else if let block = MissionsHolder.shared.getNotificationBlock(notificationId: response.notification.request.identifier) {
                 (mainVC.controllers[1] as! UINavigationController).topViewController?.openMission(block.mission, recommendedExpanded: true)
             }
         }
@@ -126,7 +134,15 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        MissionsHolder.shared.getNotificationBlock(notificationId: notification.request.identifier)?.unlockNextBlock()
+        let isReminder = notification.request.content.userInfo["isReminder"] as? Bool ?? false
+        if isReminder {
+            if let mission = MissionsHolder.shared.getNotificationMission(notificationId: notification.request.identifier), let lastReminderAt = mission.lastReminderAt {
+                print("Scheduled when notification presented")
+                MissionsHolder.shared.scheduleReminderNotificationOnStepImplemented(mission: mission, date: lastReminderAt)
+            }
+        } else if notification.request.trigger != nil {
+            MissionsHolder.shared.getNotificationBlock(notificationId: notification.request.identifier)?.unlockNextBlock()
+        }
         completionHandler([.banner, .list, .sound])
     }
 }

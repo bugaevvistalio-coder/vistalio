@@ -229,6 +229,8 @@ class CreateNoteViewController: UIViewController {
             (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Заметка добавлена", secondaryText: "К заметке →") {
                 presenting?.openNote(note)
             }
+            
+            note.step?.block.mission.checkEmotionsToOpenSpecialSteps()
         }
         self.dismiss(animated: true)
     }
@@ -285,6 +287,8 @@ class CreateNoteViewController: UIViewController {
                 $0.saved = true
             }
         }
+        
+        note.step?.block.mission.checkEmotionsToOpenSpecialSteps()
         
         NotificationCenter.default.post(name: .noteUpdated, object: note)
         self.dismiss(animated: true)
