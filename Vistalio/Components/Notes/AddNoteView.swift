@@ -166,7 +166,8 @@ class AddNoteView: UIView {
                         self.onNoteAdded?(note)
                         NotificationCenter.default.post(name: .noteUpdated, object: note)
                         
-                        step.onNoteAdded(from: parentViewController)
+                        let hasEmotion = (note.emotions?.allObjects.count ?? 0) > 0
+                        step.onNoteAdded(from: parentViewController, hasEmotion: hasEmotion)
                     }
                 }
             }

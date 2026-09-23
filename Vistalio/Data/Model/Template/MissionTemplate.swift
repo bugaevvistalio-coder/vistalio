@@ -34,10 +34,13 @@ class BlocksList: Codable {
 }
 
 enum NextBlockAppearRule: String, Codable {
+    case onDone
     case onDoneWithPreview
     case onNote
     case onNoteRespectPeriod
     case respectPeriod
+    case onEmotion
+    case onEmotionRespectPeriod
 }
 
 enum BlockDoneCriteria: String, Codable {
@@ -47,6 +50,7 @@ enum BlockDoneCriteria: String, Codable {
     case photoOrVideo
     case geo
     case searchText
+    case emotion
 }
 
 class TemplateBlock: Codable {
@@ -62,6 +66,7 @@ class TemplateBlock: Codable {
     let nextBlockNotificationBody: String?
     let emotionGroup: String?
     let emotionsCountToOpenBlock: Int?
+    let isSpecialBlock: Bool?
 }
 
 class TemplateStep: Codable {
@@ -72,6 +77,7 @@ class TemplateStep: Codable {
     let editable: Bool?
     let noteTitle: String?
     let notes: [TemplateNote]?
+    let frequency: StepFrequency?
     
     var shortDescription: String? {
         return description?.replacingOccurrences(of: "\n\n", with: " ").replacingOccurrences(of: "\n", with: " ")

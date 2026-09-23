@@ -112,6 +112,8 @@ public class Mission: NSManagedObject {
                 block.nextBlockNotificationBody = b.nextBlockNotificationBody
                 block.emotionGroup = b.emotionGroup
                 block.emotionsCountToOpenBlock = Int16(b.emotionsCountToOpenBlock ?? 0)
+                block.isSpecialBlock = b.isSpecialBlock ?? false
+                
                 if i == 0 {
                     block.unlock()
                 }
@@ -126,6 +128,7 @@ public class Mission: NSManagedObject {
                         step.text = s.description
                         step.editable = s.editable ?? true
                         step.noteTitle = s.noteTitle
+                        step.frequency = s.frequency?.rawValue ?? 0
                         step.block = block
                         
                         if (mission.skipRecommend || template.autoAddFirstBlock == true) && i == 0 {
@@ -198,7 +201,7 @@ public class Mission: NSManagedObject {
     }
     
     var openedBlocks: [StepsBlock] {
-        return (blocks?.allObjects as? [StepsBlock])?.filter { $0.id >= 0 && $0.recommendedAt != nil }.sorted(by: { $0.id < $1.id }) ?? []
+        return (blocks?.allObjects as? [StepsBlock])?.filter { $0.id >= 0 && $0.recommendedAt != nil }.sorted(by: { $0.recommendedAt! < $1.recommendedAt! }) ?? []
     }
     
     @discardableResult func getNotesStep() -> MissionStep? {
@@ -221,7 +224,16 @@ public class Mission: NSManagedObject {
                 if !notes.isEmpty {
                     lastOpenedBlock.checkPeriod = false
                     DispatchQueue.main.async {
-                        notes.last!.step?.onNoteAdded(from: viewController)
+                        notes.last!.step?.onNoteAdded(from: viewController, hasEmotion: false)
+                    }
+                }
+            } else if lastOpenedBlock.nextAppears == NextBlockAppearRule.onEmotionRespectPeriod.rawValue || lastOpenedBlock.nextAppears == NextBlockAppearRule.onEmotion.rawValue {
+                let notes = lastOpenedBlock.notes
+                let emotions = notes.flatMap { $0.emotions?.allObjects ?? [] }
+                if !emotions.isEmpty {
+                    lastOpenedBlock.checkPeriod = false
+                    DispatchQueue.main.async {
+                        notes.last!.step?.onNoteAdded(from: viewController, hasEmotion: true)
                     }
                 }
             } else if lastOpenedBlock.nextAppears == NextBlockAppearRule.respectPeriod.rawValue {
@@ -258,6 +270,10 @@ public class Mission: NSManagedObject {
         }
     }
     
+    var allBlocks: [StepsBlock] {
+        return blocks?.allObjects.map({ $0 as! StepsBlock }) ?? []
+    }
+    
     var mainBlocks: [StepsBlock] {
         return blocks?.allObjects.map({ $0 as! StepsBlock }).filter { $0.emotionGroup == nil }.sorted(by: { $0.id < $1.id }) ?? []
     }
@@ -267,7 +283,7 @@ public class Mission: NSManagedObject {
     }
     
     func checkEmotionsToOpenSpecialSteps() {
-        let blocks = emotionBlocks
+        let blocks = emotionBlocks.filter { $0.isSpecialBlock }
         if blocks.isEmpty {
             return
         }

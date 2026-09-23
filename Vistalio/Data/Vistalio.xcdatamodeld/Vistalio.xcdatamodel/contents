@@ -104,6 +104,7 @@
         <attribute name="emotionGroup" optional="YES" attributeType="String"/>
         <attribute name="emotionsCountToOpenBlock" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isSpecialBlock" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="locked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="nextAppears" optional="YES" attributeType="String"/>
         <attribute name="nextBlockNotificationBody" optional="YES" attributeType="String"/>

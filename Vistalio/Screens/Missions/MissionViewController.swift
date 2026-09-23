@@ -257,15 +257,20 @@ class MissionViewController: UIViewController {
         noRecommendedStepsView.isHidden = false
         noRecommendedStepsView.isUserInteractionEnabled = false
         
-        if currentBlock?.nextBlock != nil {
-            if currentBlock?.nextAppears == NextBlockAppearRule.onNote.rawValue || currentBlock?.nextAppears == NextBlockAppearRule.onNoteRespectPeriod.rawValue {
-                
+        let needsNote = currentBlock?.nextAppears == NextBlockAppearRule.onNote.rawValue || currentBlock?.nextAppears == NextBlockAppearRule.onNoteRespectPeriod.rawValue
+        let needsEmotion = currentBlock?.nextAppears == NextBlockAppearRule.onEmotion.rawValue || currentBlock?.nextAppears == NextBlockAppearRule.onEmotionRespectPeriod.rawValue
+        let nextBlock = needsEmotion ? currentBlock?.nextEmotionBlock : currentBlock?.nextBlock
+        if nextBlock != nil {
+            if needsNote || needsEmotion {
                 noRecommendedStepsLabel.textColor = .textGrey60
+                let emotions = currentBlock?.notes.flatMap { $0.emotions?.allObjects.map { $0 as! MissionNoteEmotion } ?? [] } ?? []
                 
                 if mission.archivedAt != nil {
                     noRecommendedStepsLabel.text = "Разархивируйте миссию, чтобы стали доступны новые шаги"
-                } else if currentBlock?.notes.isEmpty ?? true {
+                } else if needsNote && currentBlock?.notes.isEmpty ?? true {
                     noRecommendedStepsLabel.text = "Добавьте заметку к любому шагу, чтобы открыть новые"
+                } else if needsEmotion && emotions.isEmpty {
+                    noRecommendedStepsLabel.text = "Добавьте эмоции к любому шагу, чтобы открыть новые"
                 } else if let recommendedAt = currentBlock?.recommendedAt {
                     let date = Calendar.current.date(byAdding: .day, value: Int(currentBlock!.periodDays), to: recommendedAt)!
                     noRecommendedStepsLabel.text = "Новые шаги откроются \(date.formatted3.lowercased())"

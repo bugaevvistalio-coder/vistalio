@@ -93,7 +93,7 @@ extension UIViewController {
                     mission.backFromArchived(context: context, viewController: self)
                 } else {
                     mission.archivedAt = Date()
-                    let blocks = mission.mainBlocks
+                    let blocks = mission.allBlocks
                     var notificationsToRemove = blocks.filter { $0.checkPeriod }.compactMap { $0.notificationId }
                     if let reminderId = mission.reminderNotificationRequestId {
                         notificationsToRemove.append(reminderId)

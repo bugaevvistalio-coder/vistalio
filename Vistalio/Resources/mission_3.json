@@ -228,6 +228,7 @@
         {
             "emotionGroup": "anger",
             "emotionsCountToOpenBlock": 3,
+            "isSpecialBlock": true,
             "steps": [
                 {
                     "name": "🎯 Поставь конкретную цель для группы",
@@ -238,6 +239,7 @@
         {
             "emotionGroup": "sadness",
             "emotionsCountToOpenBlock": 3,
+            "isSpecialBlock": true,
             "steps": [
                 {
                     "name": "🌧️ Что-то идет не так?",
@@ -248,6 +250,7 @@
         {
             "emotionGroup": "fear",
             "emotionsCountToOpenBlock": 3,
+            "isSpecialBlock": true,
             "steps": [
                 {
                     "name": "🤔 Боишься, что такого формата недостаточно для изучения английского?",

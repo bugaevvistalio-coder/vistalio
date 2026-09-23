@@ -249,7 +249,8 @@ class MoveNoteViewController: UIViewController {
                     presenting?.openNote(note)
                 }
                 
-                note.step!.onNoteAdded(from: presenting)
+                let hasEmotion = (note.emotions?.allObjects.count ?? 0) > 0
+                note.step!.onNoteAdded(from: presenting, hasEmotion: hasEmotion)
             }
         }
     }

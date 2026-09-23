@@ -68,7 +68,7 @@
             ],
             "nextAppears": "onDoneWithPreview",
             "doneCriteria": ["searchText"],
-            "searchText": "лаборатория"
+            "searchText": "лаборатория",
             "textPlaceholder": "Ваш ответ...",
             "answerHint": "верный ответ на анаграмму"
         },
@@ -163,8 +163,7 @@
                 {
                     "name": "Город спасен!",
                     "description": "Облако антидота распространилось. Крики затихают. Люди приходят в себя 👩‍🦰👨‍🦱.\n\nВы — герои. Мир никогда не забудет ваш подвиг.\n\n🙌 Спасибо, что выжили. Поделитесь в заметке своими эмоциями и впечатлениями от прохождения квеста.",
-                    "editable": false,
-                    "noteTitle": "Город спасен!"
+                    "editable": false
                 }
             ],
             "nextAppears": "onDoneWithPreview",

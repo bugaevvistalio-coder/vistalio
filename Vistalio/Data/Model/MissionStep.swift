@@ -8,7 +8,7 @@
 import UIKit
 import CoreData
 
-enum StepFrequency: Int16, CaseIterable {
+enum StepFrequency: Int16, CaseIterable, Codable {
     case untilDone = 0
     case once = 1
     case everyDay = 2
@@ -66,6 +66,7 @@ extension StepsBlock {
     @NSManaged public var notificationId: String?
     @NSManaged public var emotionGroup: String?
     @NSManaged public var emotionsCountToOpenBlock: Int16
+    @NSManaged public var isSpecialBlock: Bool
     
     @NSManaged public var nextBlockNotificationTitle: String?
     @NSManaged public var nextBlockNotificationBody: String?
@@ -97,6 +98,18 @@ extension StepsBlock {
 //        if array.contains(BlockDoneCriteria.geo) {
 //            return false
 //        }
+        if array.contains(BlockDoneCriteria.emotion) {
+            var hasEmotion = false
+            for n in notes {
+                if !(n.emotions?.allObjects.isEmpty ?? true) {
+                    hasEmotion = true
+                    break
+                }
+            }
+            if !hasEmotion {
+                return false
+            }
+        }
         let media = notes.flatMap { $0.images?.allObjects.map { $0 as! MissionNoteImage } ?? [] }
         if array.contains(BlockDoneCriteria.photo), media.filter({ $0.type == "image" }).count < photoMin {
             return false
@@ -124,7 +137,12 @@ extension StepsBlock {
     
     @discardableResult
     func unlockNextBlock(date: Date? = nil) -> Bool {
-        guard let nextBlock = nextBlock, nextBlock.recommendedAt == nil else {
+        let isLastBlock = mission.blocks?.allObjects.map { $0 as! StepsBlock }.filter { $0.recommendedAt != nil }.max { $0.recommendedAt! < $1.recommendedAt! }?.recommendedAt == recommendedAt
+        let isEmotionBlock = (nextAppears == NextBlockAppearRule.onEmotion.rawValue || nextAppears == NextBlockAppearRule.onEmotionRespectPeriod.rawValue)
+        if !isLastBlock {
+            return false
+        }
+        guard let nextBlock = isEmotionBlock ? nextEmotionBlock : nextBlock, nextBlock.recommendedAt == nil else {
             print("Skip next block unlock")
             return false
         }
@@ -164,6 +182,39 @@ extension StepsBlock {
         return mission.mainBlocks.first(where: { $0.id > id })
     }
     
+    var nextEmotionBlock: StepsBlock? {
+        let notes = mission.addedSteps.flatMap { $0.notes?.allObjects.map { $0 as! MissionNote } ?? [] }
+        let emotions = notes.flatMap { $0.emotions?.allObjects.map({ MissionEmotion(rawValue: ($0 as! MissionNoteEmotion).emotion)! }) ?? [] }
+        let grouped = Dictionary(grouping: emotions, by: { $0.group } )
+        let emotionGroups: [EmotionGroup] = Array(grouped.keys)
+        let priorities: [EmotionGroup] = [.anger, .joy, .fear, .sadness]
+        var sortedGroups = emotionGroups.sorted {
+            let count1 = grouped[$0]!.count
+            let count2 = grouped[$1]!.count
+            if count1 == count2 {
+                return priorities.firstIndex(of: $0)! < priorities.firstIndex(of: $1)!
+            }
+            return count1 > count2
+        }
+        if sortedGroups.count < priorities.count {
+            for p in priorities {
+                if !sortedGroups.contains(p) {
+                    sortedGroups.append(p)
+                }
+            }
+        }
+        
+        let blocks = mission.emotionBlocks.filter { $0.recommendedAt == nil && sortedGroups.contains(EmotionGroup(rawValue: $0.emotionGroup!)!) }.sorted {
+            let index1 = sortedGroups.firstIndex(of: EmotionGroup(rawValue: $0.emotionGroup!)!)!
+            let index2 = sortedGroups.firstIndex(of: EmotionGroup(rawValue: $1.emotionGroup!)!)!
+            if index1 == index2 {
+                return $0.id < $1.id
+            }
+            return index1 < index2
+        }
+        return blocks.first
+    }
+    
     func autoImplement() -> MissionStep? {
 
         let nextBlock = nextBlock
@@ -193,9 +244,12 @@ extension StepsBlock {
         return nextStep
     }
     
+    @discardableResult
     func checkAutoImplementAfterNoteCreated() -> MissionStep? {
-        if recommendedAt != nil && nextAppears == NextBlockAppearRule.onDoneWithPreview.rawValue && (doneCriteriaArray.contains(.note) || fitsDoneCriteria) {
-            return autoImplement()
+        if recommendedAt != nil {
+            if nextAppears == NextBlockAppearRule.onDoneWithPreview.rawValue && (doneCriteriaArray.contains(.note) || fitsDoneCriteria) {
+                return autoImplement()
+            }
         }
         return nil
     }
@@ -343,7 +397,8 @@ extension MissionStep {
         guard let entityDescription = NSEntityDescription.entity(forEntityName: "MissionStep", in: context) else { return nil }
         
         let blocks = mission.blocks?.allObjects.map { $0 as! StepsBlock } ?? []
-        guard let block = blocks.first(where: { $0.id == -1 }) ?? StepsBlock.create(context: context, mission: mission) else {
+        let lastBlock = blocks.filter { $0.recommendedAt != nil }.max { $0.recommendedAt! < $1.recommendedAt! }
+        guard let block = lastBlock ?? blocks.first(where: { $0.id == -1 }) ?? StepsBlock.create(context: context, mission: mission) else {
             return nil
         }
         
@@ -680,18 +735,18 @@ extension MissionStep {
         return moved
     }
     
-    func onNoteAdded(from vc: UIViewController?) {
+    func onNoteAdded(from vc: UIViewController?, hasEmotion: Bool) {
         if block.nextAppears == NextBlockAppearRule.onDoneWithPreview.rawValue {
             if let nextStep = block.checkAutoImplementAfterNoteCreated() {
                 vc?.showStepImplemented(nextStep: nextStep)
             } else if block.locked {
                 vc?.archiveAndShowMissionCompleted(mission: block.mission)
             }
-        } else if block.nextAppears == NextBlockAppearRule.onNote.rawValue && id >= 0 {
+        } else if (block.nextAppears == NextBlockAppearRule.onNote.rawValue || (block.nextAppears == NextBlockAppearRule.onEmotion.rawValue && hasEmotion)) && id >= 0 {
             if block.mission.archivedAt == nil && block.unlockNextBlock() {
                 showStepsAdded()
             }
-        } else if block.nextAppears == NextBlockAppearRule.onNoteRespectPeriod.rawValue && id >= 0 && block.mission.archivedAt == nil, let recommendedAt = block.recommendedAt {
+        } else if (block.nextAppears == NextBlockAppearRule.onNoteRespectPeriod.rawValue || (block.nextAppears == NextBlockAppearRule.onEmotionRespectPeriod.rawValue && hasEmotion)) && id >= 0 && block.mission.archivedAt == nil, let recommendedAt = block.recommendedAt {
             let daysBetween = Calendar.current.dateComponents([.minute], from: recommendedAt, to: Date()).minute!
             if daysBetween >= Int(block.periodDays) {
                 print("Try to unlock next block")
@@ -704,6 +759,20 @@ extension MissionStep {
                     block.checkPeriod = true
                     block.scheduleAppearNotification()
                 }
+            }
+        }
+    }
+    
+    func onNoteEdited(from vc: UIViewController?) {
+        if block.nextAppears == NextBlockAppearRule.onDoneWithPreview.rawValue && !block.locked {
+            if let nextStep = block.checkAutoImplementAfterNoteCreated() {
+                vc?.showStepImplemented(nextStep: nextStep)
+            } else if block.locked {
+                vc?.archiveAndShowMissionCompleted(mission: block.mission)
+            }
+        } else if block.nextAppears == NextBlockAppearRule.onEmotion.rawValue && id >= 0 {
+            if block.mission.archivedAt == nil && block.unlockNextBlock() {
+                showStepsAdded()
             }
         }
     }

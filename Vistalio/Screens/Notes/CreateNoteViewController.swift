@@ -291,7 +291,11 @@ class CreateNoteViewController: UIViewController {
         note.step?.block.mission.checkEmotionsToOpenSpecialSteps()
         
         NotificationCenter.default.post(name: .noteUpdated, object: note)
-        self.dismiss(animated: true)
+        
+        let presenting = presentingViewController
+        self.dismiss(animated: true) {
+            note.step?.onNoteEdited(from: presenting)
+        }
     }
     
     private func showMediaMenu(sender: Any) {
