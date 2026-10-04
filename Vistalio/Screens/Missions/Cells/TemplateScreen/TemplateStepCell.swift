@@ -12,17 +12,17 @@ class TemplateStepCell: UICollectionViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
     
+    private var step: TemplateStep!
+    
     var onStepTapped: (() -> ())?
     
-    var step: TemplateStep! {
-        didSet {
-            nameLabel.text = step.name
-            if let description = step.description {
-                descriptionLabel.text = (step.expanded ?? false) ? description : step.shortDescription
-                descriptionLabel.isHidden = false
-            } else {
-                descriptionLabel.isHidden = true
-            }
+    func setStep(_ step: TemplateStep, mission: MissionContents) {
+        nameLabel.text = step.getFullName(mission: mission)
+        if let description = step.description {
+            descriptionLabel.text = (step.expanded ?? false) ? description : step.shortDescription
+            descriptionLabel.isHidden = false
+        } else {
+            descriptionLabel.isHidden = true
         }
     }
     

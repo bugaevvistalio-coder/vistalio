@@ -275,5 +275,6 @@
             "title": "Hello there! 👀",
             "body": "Просто проверяю, всё ли у тебя в порядке ❤️. Ты всегда можешь продолжить English Joy Club или начать снова"
         }
-    ]
+    ],
+    "autoAddFirstBlock": true
 }

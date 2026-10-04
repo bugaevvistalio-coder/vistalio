@@ -9,11 +9,7 @@ import UIKit
 
 class CalendarView: UIView {
     
-    var selectedDate: Date? {
-        didSet {
-            print("Set selected date")
-        }
-    }
+    var selectedDate: Date?
     var onDateSelected: ((Date) -> ())?
     
     @IBOutlet private weak var monthLabel: UILabel!
@@ -37,7 +33,6 @@ class CalendarView: UIView {
     private var months = [Date]()
     private var monthIndex = 0 {
         didSet {
-            print("Display month name month index")
             displayMonthName(index: monthIndex)
             if monthIndex == 0 {
                 previousMonthButton.isEnabled = false

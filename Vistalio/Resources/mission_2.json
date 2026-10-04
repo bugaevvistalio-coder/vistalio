@@ -169,5 +169,8 @@
             "nextAppears": "onDoneWithPreview",
             "doneCriteria": ["note"]
         }
-    ]
+    ],
+    "showCompleted": true,
+    "canCreateSteps": false,
+    "skipRecommend": true
 }

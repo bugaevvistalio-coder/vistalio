@@ -34,7 +34,7 @@ class NotificationCell: UITableViewCell {
             } else if notification.date!.isSameDay(Date().addingTimeInterval(-24 * 60 * 60)) {
                 df.dateFormat = "d MMM"
                 timeLabel.text = "Вчера\n\(df.string(from: notification.date!))"
-            } else if notification.date!.isSameDay(Date().addingTimeInterval(-24 * 60 * 60)) {
+            } else {
                 df.dateFormat = "d MMM\nyyyy"
                 timeLabel.text = df.string(from: notification.date!)
             }

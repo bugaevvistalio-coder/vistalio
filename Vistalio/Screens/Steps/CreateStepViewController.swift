@@ -151,7 +151,7 @@ class CreateStepViewController: UIViewController {
     private func displayStep() {
         if let step = step {
             titleLabel.text = "Изменить шаг"
-            nameTextView.text = step.name
+            nameTextView.text = step.fullName
             descriptionTextView.text = step.text
             frequencyControl.checkedIndex = Int(step.frequency)
             updateDateFields()
@@ -324,6 +324,7 @@ class CreateStepViewController: UIViewController {
             dismiss(animated: true) { [weak self] in
                 self?.onStepSaved?(step)
             }
+            NotificationCenter.default.post(name: .stepUpdated, object: nil)
         }
     }
     

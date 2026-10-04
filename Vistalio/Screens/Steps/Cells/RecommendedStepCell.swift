@@ -34,7 +34,7 @@ class RecommendedStepCell: UITableViewCell {
     
     var step: MissionStep! {
         didSet {
-            nameLabel.text = step.name
+            nameLabel.text = step.fullName
             
             descriptionLabel.text = step.expanded ? step.text : step.shortText
             descriptionLabel.numberOfLines = step.expanded ? 0 : 2

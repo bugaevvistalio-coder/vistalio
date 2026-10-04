@@ -78,7 +78,7 @@ public class Mission: NSManagedObject {
     }
     
     @discardableResult
-    class func create(context: NSManagedObjectContext, template: MissionTemplate, blocks: [TemplateBlock], reminders: [TemplateReminder]?) -> Mission? {
+    class func create(context: NSManagedObjectContext, template: MissionTemplate, contents: MissionContents) -> Mission? {
         guard let entityDescription = NSEntityDescription.entity(forEntityName: "Mission", in: context) else { return nil }
         
         let mission =  Mission(entity: entityDescription, insertInto: context)
@@ -88,15 +88,16 @@ public class Mission: NSManagedObject {
         mission.creationDate = Date()
         mission.updateDate = mission.creationDate
         mission.templateId = template.id
-        mission.showCompleted = template.showCompleted ?? false
-        mission.canCreateSteps = template.canCreateSteps ?? true
-        mission.skipRecommend = template.skipRecommend ?? false
+        mission.showCompleted = contents.showCompleted ?? false
+        mission.canCreateSteps = contents.canCreateSteps ?? true
+        mission.skipRecommend = contents.skipRecommend ?? false
         mission.reminderNotificationRequestId = UUID().uuidString
+        mission.emotionReminderNotificationRequestId = UUID().uuidString
+        mission.reminderDays = Int16(contents.reminderDays ?? 2)
         
         var stepIndex = 0
-        var noteIndex = 0
         
-        for (i, b) in blocks.enumerated() {
+        for (i, b) in contents.blocks.enumerated() {
             if let blockEntity = NSEntityDescription.entity(forEntityName: "StepsBlock", in: context) {
                 let block = StepsBlock(entity: blockEntity, insertInto: context)
                 block.id = i+1
@@ -113,62 +114,51 @@ public class Mission: NSManagedObject {
                 block.emotionGroup = b.emotionGroup
                 block.emotionsCountToOpenBlock = Int16(b.emotionsCountToOpenBlock ?? 0)
                 block.isSpecialBlock = b.isSpecialBlock ?? false
+                block.nextBlockHint = b.nextBlockHint
+                block.stepDayStartPoint = b.stepDayStartPoint?.rawValue
                 
                 if i == 0 {
                     block.unlock()
                 }
                 
+                let now = Date().startOfDay
+                let calendar = Calendar.current
+                
                 for s in b.steps {
-                    if let stepEntity = NSEntityDescription.entity(forEntityName: "MissionStep", in: context) {
-                        stepIndex += 1
-                        
-                        let step = MissionStep(entity: stepEntity, insertInto: context)
-                        step.id = stepIndex
-                        step.name = s.name
-                        step.text = s.description
-                        step.editable = s.editable ?? true
-                        step.noteTitle = s.noteTitle
-                        step.frequency = s.frequency?.rawValue ?? 0
-                        step.block = block
-                        
-                        if (mission.skipRecommend || template.autoAddFirstBlock == true) && i == 0 {
-                            step.addedDate = Date()
-                            step.startDate = step.addedDate!.toDateString
-                            step.sortOrder = Int32(stepIndex)
-                        }
-                        
-                        if let notes = s.notes {
-                            for n in notes {
-                                if let noteEntity = NSEntityDescription.entity(forEntityName: "MissionNote", in: context) {
-                                    noteIndex += 1
-                                    
-                                    let note = MissionNote(entity: noteEntity, insertInto: context)
-                                    note.date = Date()
-                                    note.name = n.name
-                                    note.text = n.description
-                                    note.audio = n.audio
-                                    note.step = step
-                                    
-                                    if let images = n.images {
-                                        for ni in images {
-                                            if let imageEntity = NSEntityDescription.entity(forEntityName: "MissionNoteImage", in: context) {
-                                                let image = MissionNoteImage(entity: imageEntity, insertInto: context)
-                                                image.date = Date()
-                                                image.path = ni
-                                                image.note = note
-                                            }
-                                        }
-                                    }
-                                }
+                    var steps = [MissionStep]()
+                    if let days = s.days {
+                        for d in days {
+                            let date = calendar.date(byAdding: .day, value: d, to: now)!
+                            stepIndex += 1
+                            if let step = MissionStep.create(context: context, template: s, id: stepIndex, block: block, mission: mission, startDate: date) {
+                                steps.append(step)
                             }
+                        }
+                    } else {
+                        stepIndex += 1
+                        if let step = MissionStep.create(context: context, template: s, id: stepIndex, block: block, mission: mission) {
+                            steps.append(step)
+                        }
+                    }
+                    
+                    if (contents.skipRecommend == true || contents.autoAddFirstBlock == true) && i == 0 {
+                        for step in steps {
+                            step.addedDate = Date()
+                            if step.startDate == nil {
+                                step.startDate = step.addedDate!.toDateString
+                            }
+                            step.sortOrder = Int32(step.id)
                         }
                     }
                 }
             }
         }
         
-        for r in (reminders ?? []) {
-            Reminder.create(context: context, templateReminder: r, mission: mission)
+        for r in (contents.reminderNotifications ?? []) {
+            Reminder.create(context: context, templateReminder: r, mission: mission, isEmotionReminder: false)
+        }
+        for r in (contents.emotionNotifications ?? []) {
+            Reminder.create(context: context, templateReminder: r, mission: mission, isEmotionReminder: true)
         }
         
         return mission
@@ -188,16 +178,27 @@ public class Mission: NSManagedObject {
     }
     
     var addedStepsSorted: [MissionStep] {
-        return addedSteps.sorted {
-            if $0.sortOrder == 0 && $1.sortOrder == 0 {
-                return $0.id > $1.id
+        let steps = addedSteps
+        steps.forEach {
+            $0.isImplemented = $0.isImplementedForDate($0.lastDate)
+        }
+        return steps.sorted {
+            if $0.isImplemented != $1.isImplemented {
+                return $1.isImplemented
             }
-            return $0.sortOrder > $1.sortOrder
+            if $0.sortOrder == 0 && $1.sortOrder == 0 {
+                return $0.id < $1.id
+            }
+            return $0.sortOrder < $1.sortOrder
         }
     }
     
     var maxSortOrder: Int32 {
-        return (addedSteps.max(by: { $0.sortOrder < $1.sortOrder })?.sortOrder ?? 0)
+        return (addedSteps.filter { $0.id >= 0 }.max(by: { $0.sortOrder < $1.sortOrder })?.sortOrder ?? 0)
+    }
+    
+    var minSortOrder: Int32 {
+        return min(-1, (addedSteps.min(by: { $0.sortOrder < $1.sortOrder })?.sortOrder ?? -1))
     }
     
     var openedBlocks: [StepsBlock] {
@@ -210,7 +211,7 @@ public class Mission: NSManagedObject {
             CoreDataStack.shared.performAndWait { context in
                 step = MissionStep.create(context: context, mission: self, name: "Шаг для общих заметок", text: "Заметки, не привязанные к конкретному шагу(-ам).", frequency: .once, startDate: Date(), endDate: nil)
                 step?.id = -1
-                step?.sortOrder = -1
+                step?.sortOrder = Int32.max
             }
         }
         return step
@@ -265,7 +266,13 @@ public class Mission: NSManagedObject {
     }
     
     var remindersSorted: [Reminder]? {
-        return reminders?.allObjects.map { $0 as! Reminder }.sorted {
+        return reminders?.allObjects.map { $0 as! Reminder }.filter { !$0.isEmotionReminder }.sorted {
+            return $0.id < $1.id
+        }
+    }
+    
+    var emotionRemindersSorted: [Reminder]? {
+        return reminders?.allObjects.map { $0 as! Reminder }.filter { $0.isEmotionReminder }.sorted {
             return $0.id < $1.id
         }
     }
@@ -282,29 +289,67 @@ public class Mission: NSManagedObject {
         return blocks?.allObjects.map({ $0 as! StepsBlock }).filter { $0.emotionGroup != nil } ?? []
     }
     
+    var lastBlock: StepsBlock? {
+        return allBlocks.filter { $0.recommendedAt != nil }.max { $0.recommendedAt! < $1.recommendedAt! }
+    }
+    
     func checkEmotionsToOpenSpecialSteps() {
         let blocks = emotionBlocks.filter { $0.isSpecialBlock }
         if blocks.isEmpty {
             return
         }
         let notes = self.blocks?.allObjects.flatMap({ ($0 as! StepsBlock).notes }) ?? []
-        let emotions = notes.flatMap({ $0.emotions?.allObjects.map { $0 as! MissionNoteEmotion } ?? [] }).map { MissionEmotion(rawValue:  $0.emotion)! }
+        let emotions = notes.flatMap({ $0.emotions?.allObjects.map { $0 as! MissionNoteEmotion } ?? [] })
         var blocksOpen = false
         
         for b in blocks {
             if b.recommendedAt == nil, let group = b.emotionGroup {
-                let count = emotions.count { $0.group.rawValue == group }
-                if count >= b.emotionsCountToOpenBlock {
+                let groupEmotions = emotions.filter { MissionEmotion(rawValue:  $0.emotion)!.group.rawValue == group }
+                if groupEmotions.count >= b.emotionsCountToOpenBlock {
+                    if b.periodDays > 0 {
+                        let dateSince = Calendar.current.date(byAdding: .minute, value: -Int(b.periodDays), to: Date())!
+                        let emotionsSinceDateCount = groupEmotions.count { $0.date >= dateSince }
+                        if emotionsSinceDateCount < b.emotionsCountToOpenBlock {
+                            continue
+                        }
+                    }
                     blocksOpen = true
                     CoreDataStack.shared.performAndWait { _ in
                         b.recommendedAt = Date()
+                        if skipRecommend {
+                            var sortOrder = maxSortOrder + 1
+                            b.steps?.allObjects.map { $0 as! MissionStep }.forEach {
+                                $0.addedDate = Date()
+                                $0.sortOrder = sortOrder
+                                sortOrder += 1
+                            }
+                        }
                     }
                 }
             }
         }
         if blocksOpen {
-            NotificationCenter.default.post(name: .recommendedStepsUpdated, object: nil)
+            NotificationCenter.default.post(name: skipRecommend ? .stepUpdated : .recommendedStepsUpdated, object: nil)
         }
+    }
+    
+    var lastEmotionDate: Date? {
+        let notes = self.blocks?.allObjects.flatMap({ ($0 as! StepsBlock).notes }) ?? []
+        let emotions = notes.flatMap({ $0.emotions?.allObjects.map { $0 as! MissionNoteEmotion } ?? [] })
+        return emotions.max { $0.date < $1.date }?.date
+    }
+    
+    func findStep(id: Int) -> MissionStep? {
+        let blocks = blocks?.allObjects.map { $0 as! StepsBlock } ?? []
+        for b in blocks {
+            let steps = b.steps?.allObjects.map { $0 as! MissionStep } ?? []
+            for s in steps {
+                if s.id == id {
+                    return s
+                }
+            }
+        }
+        return nil
     }
 }
 
@@ -328,9 +373,13 @@ extension Mission {
     @NSManaged public var canCreateSteps: Bool
     @NSManaged public var skipRecommend: Bool
     @NSManaged public var lastReminderAt: Date?
+    @NSManaged public var lastEmotionReminderAt: Date?
+    @NSManaged public var reminderDays: Int16
     
     @NSManaged public var reminderNotificationId: Int16
+    @NSManaged public var emotionReminderNotificationId: Int16
     @NSManaged public var reminderNotificationRequestId: String?
+    @NSManaged public var emotionReminderNotificationRequestId: String?
     
     @NSManaged public var blocks: NSSet?
     @NSManaged public var notifications: NSSet?

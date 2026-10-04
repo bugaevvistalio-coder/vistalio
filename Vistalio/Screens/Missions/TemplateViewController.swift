@@ -24,8 +24,7 @@ class TemplateViewController: UIViewController {
     
     var template: MissionTemplate!
     
-    private var blocks = [TemplateBlock]()
-    private var reminders: [TemplateReminder]?
+    private var contents: MissionContents?
     private var steps = [TemplateStep]()
     private var numberOfSteps = 0
     
@@ -63,10 +62,9 @@ class TemplateViewController: UIViewController {
                     dateFormatter.dateFormat = "yyyy-MM-dd"
                     decoder.dateDecodingStrategy = .formatted(dateFormatter)
                     
-                    let templateData = try decoder.decode(BlocksList.self, from: data)
+                    let templateData = try decoder.decode(MissionContents.self, from: data)
                     
-                    self.blocks = templateData.blocks
-                    self.reminders = templateData.reminderNotifications
+                    self.contents = templateData
                     let steps = templateData.blocks.flatMap({ $0.steps })
                     self.numberOfSteps = steps.count
                     self.steps = steps.filter { $0.preview == true }
@@ -190,9 +188,13 @@ class TemplateViewController: UIViewController {
     }
     
     private func startMission() {
+        guard let contents = contents else {
+            return
+        }
+        
         var mission: Mission?
         CoreDataStack.shared.performAndWait { [unowned self] context in
-            mission = Mission.create(context: context, template: template, blocks: blocks, reminders: reminders)
+            mission = Mission.create(context: context, template: template, contents: contents)
         }
         NotificationCenter.default.post(name: .missionUpdated, object: nil)
         if let mission = mission {
@@ -226,7 +228,7 @@ extension TemplateViewController: UICollectionViewDataSource, UICollectionViewDe
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.section == 1 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StepCell", for: indexPath) as! TemplateStepCell
-            cell.step = steps[indexPath.row]
+            cell.setStep(steps[indexPath.row], mission: contents!)
             cell.onStepTapped = {
                 collectionView.performBatchUpdates({
                     collectionView.collectionViewLayout.invalidateLayout()

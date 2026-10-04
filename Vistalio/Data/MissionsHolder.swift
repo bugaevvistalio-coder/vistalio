@@ -138,7 +138,7 @@ class MissionsHolder {
     
     func getNotificationMission(notificationId: String) -> Mission? {
         let request = Mission.missionFetchRequest()
-        request.predicate = NSPredicate(format: "reminderNotificationRequestId == %@", notificationId)
+        request.predicate = NSPredicate(format: "reminderNotificationRequestId == %@ OR emotionReminderNotificationRequestId == %@", notificationId, notificationId)
         return (try? CoreDataStack.shared.context.fetch(request))?.first
     }
     
@@ -175,6 +175,7 @@ class MissionsHolder {
     }
     
     func scheduleReminderNotificationOnStepImplemented(mission: Mission, date: Date = Date()) {
+        let mission = CoreDataStack.shared.context.object(with: mission.objectID) as! Mission
         print("Reminder \(mission.reminderNotificationRequestId), \(mission.reminders?.count ?? 0)")
         guard let reminders = mission.remindersSorted, reminders.count > 0, let requestId = mission.reminderNotificationRequestId else {
             return
@@ -192,23 +193,80 @@ class MissionsHolder {
             }
             
             if let reminder = reminder {
-                let calendar = Calendar.current
-                var triggerDate = calendar.date(byAdding: .hour, value: 2, to: date)!
-                if triggerDate < Date() {
-                    triggerDate = Date()
-                    addNotification(title: reminder.title ?? "", body: reminder.body ?? "", notificationId: requestId, userInfo: ["isReminder": true])
+                DispatchQueue.main.async {
+                    self.scheduleNotification(isEmotion: false, mission: mission, startDate: date, reminder: reminder, requestId: requestId)
+                }
+            }
+        }
+    }
+    
+    func scheduleEmotionNotifications(implementedStep: ImplementedStep) {
+        let mission = CoreDataStack.shared.context.object(with: implementedStep.step.block.mission.objectID) as! Mission
+//        let mission = implementedStep.step.block.mission
+        if let reminders = mission.emotionRemindersSorted, !reminders.isEmpty, let requestId = mission.emotionReminderNotificationRequestId {
+            print("Schedule emotion, last reminder at \(mission.lastEmotionReminderAt)")
+            if mission.lastEmotionReminderAt == nil || mission.lastEmotionReminderAt! < Date() {
+                let startDate = mission.lastEmotionDate ?? mission.creationDate!
+                var reminder: Reminder?
+                
+                if mission.lastEmotionReminderAt == nil {
+                    reminder = reminders.first { $0.id == mission.emotionReminderNotificationId } ?? reminders.first!
                 } else {
-                    print("Scheduled at trigger date \(triggerDate)")
-                    let components = calendar.dateComponents([.day, .month, .year, .hour, .minute, .second], from: triggerDate)
-                    let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
-                    addNotification(title: reminder.title ?? "", body: reminder.body ?? "", notificationId: requestId, userInfo: ["isReminder": true], trigger: trigger)
+                    reminder = reminders.first { $0.id > mission.emotionReminderNotificationId } ?? reminders.first!
                 }
                 
-                CoreDataStack.shared.performAndWait { context in
-                    let m = context.object(with: mission.objectID) as! Mission
-                    m.reminderNotificationId = reminder.id
-                    m.lastReminderAt = triggerDate
+                self.scheduleNotification(isEmotion: true, mission: mission, startDate: startDate, reminder: reminder!, requestId: requestId, delay: 30)
+            }
+        }
+    }
+    
+    func rescheduleEmotionNotifications(mission: Mission) {
+        if let lastDate = mission.lastEmotionReminderAt {
+            print("Reschedule emotions, last date is \(lastDate), \(lastDate <= Date())")
+        } else {
+            print("Reschedule emotions, last date is nil")
+        }
+        if let reminders = mission.emotionRemindersSorted, !reminders.isEmpty, let requestId = mission.emotionReminderNotificationRequestId, let lastDate = mission.lastEmotionReminderAt {
+            print("Reschedule will be done")
+            
+            UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+                if requests.first(where: { $0.identifier == mission.emotionReminderNotificationRequestId }) == nil {
+                    let reminder = reminders.first { $0.id > mission.emotionReminderNotificationId } ?? reminders.first!
+                    DispatchQueue.main.async {
+                        self.scheduleNotification(isEmotion: true, mission: mission, startDate: lastDate, reminder: reminder, requestId: requestId)
+                    }
                 }
+            }
+        }
+    }
+    
+    private func scheduleNotification(isEmotion: Bool, mission: Mission, startDate: Date, reminder: Reminder, requestId: String, delay: Double = 0) {
+        let mission = CoreDataStack.shared.context.object(with: mission.objectID) as! Mission
+        let calendar = Calendar.current
+        var triggerDate = calendar.date(byAdding: .hour, value: Int(mission.reminderDays), to: startDate)!
+        
+        if triggerDate < Date() {
+            print("\(Date()) Scheduled with delay \(delay), is emotion \(isEmotion), \(reminder.title ?? ""), \(reminder.body ?? "")")
+            if delay == 0 {
+                triggerDate = Date()
+                addNotification(title: reminder.title ?? "", body: reminder.body ?? "", notificationId: requestId, userInfo: ["isReminder": true])
+            } else {
+                triggerDate = Date().addingTimeInterval(delay)
+                addNotification(title: reminder.title ?? "", body: reminder.body ?? "", notificationId: requestId, userInfo: ["isReminder": true], triggerDate: triggerDate)
+            }
+        } else {
+            print("\(Date()) Scheduled at trigger date \(triggerDate), is emotion \(isEmotion), \(reminder.title ?? ""), \(reminder.body ?? "")")
+            addNotification(title: reminder.title ?? "", body: reminder.body ?? "", notificationId: requestId, userInfo: ["isReminder": true], triggerDate: triggerDate)
+        }
+        
+        CoreDataStack.shared.performAndWait { context in
+            if isEmotion {
+                mission.emotionReminderNotificationId = reminder.id
+                mission.lastEmotionReminderAt = triggerDate
+                print("Schedule saved emotion reminder at \(triggerDate)")
+            } else {
+                mission.reminderNotificationId = reminder.id
+                mission.lastReminderAt = triggerDate
             }
         }
     }
@@ -216,15 +274,30 @@ class MissionsHolder {
     func scheduleReminders() {
         
         let missionsRequest = Mission.missionFetchRequest()
-        missionsRequest.predicate = NSPredicate(format: "lastReminderAt != nil AND archivedAt == nil")
+        missionsRequest.predicate = NSPredicate(format: "(lastReminderAt != nil OR lastEmotionReminderAt != nil) AND archivedAt == nil")
         let missions = (try? CoreDataStack.shared.mainContext.fetch(missionsRequest)) ?? []
 
         print("Scheduled? Missions count \(missions.count)")
         let now = Date()
         
         missions.forEach {
-            if $0.lastReminderAt! < now {
+            if let lastReminderAt = $0.lastReminderAt, lastReminderAt < now {
                 scheduleReminderNotificationOnStepImplemented(mission: $0, date: $0.lastReminderAt!)
+                removeEmotionNotification(mission: $0)
+            } else if let lastReminderAt = $0.lastEmotionReminderAt, lastReminderAt < now {
+                rescheduleEmotionNotifications(mission: $0)
+            }
+        }
+    }
+    
+    func removeEmotionNotification(mission: Mission) {
+        let m = CoreDataStack.shared.context.object(with: mission.objectID) as! Mission
+        if let requestId = m.emotionReminderNotificationRequestId, m.lastEmotionReminderAt != nil {
+            removeScheduledNotifications([requestId])
+            CoreDataStack.shared.performAndWait { context in
+//                let m = context.object(with: mission.objectID) as! Mission
+                m.lastEmotionReminderAt = nil
+                print("Schedule cleared emotion reminder")
             }
         }
     }

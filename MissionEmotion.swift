@@ -38,7 +38,7 @@ enum MissionEmotion: String {
         case .nostalgia:
             return ("Ностальгия", .nostalgia)
         case .recognition:
-            return ("Признание", .recognition)
+            return ("Благодарность", .recognition)
         case .passion:
             return ("Азарт", .passion)
         case .interest:

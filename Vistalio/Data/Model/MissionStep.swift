@@ -67,6 +67,8 @@ extension StepsBlock {
     @NSManaged public var emotionGroup: String?
     @NSManaged public var emotionsCountToOpenBlock: Int16
     @NSManaged public var isSpecialBlock: Bool
+    @NSManaged public var nextBlockHint: String?
+    @NSManaged public var stepDayStartPoint: String?
     
     @NSManaged public var nextBlockNotificationTitle: String?
     @NSManaged public var nextBlockNotificationBody: String?
@@ -137,7 +139,7 @@ extension StepsBlock {
     
     @discardableResult
     func unlockNextBlock(date: Date? = nil) -> Bool {
-        let isLastBlock = mission.blocks?.allObjects.map { $0 as! StepsBlock }.filter { $0.recommendedAt != nil }.max { $0.recommendedAt! < $1.recommendedAt! }?.recommendedAt == recommendedAt
+        let isLastBlock = mission.lastBlock?.recommendedAt == recommendedAt
         let isEmotionBlock = (nextAppears == NextBlockAppearRule.onEmotion.rawValue || nextAppears == NextBlockAppearRule.onEmotionRespectPeriod.rawValue)
         if !isLastBlock {
             return false
@@ -154,7 +156,11 @@ extension StepsBlock {
             AppNotification.create(context: context, title: nextBlockNotificationTitle ?? mission.name ?? "", text: nextBlockNotificationBody ?? "Открылись новые шаги", isRead: false, mission: mission, type: .newSteps)
         }
         DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .recommendedStepsUpdated, object: nil)
+            if self.mission.skipRecommend {
+                NotificationCenter.default.post(name: .stepUpdated, object: nil)
+            } else {
+                NotificationCenter.default.post(name: .recommendedStepsUpdated, object: nil)
+            }
             NotificationCenter.default.post(name: .notificationsUpdated, object: nil)
         }
         return true
@@ -162,6 +168,24 @@ extension StepsBlock {
     
     func unlock(date: Date? = nil) {
         recommendedAt = date ?? Date()
+        if mission.skipRecommend {
+            var sortOrder = mission.maxSortOrder + 1
+            steps?.allObjects.map { $0 as! MissionStep }.forEach {
+                $0.addedDate = Date()
+                $0.sortOrder = sortOrder
+                sortOrder += 1
+            }
+        }
+        if stepDayStartPoint == StepDayStartPoint.blockOpened.rawValue {
+            let calendar = Calendar.current
+            let missionCreated = mission.creationDate!.startOfDay
+            let recommendedAt = recommendedAt!.startOfDay
+            steps?.allObjects.map { $0 as! MissionStep }.forEach {
+                let startDate = $0.startDate?.toDay ?? Date()
+                let days = calendar.dateComponents([.day], from: missionCreated, to: startDate).day!
+                $0.startDate = calendar.date(byAdding: .day, value: days, to: recommendedAt)!.toDateString
+            }
+        }
         if nextAppears == NextBlockAppearRule.respectPeriod.rawValue {
             let nextBlockDate = Calendar.current.date(byAdding: .minute, value: Int(periodDays), to: recommendedAt!)!
             if nextBlockDate <= Date() {
@@ -322,9 +346,7 @@ extension StepsBlock {
         let date = calendar.date(byAdding: .minute, value: Int(periodDays), to: recommendedAt)!
         let userInfo: [AnyHashable: Any] = ["fireDate": date]
 
-        let components = calendar.dateComponents([.day, .month, .year, .hour, .minute, .second], from: date)
-        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
-        addNotification(title: nextBlockNotificationTitle ?? mission.name ?? "", body: nextBlockNotificationBody ?? "Открылись новые шаги", notificationId: notificationId, userInfo: userInfo, trigger: trigger)
+        addNotification(title: nextBlockNotificationTitle ?? mission.name ?? "", body: nextBlockNotificationBody ?? "Открылись новые шаги", notificationId: notificationId, userInfo: userInfo, triggerDate: date)
         
         CoreDataStack.shared.performAndWait { context in
             self.notificationId = notificationId
@@ -352,7 +374,8 @@ extension StepsBlock {
 public class MissionStep: NSManagedObject {
     
     var expanded = false
-    
+    var isImplemented = false
+    var savedLastDate: Date?
 }
 
 extension MissionStep {
@@ -372,6 +395,7 @@ extension MissionStep {
     @NSManaged public var startDate: String?
     @NSManaged public var endDate: String?
     @NSManaged public var frequency: Int16
+    @NSManaged public var time: String?
     
     @NSManaged public var noteTitle: String?
     
@@ -392,15 +416,39 @@ extension MissionStep {
         return id >= 0 && block.mission.category != MissionCategory.notes.rawValue
     }
     
+    var fullName: String {
+        if let time = time {
+            if time.contains(":") {
+                return "\(time) \(name ?? "")"
+            } else {
+                let parts = time.split(separator: "/")
+                if parts.count == 2 {
+                    let minutes = Int(parts[0])!
+                    let stepId = Int(parts[1])!
+                    if let s = block.mission.findStep(id: stepId), let dependencyTime = s.time {
+                        let df = DateFormatter()
+                        df.locale = Locale(identifier: "en_US_POSIX")
+                        df.dateFormat = "HH:mm"
+                        let date = df.date(from: dependencyTime)!
+                        let resultDate = Calendar.current.date(byAdding: .minute, value: minutes, to: date)!
+                        let resultTime = df.string(from: resultDate)
+                        return "\(resultTime) \(name ?? "")"
+                    }
+                }
+            }
+        }
+        return name ?? ""
+    }
+    
     @discardableResult
     class func create(context: NSManagedObjectContext, mission: Mission, name: String, text: String?, frequency: StepFrequency, startDate: Date, endDate: Date?) -> MissionStep? {
         guard let entityDescription = NSEntityDescription.entity(forEntityName: "MissionStep", in: context) else { return nil }
         
-        let blocks = mission.blocks?.allObjects.map { $0 as! StepsBlock } ?? []
-        let lastBlock = blocks.filter { $0.recommendedAt != nil }.max { $0.recommendedAt! < $1.recommendedAt! }
-        guard let block = lastBlock ?? blocks.first(where: { $0.id == -1 }) ?? StepsBlock.create(context: context, mission: mission) else {
+        guard let block = mission.lastBlock ?? mission.allBlocks.first(where: { $0.id == -1 }) ?? StepsBlock.create(context: context, mission: mission) else {
             return nil
         }
+        
+        print("Add to block \(block.id)")
         
         let step =  MissionStep(entity: entityDescription, insertInto: context)
         step.block = block
@@ -410,6 +458,49 @@ extension MissionStep {
         step.frequency = frequency.rawValue
         step.startDate = startDate.toDateString
         step.endDate = endDate?.toDateString
+        step.editable = true
+        return step
+    }
+    
+    @discardableResult
+    class func create(context: NSManagedObjectContext, template: TemplateStep, id: Int, block: StepsBlock, mission: Mission, startDate: Date? = nil) -> MissionStep? {
+        guard let entityDescription = NSEntityDescription.entity(forEntityName: "MissionStep", in: context) else { return nil }
+
+        let step = MissionStep(entity: entityDescription, insertInto: context)
+        step.id = id
+        step.name = template.name
+        step.text = template.description
+        step.editable = template.editable ?? true
+        step.noteTitle = template.noteTitle
+        step.frequency = template.frequency?.rawValue ?? 0
+        step.time = template.time
+        step.startDate = startDate?.toDateString
+        step.block = block
+        
+        if let notes = template.notes {
+            for n in notes {
+                if let noteEntity = NSEntityDescription.entity(forEntityName: "MissionNote", in: context) {
+                    let note = MissionNote(entity: noteEntity, insertInto: context)
+                    note.date = Date()
+                    note.name = n.name
+                    note.text = n.description
+                    note.audio = n.audio
+                    note.step = step
+                    
+                    if let images = n.images {
+                        for ni in images {
+                            if let imageEntity = NSEntityDescription.entity(forEntityName: "MissionNoteImage", in: context) {
+                                let image = MissionNoteImage(entity: imageEntity, insertInto: context)
+                                image.date = Date()
+                                image.path = ni
+                                image.note = note
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
         return step
     }
     
@@ -760,6 +851,13 @@ extension MissionStep {
                     block.scheduleAppearNotification()
                 }
             }
+        } else if let lastBlock = block.mission.lastBlock, lastBlock.nextAppears == NextBlockAppearRule.onAllStepsDone.rawValue && lastBlock.doneCriteriaArray.contains(.photo) {
+            checkAllStepsDone()
+        }
+        
+        if hasEmotion {
+            print("Schedule - emotion given")
+            MissionsHolder.shared.removeEmotionNotification(mission: block.mission)
         }
     }
     
@@ -774,6 +872,41 @@ extension MissionStep {
             if block.mission.archivedAt == nil && block.unlockNextBlock() {
                 showStepsAdded()
             }
+        } else if let lastBlock = block.mission.lastBlock, lastBlock.nextAppears == NextBlockAppearRule.onAllStepsDone.rawValue && lastBlock.doneCriteriaArray.contains(.photo) {
+            checkAllStepsDone()
+        }
+    }
+    
+    func onImplemented(implementedStep: ImplementedStep) {
+        print("Schedule on implemented")
+        MissionsHolder.shared.scheduleReminderNotificationOnStepImplemented(mission: block.mission)
+        MissionsHolder.shared.scheduleEmotionNotifications(implementedStep: implementedStep)
+        if let lastBlock = block.mission.lastBlock, lastBlock.nextAppears == NextBlockAppearRule.onAllStepsDone.rawValue {
+            checkAllStepsDone()
+        }
+    }
+    
+    private func checkAllStepsDone() {
+        guard let lastBlock = block.mission.lastBlock else {
+            return
+        }
+        let checkPhoto = lastBlock.doneCriteriaArray.contains(.photo)
+        let blocks = block.mission.openedBlocks
+        let steps = blocks.flatMap { $0.steps?.allObjects.map { $0 as! MissionStep } ?? [] }.filter { $0.id > 0 }
+        for s in steps {
+            if s.implementedSteps?.allObjects.isEmpty ?? true {
+                return
+            }
+            if checkPhoto {
+                let notes = s.notes?.allObjects.map { $0 as! MissionNote } ?? []
+                let photos = notes.flatMap { $0.images?.allObjects.map { $0 as! MissionNoteImage } ?? [] }.filter { $0.type == "image" }
+                if photos.isEmpty {
+                    return
+                }
+            }
+        }
+        if lastBlock.unlockNextBlock() {
+            showStepsAdded()
         }
     }
     
@@ -827,7 +960,7 @@ extension MissionStep {
     
     func moveUp() {
         CoreDataStack.shared.performAndWait { [unowned self] context in
-            sortOrder = (block.mission.addedSteps.max(by: { $0.sortOrder < $1.sortOrder })?.sortOrder ?? 0) + 1
+            sortOrder = block.mission.minSortOrder - 1
         }
     }
     

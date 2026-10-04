@@ -98,6 +98,9 @@ extension UIViewController {
                     if let reminderId = mission.reminderNotificationRequestId {
                         notificationsToRemove.append(reminderId)
                     }
+                    if let reminderId = mission.emotionReminderNotificationRequestId {
+                        notificationsToRemove.append(reminderId)
+                    }
                     removeScheduledNotifications(notificationsToRemove)
                     NotificationCenter.default.post(name: .notificationsUpdated, object: nil)
                 }
@@ -328,10 +331,10 @@ extension UIViewController {
             if let implemented = implementedStep {
                 context.delete(implemented)
             } else {
-                ImplementedStep.create(context: context, step: step, date: date)
+                let implemented = ImplementedStep.create(context: context, step: step, date: date)!
                 checked = true
                 if step.block.mission.templateId > 0 {
-                    MissionsHolder.shared.scheduleReminderNotificationOnStepImplemented(mission: step.block.mission)
+                    step.onImplemented(implementedStep: implemented)
                 }
             }
         }

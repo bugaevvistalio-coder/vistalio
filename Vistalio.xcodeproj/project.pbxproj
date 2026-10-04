@@ -1136,7 +1136,7 @@
 				CODE_SIGN_ENTITLEMENTS = Vistalio/Vistalio.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 27;
+				CURRENT_PROJECT_VERSION = 29;
 				DEVELOPMENT_TEAM = K3TB65CDP6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Vistalio/Info.plist;
@@ -1173,7 +1173,7 @@
 				CODE_SIGN_ENTITLEMENTS = Vistalio/Vistalio.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 27;
+				CURRENT_PROJECT_VERSION = 29;
 				DEVELOPMENT_TEAM = K3TB65CDP6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Vistalio/Info.plist;

@@ -161,6 +161,7 @@ class AddNoteView: UIView {
             let text = bodyTextView.text.trim()
             CoreDataStack.shared.performAndWait { [unowned self] context in
                 if let note = MissionNote.create(context: context, step: step, date: self.date ?? Date(), name: !name.isEmpty ? name : nil, text: !text.isEmpty ? text : nil, emotions: self.emotions, media: self.mediaHolder.media) {
+                    
                     DispatchQueue.main.async { [unowned self] in
                         self.clear()
                         self.onNoteAdded?(note)

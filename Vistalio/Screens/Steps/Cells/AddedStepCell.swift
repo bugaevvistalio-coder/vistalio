@@ -50,7 +50,7 @@ class AddedStepCell: UITableViewCell {
     
     var step: MissionStep! {
         didSet {
-            nameLabel.text = step.name
+            nameLabel.text = step.fullName
             
             if !(roundedView.gestureRecognizers?.contains(longGestureRecognizer) ?? false) {
                 roundedView.addGestureRecognizer(longGestureRecognizer)

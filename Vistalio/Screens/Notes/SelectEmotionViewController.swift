@@ -83,25 +83,52 @@ class SelectEmotionViewController: UIViewController {
     private func buildAutoEmotions() {
         panelEmotions.removeAll()
         
-        let request = SelectedEmotion.selectedEmotionFetchRequest()
-        request.predicate = NSPredicate(format: "auto == YES")
-        var selectedEmotions = [SelectedEmotion]()
+        let request = MissionNoteEmotion.noteEmotionFetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+        var emotions = [MissionEmotion]()
         do {
-            selectedEmotions = try CoreDataStack.shared.mainContext.fetch(request)
+            let noteEmotions = try CoreDataStack.shared.mainContext.fetch(request)
+            let groupedByEmotion = Dictionary(grouping: noteEmotions, by: { $0.emotion })
+            let latestRecords = groupedByEmotion.compactMap { emotion, array in
+                return array.max(by: { $0.date < $1.date })
+            }.sorted { $0.date > $1.date }
+            emotions = latestRecords.map { MissionEmotion(rawValue: $0.emotion)! }
         } catch {
             print("Failed to retrive missions and folders")
         }
+        
         for g in EmotionGroup.allCases {
             var groupEmotions = Array(g.emotions.prefix(3))
-            let selected = selectedEmotions.filter { $0.group == g.rawValue }.sorted { $0.date < $1.date }
-            if selected.count > 0 {
-                groupEmotions.removeLast(selected.count)
-                selected.forEach {
-                    groupEmotions.append(MissionEmotion(rawValue: $0.emotion)!)
-                }
+            let selected = emotions.filter { $0.group == g && $0 != groupEmotions[0] }.prefix(2)
+            if selected.count == 2 {
+                groupEmotions.removeLast(2)
+                groupEmotions.append(contentsOf: selected)
+            } else if selected.count == 1 && selected[0] != groupEmotions[1] {
+                groupEmotions[2] = groupEmotions[1]
+                groupEmotions[1] = selected[0]
             }
             panelEmotions.append(contentsOf: groupEmotions)
         }
+        
+//        let request = SelectedEmotion.selectedEmotionFetchRequest()
+//        request.predicate = NSPredicate(format: "auto == YES")
+//        var selectedEmotions = [SelectedEmotion]()
+//        do {
+//            selectedEmotions = try CoreDataStack.shared.mainContext.fetch(request)
+//        } catch {
+//            print("Failed to retrive missions and folders")
+//        }
+//        for g in EmotionGroup.allCases {
+//            var groupEmotions = Array(g.emotions.prefix(3))
+//            let selected = selectedEmotions.filter { $0.group == g.rawValue }.sorted { $0.date < $1.date }
+//            if selected.count > 0 {
+//                groupEmotions.removeLast(selected.count)
+//                selected.forEach {
+//                    groupEmotions.append(MissionEmotion(rawValue: $0.emotion)!)
+//                }
+//            }
+//            panelEmotions.append(contentsOf: groupEmotions)
+//        }
     }
     
     private func buildManualEmotions() {

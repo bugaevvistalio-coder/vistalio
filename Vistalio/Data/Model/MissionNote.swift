@@ -156,7 +156,7 @@ public class MissionNoteEmotion: NSManagedObject {
 
 extension MissionNoteEmotion {
 
-    @nonobjc public class func noteImageFetchRequest() -> NSFetchRequest<MissionNoteEmotion> {
+    @nonobjc public class func noteEmotionFetchRequest() -> NSFetchRequest<MissionNoteEmotion> {
         return NSFetchRequest<MissionNoteEmotion>(entityName: "MissionNoteEmotion")
     }
 

@@ -22,17 +22,19 @@ extension Reminder {
     @NSManaged public var id: Int16
     @NSManaged public var title: String?
     @NSManaged public var body: String?
+    @NSManaged public var isEmotionReminder: Bool
     
     @NSManaged public var mission: Mission
     
     @discardableResult
-    class func create(context: NSManagedObjectContext, templateReminder: TemplateReminder, mission: Mission) -> Reminder? {
+    class func create(context: NSManagedObjectContext, templateReminder: TemplateReminder, mission: Mission, isEmotionReminder: Bool) -> Reminder? {
         guard let entityDescription = NSEntityDescription.entity(forEntityName: "Reminder", in: context) else { return nil }
         
         let reminder =  Reminder(entity: entityDescription, insertInto: context)
         reminder.id = Int16(templateReminder.id)
         reminder.title = templateReminder.title
         reminder.body = templateReminder.body
+        reminder.isEmotionReminder = isEmotionReminder
         reminder.mission = mission
         
         return reminder

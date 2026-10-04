@@ -17,13 +17,13 @@ enum EmotionGroup: String, CaseIterable {
     var emotions: [MissionEmotion] {
         switch self {
         case .joy:
-            return [.joy, .calmness, .hope, .recognition, .passion, .peace, .admiration, .catharsis]
+            return [.joy, .calmness, .hope, .recognition, .passion, .peace, .admiration, .love]
         case .sadness:
-            return [.sadness, .thoughtfulness, .nostalgia, .disappointment, .yearning, .melancholy, .boredom, .shock, .disgust]
+            return [.sadness, .thoughtfulness, .nostalgia, .disappointment, .yearning, .melancholy, .boredom, .disgust, .grief]
         case .fear:
-            return [.fear, .apprehension, .anxiety, .panic, .worry, .despair, .fury, .neutral]
+            return [.fear, .apprehension, .anxiety, .panic, .worry, .despair, .neutral, .shock]
         case .anger:
-            return [.anger, .irritation, .discontent, .insolence, .triumph, .resentment, .interest, .annoyance]
+            return [.anger, .irritation, .discontent, .insolence, .triumph, .resentment, .interest, .annoyance, .fury]
         }
     }
 }
@@ -36,7 +36,7 @@ enum MissionEmotion: String, CaseIterable {
     case passion
     case peace
     case admiration
-    case catharsis
+    case love
     
     case sadness
     case thoughtfulness
@@ -45,8 +45,8 @@ enum MissionEmotion: String, CaseIterable {
     case yearning
     case melancholy
     case boredom
-    case shock
     case disgust
+    case grief
     
     case fear
     case apprehension
@@ -54,8 +54,8 @@ enum MissionEmotion: String, CaseIterable {
     case panic
     case worry
     case despair
-    case fury
     case neutral
+    case shock
     
     case anger
     case irritation
@@ -65,6 +65,7 @@ enum MissionEmotion: String, CaseIterable {
     case resentment
     case interest
     case annoyance
+    case fury
     
     var nameAndImage: (String, UIImage) {
         switch self {
@@ -75,15 +76,15 @@ enum MissionEmotion: String, CaseIterable {
         case .hope:
             return ("Надежда", .hope)
         case .recognition:
-            return ("Признание", .recognition)
+            return ("Благодарность", .recognition)
         case .passion:
             return ("Азарт", .passion)
         case .peace:
             return ("Умиротворение", .peace)
         case .admiration:
             return ("Восхищение", .admiration)
-        case .catharsis:
-            return ("Катарсис", .catharsis)
+        case .love:
+            return ("Любовь", .love)
             
         case .sadness:
             return ("Грусть", .sadness)
@@ -99,10 +100,10 @@ enum MissionEmotion: String, CaseIterable {
             return ("Меланхолия", .melancholy)
         case .boredom:
             return ("Скука", .boredom)
-        case .shock:
-            return("Шок", .shock)
         case .disgust:
             return ("Брезгливость", .disgust)
+        case .grief:
+            return ("Горе", .grief)
             
         case .fear:
             return ("Страх", .fear)
@@ -116,10 +117,10 @@ enum MissionEmotion: String, CaseIterable {
             return ("Волнение", .worry)
         case .despair:
             return ("Отчаяние", .despair)
-        case .fury:
-            return ("Гнев", .fury)
         case .neutral:
             return ("Нейтрально", .neutral)
+        case .shock:
+            return("Шок", .shock)
             
         case .anger:
             return ("Злость", .anger)
@@ -137,6 +138,8 @@ enum MissionEmotion: String, CaseIterable {
             return ("Интерес", .interest)
         case .annoyance:
             return ("Досада", .annoyance)
+        case .fury:
+            return ("Гнев", .fury)
         }
     }
     

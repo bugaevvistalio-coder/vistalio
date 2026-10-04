@@ -26,10 +26,14 @@
         <attribute name="canCreateSteps" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="category" optional="YES" attributeType="String"/>
         <attribute name="creationDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="emotionReminderNotificationId" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="emotionReminderNotificationRequestId" optional="YES" attributeType="String"/>
         <attribute name="finishedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="lastEmotionReminderAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="lastReminderAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="photoPath" optional="YES" attributeType="String"/>
+        <attribute name="reminderDays" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="reminderNotificationId" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="reminderNotificationRequestId" optional="YES" attributeType="String"/>
         <attribute name="showCompleted" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -75,6 +79,7 @@
         <attribute name="sortOrder" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="startDate" optional="YES" attributeType="String"/>
         <attribute name="text" optional="YES" attributeType="String"/>
+        <attribute name="time" optional="YES" attributeType="String"/>
         <relationship name="block" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StepsBlock" inverseName="steps" inverseEntity="StepsBlock"/>
         <relationship name="implementedSteps" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ImplementedStep" inverseName="step" inverseEntity="ImplementedStep"/>
         <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MissionNote" inverseName="step" inverseEntity="MissionNote"/>
@@ -84,6 +89,7 @@
     <entity name="Reminder" representedClassName="Reminder" syncable="YES">
         <attribute name="body" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isEmotionReminder" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <relationship name="mission" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Mission" inverseName="reminders" inverseEntity="Mission"/>
     </entity>
@@ -107,6 +113,7 @@
         <attribute name="isSpecialBlock" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="locked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="nextAppears" optional="YES" attributeType="String"/>
+        <attribute name="nextBlockHint" optional="YES" attributeType="String"/>
         <attribute name="nextBlockNotificationBody" optional="YES" attributeType="String"/>
         <attribute name="nextBlockNotificationTitle" optional="YES" attributeType="String"/>
         <attribute name="notificationId" optional="YES" attributeType="String"/>
@@ -114,6 +121,7 @@
         <attribute name="photoMin" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="recommendedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="searchText" optional="YES" attributeType="String"/>
+        <attribute name="stepDayStartPoint" optional="YES" attributeType="String"/>
         <attribute name="textPlaceholder" optional="YES" attributeType="String"/>
         <relationship name="mission" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Mission" inverseName="blocks" inverseEntity="Mission"/>
         <relationship name="movedSteps" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MissionStep" inverseName="originalBlock" inverseEntity="MissionStep"/>

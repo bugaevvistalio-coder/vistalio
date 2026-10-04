@@ -236,8 +236,9 @@ class StepViewController: UIViewController {
     }
     
     private func displayStep() {
-        nameTextView.text = step.name
-        smallHeaderNameLabel.text = step.name
+        let stepName = step.fullName
+        nameTextView.text = stepName
+        smallHeaderNameLabel.text = stepName
         if let text = step.text, !text.isEmpty {
             descriptionTextView.text = text
             descriptionTextView.isHidden = false

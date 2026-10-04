@@ -22,15 +22,30 @@ class MissionTemplate: Codable {
     let maxHours: Int?
     let minAge: Int?
     var hiddenAt: Date?
+}
+
+class MissionContents: Codable {
+    let blocks: [TemplateBlock]
+    let reminderNotifications: [TemplateReminder]?
+    let emotionNotifications: [TemplateReminder]?
     let showCompleted: Bool?
     let canCreateSteps: Bool?
     let skipRecommend: Bool?
     let autoAddFirstBlock: Bool?
-}
-
-class BlocksList: Codable {
-    let blocks: [TemplateBlock]
-    let reminderNotifications: [TemplateReminder]?
+    let reminderDays: Int?
+    
+    func findStep(id: Int) -> TemplateStep? {
+        var i = 1
+        for b in blocks {
+            for s in b.steps {
+                if i == id {
+                    return s
+                }
+                i += 1
+            }
+        }
+        return nil
+    }
 }
 
 enum NextBlockAppearRule: String, Codable {
@@ -41,6 +56,12 @@ enum NextBlockAppearRule: String, Codable {
     case respectPeriod
     case onEmotion
     case onEmotionRespectPeriod
+    case onAllStepsDone
+}
+
+enum StepDayStartPoint: String, Codable {
+    case missionCreated
+    case blockOpened
 }
 
 enum BlockDoneCriteria: String, Codable {
@@ -67,6 +88,8 @@ class TemplateBlock: Codable {
     let emotionGroup: String?
     let emotionsCountToOpenBlock: Int?
     let isSpecialBlock: Bool?
+    let nextBlockHint: String?
+    let stepDayStartPoint: StepDayStartPoint?
 }
 
 class TemplateStep: Codable {
@@ -78,9 +101,35 @@ class TemplateStep: Codable {
     let noteTitle: String?
     let notes: [TemplateNote]?
     let frequency: StepFrequency?
+    let days: [Int]?
+    let time: String?
     
     var shortDescription: String? {
         return description?.replacingOccurrences(of: "\n\n", with: " ").replacingOccurrences(of: "\n", with: " ")
+    }
+    
+    func getFullName(mission: MissionContents) -> String {
+        if let time = time {
+            if time.contains(":") {
+                return "\(time) \(name)"
+            } else {
+                let parts = time.split(separator: "/")
+                if parts.count == 2 {
+                    let minutes = Int(parts[0])!
+                    let stepId = Int(parts[1])!
+                    if let s = mission.findStep(id: stepId), let dependencyTime = s.time {
+                        let df = DateFormatter()
+                        df.locale = Locale(identifier: "en_US_POSIX")
+                        df.dateFormat = "HH:mm"
+                        let date = df.date(from: dependencyTime)!
+                        let resultDate = Calendar.current.date(byAdding: .minute, value: minutes, to: date)!
+                        let resultTime = df.string(from: resultDate)
+                        return "\(resultTime) \(name ?? "")"
+                    }
+                }
+            }
+        }
+        return name ?? ""
     }
 }
 

@@ -79,7 +79,7 @@ class MissionViewController: UIViewController {
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
         
         setupAddNoteView()
-        updateSteps()
+        updateSteps(updateLastDate: true)
         updateAddItemViewVisibility()
         
         segmentedControl.tabs = [SegmentedTabData(text: "Шаги", image: .steps), SegmentedTabData(text: "Заметки", image: .notes)]
@@ -222,14 +222,14 @@ class MissionViewController: UIViewController {
         tableView.layoutHeader()
     }
     
-    private func updateSteps() {
+    private func updateSteps(updateLastDate: Bool) {
         if mission.skipRecommend {
             noRecommendedStepsView.isHidden = true
         } else {
             updateRecommendedSteps()
         }
         addedSteps = mission.addedSteps
-        sortAddedSteps()
+        sortAddedSteps(updateLastDate: updateLastDate)
         updateAddAllSteps()
     }
     
@@ -261,8 +261,11 @@ class MissionViewController: UIViewController {
         let needsEmotion = currentBlock?.nextAppears == NextBlockAppearRule.onEmotion.rawValue || currentBlock?.nextAppears == NextBlockAppearRule.onEmotionRespectPeriod.rawValue
         let nextBlock = needsEmotion ? currentBlock?.nextEmotionBlock : currentBlock?.nextBlock
         if nextBlock != nil {
-            if needsNote || needsEmotion {
-                noRecommendedStepsLabel.textColor = .textGrey60
+            noRecommendedStepsLabel.textColor = .textGrey60
+            if let hint = currentBlock?.nextBlockHint {
+                noRecommendedStepsLabel.text = hint
+            } else if needsNote || needsEmotion {
+
                 let emotions = currentBlock?.notes.flatMap { $0.emotions?.allObjects.map { $0 as! MissionNoteEmotion } ?? [] } ?? []
                 
                 if mission.archivedAt != nil {
@@ -275,6 +278,9 @@ class MissionViewController: UIViewController {
                     let date = Calendar.current.date(byAdding: .day, value: Int(currentBlock!.periodDays), to: recommendedAt)!
                     noRecommendedStepsLabel.text = "Новые шаги откроются \(date.formatted3.lowercased())"
                 }
+            } else if currentBlock?.nextAppears == NextBlockAppearRule.respectPeriod.rawValue, let recommendedAt = currentBlock?.recommendedAt {
+                let date = Calendar.current.date(byAdding: .day, value: Int(currentBlock!.periodDays), to: recommendedAt)!
+                noRecommendedStepsLabel.text = "Новые шаги откроются \(date.formatted3.lowercased())"
             } else {
                 noRecommendedStepsView.isHidden = true
             }
@@ -344,7 +350,7 @@ class MissionViewController: UIViewController {
     
     @objc private func onStepUpdated(notification: Notification) {
         addedSteps = mission.addedSteps
-        sortAddedSteps()
+        sortAddedSteps(updateLastDate: true)
         if segmentedControl.selectedIndex == 0 {
             tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .none)
         }
@@ -479,7 +485,7 @@ class MissionViewController: UIViewController {
     }
     
     @IBAction func addAllStepsTapped(_ sender: Any) {
-        var sortOrder = mission.maxSortOrder + 1 + Int32(recommendedSteps.count)
+        var sortOrder = mission.maxSortOrder + 1
         let startDate = Date().toDateString
         CoreDataStack.shared.performAndWait { [unowned self] _ in
             recommendedSteps.forEach {
@@ -487,7 +493,7 @@ class MissionViewController: UIViewController {
                 $0.addedDate = Date()
                 $0.startDate = startDate
                 $0.sortOrder = sortOrder
-                sortOrder -= 1
+                sortOrder += 1
             }
         }
         let visibleCells = tableView.visibleCells
@@ -498,7 +504,7 @@ class MissionViewController: UIViewController {
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak self] in
             if let `self` = self {
-                self.updateSteps()
+                self.updateSteps(updateLastDate: true)
                 self.tableView.reloadSections(IndexSet(arrayLiteral: 0, 2, 3), with: .automatic)
             }
         }
@@ -508,7 +514,7 @@ class MissionViewController: UIViewController {
         let vc = storyboard!.instantiateViewController(identifier: "HiddenStepsVC") as! HiddenStepsViewController
         vc.mission = mission
         vc.onStepHidden = { [unowned self] in
-            updateSteps()
+            updateSteps(updateLastDate: false)
             tableView.reloadData()
         }
         
@@ -537,10 +543,11 @@ class MissionViewController: UIViewController {
     
     private func openCreateStep() {
         openEditStep(mission: mission) { [unowned self] step in
-            addedSteps.insert(step, at: 0)
-            tableView.beginUpdates()
-            tableView.insertRows(at: [IndexPath(row: 0, section: 3)], with: .none)
-            tableView.endUpdates()
+            addedSteps = mission.addedSteps
+            step.savedLastDate = step.lastDate
+            step.isImplemented = step.isImplementedForDate(step.savedLastDate)
+            sortAddedSteps()
+            tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .none)
             (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг добавлен", secondaryText: "К шагу →") { [unowned self] in
                 UIApplication.topViewController()?.openStep(step)
             }
@@ -554,14 +561,14 @@ class MissionViewController: UIViewController {
         var items = [MenuItemData]()
         if step.addedDate != nil {
             let stepIndex = addedSteps.firstIndex(of: step)!
-            if addedSteps.count > 1 && stepIndex > 0 {
+            
+            if addedSteps.count > 1 && stepIndex > 0 && !step.isImplementedForDate(step.lastDate) {
                 items.append(
                     MenuItemData(text: "Вверх списка", image: .arrowUp, type: .normal, action: { [unowned self] in
                         menuUnderlayControl.removeFromSuperview()
                         
-                        CoreDataStack.shared.performAndWait { [unowned self] context in
-                            step.sortOrder = (self.addedSteps.max(by: { $0.sortOrder < $1.sortOrder })?.sortOrder ?? 0) + 1
-                        }
+                        step.moveUp()
+                        
                         let previousRow = addedSteps.firstIndex(of: step)!
                         sortAddedSteps()
                         let newRow = addedSteps.firstIndex(of: step)!
@@ -581,9 +588,13 @@ class MissionViewController: UIViewController {
                     menuUnderlayControl.removeFromSuperview()
                     let row = recommendedSteps.firstIndex(of: step)!
                     openEditStep(mission: mission, step: step) { [unowned self] step in
-                        tableView.beginUpdates()
-                        tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .none)
-                        tableView.endUpdates()
+                        step.savedLastDate = step.lastDate
+                        step.isImplemented = step.isImplementedForDate(step.savedLastDate)
+                        sortAddedSteps()
+                        tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .none)
+//                        tableView.beginUpdates()
+//                        tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .none)
+//                        tableView.endUpdates()
                         (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг изменён")
                     }
                 }),
@@ -604,12 +615,35 @@ class MissionViewController: UIViewController {
         showMenu(items: items, menuUnderlayControl: menuUnderlayControl, anchorRect: anchorRect, image: image, hMargin: 20)
     }
     
-    private func sortAddedSteps() {
-        addedSteps.sort {
-            if $0.sortOrder == 0 && $1.sortOrder == 0 {
-                return $0.id > $1.id
+    private func sortAddedSteps(updateLastDate: Bool = false) {
+        if updateLastDate {
+            addedSteps.forEach {
+                $0.savedLastDate = $0.lastDate
+                $0.isImplemented = $0.isImplementedForDate($0.savedLastDate)
             }
-            return $0.sortOrder > $1.sortOrder
+        }
+        addedSteps.sort {
+            if $0.id == -1 {
+                return false
+            }
+            if $1.id == -1 {
+                return true
+            }
+            if $0.isImplemented != $1.isImplemented {
+                return $1.isImplemented
+            }
+            if $0.sortOrder < 0 || $1.sortOrder < 0 {
+                return $0.sortOrder < $1.sortOrder
+            }
+            let date1 = ($0.savedLastDate ?? Date()).startOfDay
+            let date2 = ($1.savedLastDate ?? Date()).startOfDay
+            if date1 != date2 {
+                return date1 < date2
+            }
+            if $0.sortOrder == 0 && $1.sortOrder == 0 {
+                return $0.id < $1.id
+            }
+            return $0.sortOrder < $1.sortOrder
         }
     }
     
@@ -633,7 +667,7 @@ class MissionViewController: UIViewController {
     
     private func onStepUpdated(_ step: MissionStep) {
         addedSteps = mission.addedSteps
-        sortAddedSteps()
+        sortAddedSteps(updateLastDate: true)
         tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .automatic)
     }
     
@@ -768,11 +802,19 @@ extension MissionViewController: UITableViewDataSource {
         cell.onStepAdded = { [unowned self] step in
             if let index = recommendedSteps.firstIndex(of: step) {
                 recommendedSteps.remove(at: index)
-                addedSteps.insert(step, at: 0)
+                addedSteps = mission.addedSteps
+                step.savedLastDate = step.lastDate
+                step.isImplemented = step.isImplementedForDate(step.savedLastDate)
+                sortAddedSteps()
                 self.tableView.beginUpdates()
                 self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-                self.tableView.insertRows(at: [IndexPath(row: 0, section: 3)], with: .automatic)
+                tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .none)
                 self.tableView.endUpdates()
+                
+                if recommendedSteps.isEmpty {
+                    updateNoRecommendedStepsVisibility()
+                    updateAddAllSteps()
+                }
             }
         }
         cell.onLongGesture = { [unowned self] image, rect in

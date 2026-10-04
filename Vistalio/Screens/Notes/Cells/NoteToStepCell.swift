@@ -22,7 +22,7 @@ class NoteToStepCell: UITableViewCell {
     
     var step: MissionStep! {
         didSet {
-            nameLabel.text = step.name
+            nameLabel.text = step.fullName
         }
     }
     
