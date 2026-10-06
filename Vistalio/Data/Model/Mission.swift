@@ -94,6 +94,9 @@ public class Mission: NSManagedObject {
         mission.reminderNotificationRequestId = UUID().uuidString
         mission.emotionReminderNotificationRequestId = UUID().uuidString
         mission.reminderDays = Int16(contents.reminderDays ?? 2)
+        mission.sortOrderUpTo = Int32(contents.sortOrderUpTo ?? 0)
+        mission.skipSortByImplemented = contents.skipSortByImplemented ?? false
+        mission.dailyNotificationText = contents.dailyNotificationText
         
         var stepIndex = 0
         
@@ -147,7 +150,12 @@ public class Mission: NSManagedObject {
                             if step.startDate == nil {
                                 step.startDate = step.addedDate!.toDateString
                             }
-                            step.sortOrder = Int32(step.id)
+                            if step.sortOrder == 0 {
+                                step.sortOrder = Int32(step.id)
+                            }
+                            if let time = s.getFormattedTime(mission: contents) {
+                                step.scheduleDailyNotifications(time: time)
+                            }
                         }
                     }
                 }
@@ -169,6 +177,24 @@ public class Mission: NSManagedObject {
             FilesHelper().deleteFile(path: photoPath)
             print("Mission cover file deleted")
         }
+        var notifications = [String]()
+        if let id = reminderNotificationRequestId {
+            notifications.append(id)
+        }
+        if let id = emotionReminderNotificationRequestId {
+            notifications.append(id)
+        }
+        addedSteps.forEach {
+            if let id = $0.notificationId {
+                notifications.append(id)
+            }
+        }
+        allBlocks.forEach {
+            if let id = $0.notificationId {
+                notifications.append(id)
+            }
+        }
+        removeScheduledNotifications(notifications)
     }
     
     var addedSteps: [MissionStep] {
@@ -179,11 +205,13 @@ public class Mission: NSManagedObject {
     
     var addedStepsSorted: [MissionStep] {
         let steps = addedSteps
-        steps.forEach {
-            $0.isImplemented = $0.isImplementedForDate($0.lastDate)
+        if !skipSortByImplemented {
+            steps.forEach {
+                $0.isImplemented = $0.isImplementedForDate($0.lastDate)
+            }
         }
         return steps.sorted {
-            if $0.isImplemented != $1.isImplemented {
+            if !skipSortByImplemented && $0.isImplemented != $1.isImplemented {
                 return $1.isImplemented
             }
             if $0.sortOrder == 0 && $1.sortOrder == 0 {
@@ -194,7 +222,8 @@ public class Mission: NSManagedObject {
     }
     
     var maxSortOrder: Int32 {
-        return (addedSteps.filter { $0.id >= 0 }.max(by: { $0.sortOrder < $1.sortOrder })?.sortOrder ?? 0)
+        let maxValue = (sortOrderUpTo > 0 ? Int(sortOrderUpTo) : Int.max)
+        return (addedSteps.filter { $0.id >= 0 && $0.sortOrder <= maxValue }.max(by: { $0.sortOrder < $1.sortOrder })?.sortOrder ?? 0)
     }
     
     var minSortOrder: Int32 {
@@ -247,6 +276,13 @@ public class Mission: NSManagedObject {
         NotificationCenter.default.post(name: .notificationsUpdated, object: nil)
         
         MissionsHolder.shared.scheduleReminderNotificationOnStepImplemented(mission: self)
+        
+        let steps = addedSteps
+        steps.forEach {
+            if let time = $0.formattedTime {
+                $0.scheduleDailyNotifications(time: time)
+            }
+        }
     }
     
     func readNotifications() {
@@ -351,6 +387,24 @@ public class Mission: NSManagedObject {
         }
         return nil
     }
+    
+    func removeStepsDailyNotifications() {
+        var toRemove = [String]()
+        let blocks = blocks?.allObjects.map { $0 as! StepsBlock } ?? []
+        for b in blocks {
+            let steps = b.steps?.allObjects.map { $0 as! MissionStep } ?? []
+            for s in steps {
+                if let notificationId = s.notificationId {
+                    toRemove.append(notificationId)
+                    s.notificationId = nil
+                    s.dailyNotificationScheduled = false
+                }
+            }
+        }
+        if !toRemove.isEmpty {
+            removeScheduledNotifications(toRemove)
+        }
+    }
 }
 
 extension Mission {
@@ -375,6 +429,9 @@ extension Mission {
     @NSManaged public var lastReminderAt: Date?
     @NSManaged public var lastEmotionReminderAt: Date?
     @NSManaged public var reminderDays: Int16
+    @NSManaged public var sortOrderUpTo: Int32
+    @NSManaged public var skipSortByImplemented: Bool
+    @NSManaged public var dailyNotificationText: String?
     
     @NSManaged public var reminderNotificationId: Int16
     @NSManaged public var emotionReminderNotificationId: Int16

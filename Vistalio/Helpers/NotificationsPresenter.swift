@@ -28,7 +28,32 @@ func addNotification(title: String, body: String, notificationId: String, userIn
         if let error = error {
             print("ERROR!!! Notification \(error.localizedDescription)")
         } else {
-//            print("\(Date()) Notification scheduled =\(title)= =\(body)= =\(notificationId)= \(userInfo?["fireDate"] ?? "")")
+            print("\(Date()) Notification scheduled =\(title)= =\(body)= =\(notificationId)= \(triggerDate)")
+        }
+    }
+}
+
+func addDailyNotification(title: String, body: String, hour: Int, minute: Int, notificationId: String, userInfo: [AnyHashable: Any]? = nil) {
+    let content = UNMutableNotificationContent()
+    content.sound = UNNotificationSound.default
+    content.title = title
+    content.body = body
+    if let userInfo = userInfo {
+        content.userInfo = userInfo
+    }
+    
+    var dateComponents = DateComponents()
+    dateComponents.hour = hour
+    dateComponents.minute = minute
+    
+    let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+    let request = UNNotificationRequest(identifier: notificationId, content: content, trigger: trigger)
+    
+    UNUserNotificationCenter.current().add(request) { error in
+        if let error = error {
+            print("ERROR!!! Notification \(error.localizedDescription)")
+        } else {
+            print("\(Date()) Daily notification scheduled =\(title)= =\(body)= =\(notificationId)= \(hour) \(minute)")
         }
     }
 }

@@ -105,6 +105,8 @@
 		C37BB754300C9DBF006BE7EA /* MoveNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB753300C9DB8006BE7EA /* MoveNoteViewController.swift */; };
 		C37BB757300CB78F006BE7EA /* NoteToMissionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB756300CB784006BE7EA /* NoteToMissionCell.swift */; };
 		C37BB759300CB79F006BE7EA /* NoteToStepCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37BB758300CB793006BE7EA /* NoteToStepCell.swift */; };
+		C3833B473073A9530072D302 /* EditTimeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3833B463073A94C0072D302 /* EditTimeViewController.swift */; };
+		C3833B493073ADDA0072D302 /* SelectTimeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3833B483073ADD40072D302 /* SelectTimeViewController.swift */; };
 		C38757973041E673008D3FFD /* ImplementedStepViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38757963041E667008D3FFD /* ImplementedStepViewController.swift */; };
 		C387579B304EAA81008D3FFD /* NotificationsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C387579A304EAA7D008D3FFD /* NotificationsPresenter.swift */; };
 		C3AE55C52FD09D12007A5E41 /* CreateStepViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AE55C42FD09D08007A5E41 /* CreateStepViewController.swift */; };
@@ -277,6 +279,8 @@
 		C37BB753300C9DB8006BE7EA /* MoveNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveNoteViewController.swift; sourceTree = "<group>"; };
 		C37BB756300CB784006BE7EA /* NoteToMissionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteToMissionCell.swift; sourceTree = "<group>"; };
 		C37BB758300CB793006BE7EA /* NoteToStepCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteToStepCell.swift; sourceTree = "<group>"; };
+		C3833B463073A94C0072D302 /* EditTimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTimeViewController.swift; sourceTree = "<group>"; };
+		C3833B483073ADD40072D302 /* SelectTimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTimeViewController.swift; sourceTree = "<group>"; };
 		C38757963041E667008D3FFD /* ImplementedStepViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImplementedStepViewController.swift; sourceTree = "<group>"; };
 		C387579A304EAA7D008D3FFD /* NotificationsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsPresenter.swift; sourceTree = "<group>"; };
 		C3AE55C42FD09D08007A5E41 /* CreateStepViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateStepViewController.swift; sourceTree = "<group>"; };
@@ -433,6 +437,7 @@
 				C33F22A52F80251300EF2A81 /* SelectActionViewController.swift */,
 				C3B7D7192F94A54E00562DC2 /* CropImageViewController.swift */,
 				C3CABD692FF7D88C0067CA73 /* SelectDateViewController.swift */,
+				C3833B483073ADD40072D302 /* SelectTimeViewController.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -714,6 +719,7 @@
 				C3AE55E32FD8143C007A5E41 /* StepViewController.swift */,
 				C3CABD632FF28F760067CA73 /* MoveStepViewController.swift */,
 				C38757963041E667008D3FFD /* ImplementedStepViewController.swift */,
+				C3833B463073A94C0072D302 /* EditTimeViewController.swift */,
 				C3CABD6D2FF83EC60067CA73 /* Cells */,
 			);
 			path = Steps;
@@ -1010,10 +1016,12 @@
 				C33F22A62F80251F00EF2A81 /* SelectActionViewController.swift in Sources */,
 				C33F22CA2F84C8B400EF2A81 /* MenuView.swift in Sources */,
 				C34665C02F783741008648C8 /* GrowingTextView.swift in Sources */,
+				C3833B473073A9530072D302 /* EditTimeViewController.swift in Sources */,
 				C33F22A32F80147300EF2A81 /* String+Utils.swift in Sources */,
 				C34665C12F783741008648C8 /* RoundedControls.swift in Sources */,
 				C37BB7413005227F006BE7EA /* NoteBigPhotoCell.swift in Sources */,
 				C36B3D042F97A85100976790 /* MissionTemplate.swift in Sources */,
+				C3833B493073ADDA0072D302 /* SelectTimeViewController.swift in Sources */,
 				C347A5842F98F4320068D5B3 /* HiddenMissionTemplate.swift in Sources */,
 				C33F22BB2F838D5800EF2A81 /* MissionViewController.swift in Sources */,
 				C3F47ECC2FA0F7D400F17AC8 /* GalleryView.swift in Sources */,

@@ -172,8 +172,13 @@ extension StepsBlock {
             var sortOrder = mission.maxSortOrder + 1
             steps?.allObjects.map { $0 as! MissionStep }.forEach {
                 $0.addedDate = Date()
-                $0.sortOrder = sortOrder
-                sortOrder += 1
+                if $0.sortOrder == 0 {
+                    $0.sortOrder = sortOrder
+                    sortOrder += 1
+                }
+                if let time = $0.formattedTime {
+                    $0.scheduleDailyNotifications(time: time)
+                }
             }
         }
         if stepDayStartPoint == StepDayStartPoint.blockOpened.rawValue {
@@ -396,8 +401,11 @@ extension MissionStep {
     @NSManaged public var endDate: String?
     @NSManaged public var frequency: Int16
     @NSManaged public var time: String?
+    @NSManaged public var canEditOnlyTime: Bool
     
     @NSManaged public var noteTitle: String?
+    @NSManaged public var notificationId: String?
+    @NSManaged public var dailyNotificationScheduled: Bool
     
     @NSManaged public var block: StepsBlock
     @NSManaged public var notes: NSSet?
@@ -417,9 +425,16 @@ extension MissionStep {
     }
     
     var fullName: String {
+        if let time = formattedTime {
+            return "\(time) \(name ?? "")"
+        }
+        return name ?? ""
+    }
+    
+    var formattedTime: String? {
         if let time = time {
             if time.contains(":") {
-                return "\(time) \(name ?? "")"
+                return time
             } else {
                 let parts = time.split(separator: "/")
                 if parts.count == 2 {
@@ -431,13 +446,12 @@ extension MissionStep {
                         df.dateFormat = "HH:mm"
                         let date = df.date(from: dependencyTime)!
                         let resultDate = Calendar.current.date(byAdding: .minute, value: minutes, to: date)!
-                        let resultTime = df.string(from: resultDate)
-                        return "\(resultTime) \(name ?? "")"
+                        return df.string(from: resultDate)
                     }
                 }
             }
         }
-        return name ?? ""
+        return nil
     }
     
     @discardableResult
@@ -475,6 +489,8 @@ extension MissionStep {
         step.frequency = template.frequency?.rawValue ?? 0
         step.time = template.time
         step.startDate = startDate?.toDateString
+        step.sortOrder = Int32(template.sortOrder ?? 0)
+        step.canEditOnlyTime = template.canEditOnlyTime ?? false
         step.block = block
         
         if let notes = template.notes {
@@ -926,7 +942,23 @@ extension MissionStep {
             if !withNotes && (notes?.count ?? 0) > 0 {
                 moveNotesToNotesStep(context: context, date: nil, afterDate: false)
             }
-            if block.id == -1 {
+            if block.id == -1 || block.mission.skipRecommend {
+                if time?.contains(":") ?? false {
+                    
+                    let df = DateFormatter()
+                    df.locale = Locale(identifier: "en_US_POSIX")
+                    df.dateFormat = "HH:mm"
+                    let date = df.date(from: self.time!)!
+                    
+                    block.mission.addedSteps.forEach {
+                        if let time = $0.time, time.hasSuffix("/\(id)") {
+                            let parts = time.split(separator: "/")
+                            let minutes = Int(parts[0])!
+                            let resultDate = Calendar.current.date(byAdding: .minute, value: minutes, to: date)!
+                            $0.time = df.string(from: resultDate)
+                        }
+                    }
+                }
                 context.delete(self)
             } else {
                 hidden = true
@@ -964,8 +996,47 @@ extension MissionStep {
         }
     }
     
+    func scheduleDailyNotifications(time: String, rescheduleExisting: Bool = false) {
+        guard let startDate = startDate else {
+            return
+        }
+        if dailyNotificationScheduled && !rescheduleExisting {
+            return
+        }
+        
+        let scheduled = notificationId != nil
+        if notificationId == nil {
+            notificationId = UUID().uuidString
+        }
+        
+        let dateStr = startDate + " " + time
+        let df = DateFormatter()
+        df.locale = Locale(identifier: "en_US_POSIX")
+        df.dateFormat = "yyyy-MM-dd HH:mm"
+        let date = df.date(from: dateStr)!
+        let daysBetween = Calendar.current.dateComponents([.day], from: Date(), to: date).day!
+        
+        if daysBetween <= 0 {
+            self.dailyNotificationScheduled = true
+            
+            let parts = time.components(separatedBy: ":")
+            let h = Int(parts[0])!
+            let m = Int(parts[1])!
+            DispatchQueue.main.async {
+                addDailyNotification(title: self.name!, body: self.block.mission.dailyNotificationText ?? "", hour: h, minute: m, notificationId: self.notificationId!)
+            }
+        } else if !scheduled || rescheduleExisting {
+            DispatchQueue.main.async {
+                addNotification(title: self.name!, body: self.block.mission.dailyNotificationText ?? "", notificationId: self.notificationId!, triggerDate: date)
+            }
+        }
+    }
+    
     public override func prepareForDeletion() {
         print("Step deleted")
+        if let id = notificationId {
+            removeScheduledNotifications([id])
+        }
     }
 }
 

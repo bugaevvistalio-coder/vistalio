@@ -172,10 +172,8 @@ class TemplateViewController: UIViewController {
                         }
                         NotificationCenter.default.post(name: .missionUpdated, object: nil)
                         (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Миссия убрана из архива")
-                        dismissAndOpenMission(mission)
-                    } else {
-                        dismissAndOpenMission(mission)
                     }
+                    dismissAndOpenMission(mission)
                 }),
                 ActionButton(type: .secondary, title: "Начать новую", action: { [unowned self] _ in
                     self.startMission()

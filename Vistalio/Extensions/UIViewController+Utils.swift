@@ -88,22 +88,27 @@ extension UIViewController {
         vc.popupTitle = mission.archivedAt != nil ? "Убрать миссию из архива?" : "Убрать миссию в архив?"
         vc.popupText = mission.archivedAt != nil ? "Снова начнём напоминать о её шагах и предлагать новые. Можно отменить в любой момент." : "Мы перестанем напоминать о её шагах и предлагать новые. Можно отменить в любой момент."
         vc.buttons = [
-            ActionButton(type: mission.archivedAt != nil ? .blue : .red, title: mission.archivedAt != nil ? "Убрать из архива" : "Убрать в архив", action: { _ in CoreDataStack.shared.performAndWait { context in
-                if mission.archivedAt != nil {
-                    mission.backFromArchived(context: context, viewController: self)
-                } else {
-                    mission.archivedAt = Date()
-                    let blocks = mission.allBlocks
-                    var notificationsToRemove = blocks.filter { $0.checkPeriod }.compactMap { $0.notificationId }
-                    if let reminderId = mission.reminderNotificationRequestId {
-                        notificationsToRemove.append(reminderId)
+            ActionButton(type: mission.archivedAt != nil ? .blue : .red, title: mission.archivedAt != nil ? "Убрать из архива" : "Убрать в архив", action: { _ in
+                CoreDataStack.shared.performAndWait { context in
+                    if mission.archivedAt != nil {
+                        mission.backFromArchived(context: context, viewController: self)
+                    } else {
+                        mission.archivedAt = Date()
+                        mission.removeStepsDailyNotifications()
+                        
+                        let blocks = mission.allBlocks
+                        var notificationsToRemove = blocks.filter { $0.checkPeriod }.compactMap { $0.notificationId }
+                        if let reminderId = mission.reminderNotificationRequestId {
+                            notificationsToRemove.append(reminderId)
+                        }
+                        if let reminderId = mission.emotionReminderNotificationRequestId {
+                            notificationsToRemove.append(reminderId)
+                        }
+                        removeScheduledNotifications(notificationsToRemove)
+                        NotificationCenter.default.post(name: .notificationsUpdated, object: nil)
+                        
+                        
                     }
-                    if let reminderId = mission.emotionReminderNotificationRequestId {
-                        notificationsToRemove.append(reminderId)
-                    }
-                    removeScheduledNotifications(notificationsToRemove)
-                    NotificationCenter.default.post(name: .notificationsUpdated, object: nil)
-                }
                 }
                 NotificationCenter.default.post(name: .missionUpdated, object: nil)
                 (UIApplication.shared.delegate as! AppDelegate).addNotification(text: mission.archivedAt != nil ? "Миссия перемещена в архив" : "Миссия убрана из архива")

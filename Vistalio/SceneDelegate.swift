@@ -46,6 +46,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             MissionsHolder.shared.loadTemplates()
             MissionsHolder.shared.openNextBlocks()
             MissionsHolder.shared.scheduleReminders()
+            MissionsHolder.shared.rescheduleStepsDailyNotifications()
         }
     }
 

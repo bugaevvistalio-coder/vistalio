@@ -76,7 +76,12 @@ class RecommendedStepCell: UITableViewCell {
             self.step.addedDate = Date()
             self.step.startDate = Date().toDateString
             self.step.hidden = false
-            self.step.sortOrder = self.step.block.mission.maxSortOrder + 1
+            if self.step.sortOrder == 0 {
+                self.step.sortOrder = self.step.block.mission.maxSortOrder + 1
+            }
+            if let time = self.step.formattedTime {
+                self.step.scheduleDailyNotifications(time: time)
+            }
         }
         let step = step!
         animateAddStep() { [weak self] in

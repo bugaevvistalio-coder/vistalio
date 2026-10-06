@@ -33,6 +33,9 @@ class MissionContents: Codable {
     let skipRecommend: Bool?
     let autoAddFirstBlock: Bool?
     let reminderDays: Int?
+    let sortOrderUpTo: Int?
+    let skipSortByImplemented: Bool?
+    let dailyNotificationText: String?
     
     func findStep(id: Int) -> TemplateStep? {
         var i = 1
@@ -103,15 +106,24 @@ class TemplateStep: Codable {
     let frequency: StepFrequency?
     let days: [Int]?
     let time: String?
+    let sortOrder: Int?
+    let canEditOnlyTime: Bool?
     
     var shortDescription: String? {
         return description?.replacingOccurrences(of: "\n\n", with: " ").replacingOccurrences(of: "\n", with: " ")
     }
     
     func getFullName(mission: MissionContents) -> String {
+        if let time = getFormattedTime(mission: mission) {
+            return "\(time) \(name)"
+        }
+        return name
+    }
+    
+    func getFormattedTime(mission: MissionContents) -> String? {
         if let time = time {
             if time.contains(":") {
-                return "\(time) \(name)"
+                return time
             } else {
                 let parts = time.split(separator: "/")
                 if parts.count == 2 {
@@ -123,13 +135,12 @@ class TemplateStep: Codable {
                         df.dateFormat = "HH:mm"
                         let date = df.date(from: dependencyTime)!
                         let resultDate = Calendar.current.date(byAdding: .minute, value: minutes, to: date)!
-                        let resultTime = df.string(from: resultDate)
-                        return "\(resultTime) \(name ?? "")"
+                        return df.string(from: resultDate)
                     }
                 }
             }
         }
-        return name ?? ""
+        return nil
     }
 }
 

@@ -97,7 +97,7 @@ class StepViewController: UIViewController {
         smallHeaderView.isHidden = true
         
         navigationMissionButton.setTitle(step.block.mission.name?.limitCharacters(20), for: .normal)
-        navigationStepButton.setTitle(step.name?.limitCharacters(20), for: .normal)
+        navigationStepButton.setTitle(step.fullName.limitCharacters(20), for: .normal)
         
         navigationGradientLeft.setGradientLayer(colors: [.white, .white.withAlphaComponent(0.01)], startPoint: CGPoint(x: 0.0, y: 0.5), endPoint: CGPoint(x: 1.0, y: 0.5), cornerRadius: 0)
         navigationGradientRight.setGradientLayer(colors: [.white, .white.withAlphaComponent(0.01)], startPoint: CGPoint(x: 1.0, y: 0.5), endPoint: CGPoint(x: 0.0, y: 0.5), cornerRadius: 0)
@@ -343,13 +343,26 @@ class StepViewController: UIViewController {
         var items = [MenuItemData]()
         items.append(MenuItemData(text: "Изменить", image: .edit, type: .normal, action: { [unowned self] in
             menuUnderlayControl.removeFromSuperview()
-            openEditStep(mission: step.block.mission, step: step) { [unowned self] step in
-                navigationStepButton.setTitle(step.name?.limitCharacters(20), for: .normal)
-                displayStep()
-                resetCalendar()
-                (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг изменён")
+            
+            if step.canEditOnlyTime {
+                let vc = storyboard?.instantiateViewController(withIdentifier: "EditTimeVC") as! EditTimeViewController
+                vc.step = step
+                vc.onStepSaved = { [unowned self] in
+                    navigationStepButton.setTitle(step.fullName.limitCharacters(20), for: .normal)
+                    displayStep()
+                    (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг изменён")
+                }
+                presentFullScreen(vc)
+            } else {
+                openEditStep(mission: step.block.mission, step: step) { [unowned self] step in
+                    navigationStepButton.setTitle(step.fullName.limitCharacters(20), for: .normal)
+                    displayStep()
+                    resetCalendar()
+                    (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг изменён")
+                }
             }
         }))
+      
         items.append(MenuItemData(text: "Переместить", image: .target, type: .normal, action: { [unowned self] in
             menuUnderlayControl.removeFromSuperview()
             
@@ -373,6 +386,7 @@ class StepViewController: UIViewController {
                 tableView.reloadData()
             })
         }))
+        
         menuView.items = items
         menuView.translatesAutoresizingMaskIntoConstraints = false
         menuUnderlayControl.addSubview(menuView)

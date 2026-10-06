@@ -492,8 +492,13 @@ class MissionViewController: UIViewController {
                 $0.hidden = false
                 $0.addedDate = Date()
                 $0.startDate = startDate
-                $0.sortOrder = sortOrder
-                sortOrder += 1
+                if $0.sortOrder == 0 {
+                    $0.sortOrder = sortOrder
+                    sortOrder += 1
+                }
+                if let time = $0.formattedTime {
+                    $0.scheduleDailyNotifications(time: time)
+                }
             }
         }
         let visibleCells = tableView.visibleCells
@@ -562,7 +567,7 @@ class MissionViewController: UIViewController {
         if step.addedDate != nil {
             let stepIndex = addedSteps.firstIndex(of: step)!
             
-            if addedSteps.count > 1 && stepIndex > 0 && !step.isImplementedForDate(step.lastDate) {
+            if addedSteps.count > 1 && stepIndex > 0 && (mission.skipSortByImplemented || !step.isImplementedForDate(step.lastDate)) {
                 items.append(
                     MenuItemData(text: "Вверх списка", image: .arrowUp, type: .normal, action: { [unowned self] in
                         menuUnderlayControl.removeFromSuperview()
@@ -619,7 +624,9 @@ class MissionViewController: UIViewController {
         if updateLastDate {
             addedSteps.forEach {
                 $0.savedLastDate = $0.lastDate
-                $0.isImplemented = $0.isImplementedForDate($0.savedLastDate)
+                if !mission.skipSortByImplemented {
+                    $0.isImplemented = $0.isImplementedForDate($0.savedLastDate)
+                }
             }
         }
         addedSteps.sort {
@@ -629,7 +636,7 @@ class MissionViewController: UIViewController {
             if $1.id == -1 {
                 return true
             }
-            if $0.isImplemented != $1.isImplemented {
+            if !mission.skipSortByImplemented && $0.isImplemented != $1.isImplemented {
                 return $1.isImplemented
             }
             if $0.sortOrder < 0 || $1.sortOrder < 0 {
@@ -781,7 +788,7 @@ extension MissionViewController: UITableViewDataSource {
             let step = addedSteps[indexPath.row]
             cell.step = step
             cell.onLongGesture = { [unowned self] step, image, rect in
-                if step.id >= 0 && (step.editable || (addedSteps.count > 1 && indexPath.row > 0)) {
+                if step.id >= 0 && (step.editable || (addedSteps.count > 1 && indexPath.row > 0) || (step.time?.contains(":") ?? false))  {
                     self.generator.impactOccurred()
                     self.generator.prepare()
                     self.showMenu(step: step, anchorRect: rect, image: image)

@@ -210,7 +210,7 @@ class MyDayViewController: UIViewController {
         var items = [MenuItemData]()
         let missionSteps = step.block.mission.selectedSteps ?? []
         let stepIndex = missionSteps.firstIndex(of: step)!
-        if stepIndex > 0 && !step.isImplementedForDate(weeklyView.selectedDate) {
+        if stepIndex > 0 && (step.block.mission.skipSortByImplemented || !step.isImplementedForDate(weeklyView.selectedDate)) {
             items.append(
                 MenuItemData(text: "Вверх списка", image: .arrowUp, type: .normal, action: { [unowned self] in
                     menuUnderlayControl.removeFromSuperview()

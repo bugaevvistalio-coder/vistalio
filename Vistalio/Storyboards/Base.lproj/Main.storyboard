@@ -523,6 +523,86 @@
             </objects>
             <point key="canvasLocation" x="1974.0458015267175" y="-325.35211267605638"/>
         </scene>
+        <!--Select Time View Controller-->
+        <scene sceneID="KXA-oH-yBL">
+            <objects>
+                <viewController storyboardIdentifier="SelectTimeVC" id="nbY-3s-iCm" customClass="SelectTimeViewController" customModule="Vistalio" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="jor-md-US7">
+                        <rect key="frame" x="0.0" y="0.0" width="374" height="400"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sdc-Gk-mEr">
+                                <rect key="frame" x="318" y="16" width="40" height="40"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="3sW-hM-Oru"/>
+                                    <constraint firstAttribute="width" constant="40" id="W8Y-Dg-2xD"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="cross"/>
+                                <connections>
+                                    <action selector="closeTapped:" destination="nbY-3s-iCm" eventType="touchUpInside" id="EEU-z1-omt"/>
+                                </connections>
+                            </button>
+                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="time" minuteInterval="30" style="wheels" translatesAutoresizingMaskIntoConstraints="NO" id="Zcs-VJ-jxq">
+                                <rect key="frame" x="0.0" y="80" width="374" height="162"/>
+                                <locale key="locale" localeIdentifier="ru"/>
+                            </datePicker>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WRp-6Z-taU" customClass="RoundedButton" customModule="Vistalio" customModuleProvider="target">
+                                <rect key="frame" x="10" y="334" width="354" height="50"/>
+                                <color key="backgroundColor" name="darkGrey"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="cME-sQ-0Ps"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Сохранить">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <state key="disabled">
+                                    <color key="titleColor" name="textGrey30"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <real key="value" value="25"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="disabledBackground">
+                                        <color key="value" name="bgGrey"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="normalBackground">
+                                        <color key="value" name="darkGrey"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="saveTapped:" destination="nbY-3s-iCm" eventType="touchUpInside" id="6LG-Q2-o9w"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="ADn-4T-W0u"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Zcs-VJ-jxq" firstAttribute="top" secondItem="sdc-Gk-mEr" secondAttribute="bottom" constant="24" id="6vL-yD-mFe"/>
+                            <constraint firstItem="ADn-4T-W0u" firstAttribute="trailing" secondItem="sdc-Gk-mEr" secondAttribute="trailing" constant="16" id="FiM-Np-8aN"/>
+                            <constraint firstItem="ADn-4T-W0u" firstAttribute="trailing" secondItem="WRp-6Z-taU" secondAttribute="trailing" constant="10" id="UoJ-bN-hv3"/>
+                            <constraint firstItem="ADn-4T-W0u" firstAttribute="bottom" secondItem="WRp-6Z-taU" secondAttribute="bottom" constant="-18" id="Xz6-4a-Ksh"/>
+                            <constraint firstItem="Zcs-VJ-jxq" firstAttribute="leading" secondItem="ADn-4T-W0u" secondAttribute="leading" id="cly-Ek-bXD"/>
+                            <constraint firstItem="WRp-6Z-taU" firstAttribute="leading" secondItem="ADn-4T-W0u" secondAttribute="leading" constant="10" id="jTQ-QA-tUX"/>
+                            <constraint firstItem="sdc-Gk-mEr" firstAttribute="top" secondItem="jor-md-US7" secondAttribute="top" constant="16" id="s2Q-jl-PfX"/>
+                            <constraint firstAttribute="trailing" secondItem="Zcs-VJ-jxq" secondAttribute="trailing" id="zN9-wx-LDE"/>
+                        </constraints>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="374" height="400"/>
+                    <connections>
+                        <outlet property="closeButton" destination="sdc-Gk-mEr" id="bVq-2f-od2"/>
+                        <outlet property="datePicker" destination="Zcs-VJ-jxq" id="0eL-OU-vd5"/>
+                        <outlet property="saveButton" destination="WRp-6Z-taU" id="UjN-b8-TxW"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NOQ-nm-Q2f" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1974" y="23"/>
+        </scene>
     </scenes>
     <resources>
         <image name="checkOff" width="24" height="24"/>

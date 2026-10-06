@@ -44,7 +44,7 @@ class MissionsHolder {
         let missionsRequest = Mission.missionFetchRequest()
         missionsRequest.sortDescriptors = [NSSortDescriptor(key: "sortOrder", ascending: false), NSSortDescriptor(key: "creationDate", ascending: false)]
         do {
-            return try CoreDataStack.shared.mainContext.fetch(missionsRequest)
+            return try CoreDataStack.shared.context.fetch(missionsRequest)
         } catch {
             print("Failed to retrive missions and folders")
         }
@@ -55,7 +55,7 @@ class MissionsHolder {
         let coversRequest = Cover.coverFetchRequest()
         coversRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         do {
-            return try CoreDataStack.shared.mainContext.fetch(coversRequest)
+            return try CoreDataStack.shared.context.fetch(coversRequest)
         } catch {
             print("Failed to retrive missions and folders")
         }
@@ -167,7 +167,7 @@ class MissionsHolder {
         request.predicate = NSPredicate(format: "mission.archivedAt == nil")
         request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
         do {
-            return try CoreDataStack.shared.mainContext.fetch(request)
+            return try CoreDataStack.shared.context.fetch(request)
         } catch {
             print("Failed to retrive missions and folders")
         }
@@ -246,7 +246,6 @@ class MissionsHolder {
         var triggerDate = calendar.date(byAdding: .hour, value: Int(mission.reminderDays), to: startDate)!
         
         if triggerDate < Date() {
-            print("\(Date()) Scheduled with delay \(delay), is emotion \(isEmotion), \(reminder.title ?? ""), \(reminder.body ?? "")")
             if delay == 0 {
                 triggerDate = Date()
                 addNotification(title: reminder.title ?? "", body: reminder.body ?? "", notificationId: requestId, userInfo: ["isReminder": true])
@@ -255,7 +254,6 @@ class MissionsHolder {
                 addNotification(title: reminder.title ?? "", body: reminder.body ?? "", notificationId: requestId, userInfo: ["isReminder": true], triggerDate: triggerDate)
             }
         } else {
-            print("\(Date()) Scheduled at trigger date \(triggerDate), is emotion \(isEmotion), \(reminder.title ?? ""), \(reminder.body ?? "")")
             addNotification(title: reminder.title ?? "", body: reminder.body ?? "", notificationId: requestId, userInfo: ["isReminder": true], triggerDate: triggerDate)
         }
         
@@ -275,7 +273,7 @@ class MissionsHolder {
         
         let missionsRequest = Mission.missionFetchRequest()
         missionsRequest.predicate = NSPredicate(format: "(lastReminderAt != nil OR lastEmotionReminderAt != nil) AND archivedAt == nil")
-        let missions = (try? CoreDataStack.shared.mainContext.fetch(missionsRequest)) ?? []
+        let missions = (try? CoreDataStack.shared.context.fetch(missionsRequest)) ?? []
 
         print("Scheduled? Missions count \(missions.count)")
         let now = Date()
@@ -298,6 +296,22 @@ class MissionsHolder {
 //                let m = context.object(with: mission.objectID) as! Mission
                 m.lastEmotionReminderAt = nil
                 print("Schedule cleared emotion reminder")
+            }
+        }
+    }
+    
+    func rescheduleStepsDailyNotifications() {
+        DispatchQueue.global().async {
+            let request = MissionStep.stepFetchRequest()
+            request.predicate = NSPredicate(format: "notificationId != nil AND dailyNotificationScheduled == NO AND addedDate != nil AND block.mission.archivedAt == nil")
+            let steps = (try? CoreDataStack.shared.context.fetch(request)) ?? []
+            print("Reschedule \(steps.count) steps")
+            CoreDataStack.shared.performAndWait { context in
+                steps.forEach {
+                    if let time = $0.formattedTime {
+                        $0.scheduleDailyNotifications(time: time)
+                    }
+                }
             }
         }
     }

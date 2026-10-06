@@ -8,14 +8,16 @@
                     "preview": true,
                     "frequency": 2,
                     "time": "23:00",
-                    "editable": false
+                    "canEditOnlyTime": true,
+                    "sortOrder": 10000
                 },
                 {
                     "name": "☀️ Подъем",
                     "description": "Выбери время подъема (±30 минут).\n\n✍️ Опиши качество своего сна и текущее эмоциональное состояние.",
                     "frequency": 2,
                     "time": "07:00",
-                    "editable": false
+                    "canEditOnlyTime": true,
+                    "sortOrder": 1
                 }
             ],
             "nextAppears": "onAllStepsDone",
@@ -28,16 +30,18 @@
                     "preview": true,
                     "frequency": 2,
                     "time": "-600/1",
-                    "editable": false,
-                    "days": [1]
+                    "canEditOnlyTime": true,
+                    "days": [1],
+                    "sortOrder": 2
                 },
                 {
                     "name": "🥗❌ Без еды",
                     "description": "Ничего не есть и не пить алкоголь за 3 часов до сна. Можно пить воду или травяной чай без кофеина.",
                     "frequency": 2,
                     "time": "-180/1",
-                    "editable": false,
-                    "days": [3]
+                    "canEditOnlyTime": true,
+                    "days": [3],
+                    "sortOrder": 3
                 },
                 {
                     "name": "💼🙅‍♂️ Без работы и стресса",
@@ -45,30 +49,32 @@
                     "preview": true,
                     "frequency": 2,
                     "time": "-120/1",
-                    "editable": false,
-                    "days": [5]
+                    "canEditOnlyTime": true,
+                    "days": [5],
+                    "sortOrder": 4
                 },
                 {
                     "name": "📱❌ Без экранов",
                     "description": "За 1 час до сна выключить все экраны и заменить их на расслабляющий вечерний ритуал, например, такой:\n\n🚿 Принять теплый душ\n💡 Надеть удобную одежду и приглушить свет\n🧘‍♂️ Сделать легкую растяжку и дыхательные практики\n📖 Почитать бумажную книгу\n🎶 Послушать спокойную музыку\n🧵 Заняться рукоделием или творчеством\n🎧 Слушать спокойные подкасты или аудиокниги",
                     "frequency": 2,
                     "time": "-60/1",
-                    "editable": false,
-                    "days": [7]
+                    "canEditOnlyTime": true,
+                    "days": [7],
+                    "sortOrder": 5
                 },
                 {
                     "name": "Перестать переносить время подъема на будильнике ⏰",
                     "description": "Для этого можно поставить его подальше от кровати.",
                     "frequency": 1,
                     "days": [14],
-                    "editable": false
+                    "sortOrder": 6
                 },
                 {
                     "name": "Попробовать лечь раньше 😴",
                     "description": "Провести экспериментальный день — попробовать лечь спать на 15–30 минут раньше обычного.",
                     "frequency": 1,
                     "days": [21],
-                    "editable": false
+                    "sortOrder": 7
                 }
             ],
             "stepDayStartPoint": "blockOpened"
@@ -117,5 +123,8 @@
         }
     ],
     "skipRecommend": true,
-    "reminderDays": 1
+    "reminderDays": 1,
+    "sortOrderUpTo": 9999,
+    "skipSortByImplemented": true,
+    "dailyNotificationText": "🛌💤"
 }
