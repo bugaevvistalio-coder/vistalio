@@ -241,7 +241,11 @@ extension NoteViewController: UICollectionViewDataSource, UICollectionViewDelega
         
         cell.onTapped = { [unowned self] cell in
             guard let currentIndexPath = collectionView.indexPath(for: cell) else { return }
-            UIApplication.shared.mainViewController?.openGallery(media: media, at: currentIndexPath.row)
+            let mission = note.step!.block.mission
+            let notes = mission.openedBlocks.flatMap { $0.steps?.allObjects.map { $0 as! MissionStep }.flatMap { $0.notes?.allObjects.map { $0 as! MissionNote } ?? [] } ?? [] }.sorted {  $0.date! > $1.date!}
+            let allMedia = notes.flatMap { $0.images?.allObjects.map { $0 as! MissionNoteImage }.sorted { $0.date > $1.date } ?? [] }
+            let index = allMedia.firstIndex(where: { $0.note === note }) ?? 0
+            UIApplication.shared.mainViewController?.openGallery(media: allMedia.map { $0.mediaData }, at: index + currentIndexPath.row)
         }
         
         return cell

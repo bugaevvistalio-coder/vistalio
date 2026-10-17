@@ -7,6 +7,7 @@
 
 import UIKit
 import FittedSheets
+import AVFoundation
 
 class GalleryView: UIView {
     
@@ -15,6 +16,8 @@ class GalleryView: UIView {
     
     private var view: UIView!
     private let buffer = 1
+    
+    private var isMuted = true
     
     var onDismiss: (() -> ())?
     
@@ -48,6 +51,18 @@ class GalleryView: UIView {
         collectionView.register(nib, forCellWithReuseIdentifier: "GalleryCell")
         collectionView.dataSource = self
         collectionView.delegate = self
+        
+        prepareAudioForPlayback()
+    }
+    
+    private func prepareAudioForPlayback() {
+        do {
+            let session = AVAudioSession.sharedInstance()
+            try session.setCategory(.playback, mode: .moviePlayback, options: [])
+            try session.setActive(true, options: [])
+        } catch {
+            print("Не удалось активировать аудиосессию: \(error.localizedDescription)")
+        }
     }
     
     @IBAction func menuTapped(_ sender: Any) {
@@ -92,6 +107,10 @@ extension GalleryView: UICollectionViewDataSource, UICollectionViewDelegate, UIC
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryCell", for: indexPath) as! GalleryCell
         cell.media = media[indexPath.row % media.count]
+        cell.isMuted = isMuted
+        cell.onMuted = { [unowned self] muted in
+            isMuted = muted
+        }
         return cell
     }
     
@@ -121,6 +140,7 @@ extension GalleryView: UICollectionViewDataSource, UICollectionViewDelegate, UIC
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let galleryCell = cell as? GalleryCell {
             menuButton.isHidden = galleryCell.media?.image == nil && galleryCell.media?.path == nil
+            galleryCell.isMuted = isMuted
         }
     }
 }

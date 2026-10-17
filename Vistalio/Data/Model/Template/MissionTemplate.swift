@@ -52,14 +52,12 @@ class MissionContents: Codable {
 }
 
 enum NextBlockAppearRule: String, Codable {
-    case onDone
     case onDoneWithPreview
-    case onNote
-    case onNoteRespectPeriod
+    case onArtefacts
+    case onArtefactsRespectPeriod
     case respectPeriod
-    case onEmotion
-    case onEmotionRespectPeriod
     case onAllStepsDone
+    case onAllStepsArtefacts
 }
 
 enum StepDayStartPoint: String, Codable {
@@ -67,7 +65,7 @@ enum StepDayStartPoint: String, Codable {
     case blockOpened
 }
 
-enum BlockDoneCriteria: String, Codable {
+enum BlockArtefact: String, Codable {
     case note
     case photo
     case video
@@ -80,7 +78,7 @@ enum BlockDoneCriteria: String, Codable {
 class TemplateBlock: Codable {
     let steps: [TemplateStep]
     let nextAppears: NextBlockAppearRule?
-    let doneCriteria: [BlockDoneCriteria]?
+    let artefacts: [BlockArtefact]?
     let photoMin: Int?
     let searchText: String?
     let textPlaceholder: String?
@@ -100,7 +98,9 @@ class TemplateStep: Codable {
     let description: String?
     let preview: Bool?
     var expanded: Bool?
-    let editable: Bool?
+    let disableEdit: Bool?
+    let disableDelete: Bool?
+    let disableMove: Bool?
     let noteTitle: String?
     let notes: [TemplateNote]?
     let frequency: StepFrequency?
@@ -108,9 +108,21 @@ class TemplateStep: Codable {
     let time: String?
     let sortOrder: Int?
     let canEditOnlyTime: Bool?
+    let artefacts: [BlockArtefact]?
     
     var shortDescription: String? {
-        return description?.replacingOccurrences(of: "\n\n", with: " ").replacingOccurrences(of: "\n", with: " ")
+        let description = description?.replacingOccurrences(of: "\n\n", with: " ").replacingOccurrences(of: "\n", with: " ")
+        if let description = description, description.contains("mission#") {
+            return description.replacingOccurrences(of: "mission#([^#]+)#", with: "$1", options: .regularExpression)
+        }
+        return description
+    }
+    
+    var cleanDescription: String? {
+        if let description = description, description.contains("mission#") {
+            return description.replacingOccurrences(of: "mission#([^#]+)#", with: "$1", options: .regularExpression)
+        }
+        return description
     }
     
     func getFullName(mission: MissionContents) -> String {

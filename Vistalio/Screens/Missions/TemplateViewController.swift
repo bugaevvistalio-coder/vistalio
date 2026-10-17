@@ -268,7 +268,7 @@ extension TemplateViewController: UICollectionViewDataSource, UICollectionViewDe
             let step = steps[indexPath.row]
             var height: CGFloat = 52
             height += step.name.height(withWidth: width, font: UIFont.systemFont(ofSize: 16, weight: .semibold))
-            if let description = step.description {
+            if let description = step.cleanDescription {
                 height += 16
                 let descriptionHeight = description.height(withWidth: width, font: UIFont.systemFont(ofSize: 12, weight: .medium))
                 height += ((step.expanded ?? false) ? descriptionHeight : min(descriptionHeight, 28))

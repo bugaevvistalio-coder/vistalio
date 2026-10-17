@@ -33,6 +33,7 @@ class MissionViewController: UIViewController {
     @IBOutlet weak var coverImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var aboutLabel: UILabel!
+    @IBOutlet weak var aboutLabelHeight: NSLayoutConstraint!
     
     @IBOutlet weak var topBgViewHeight: NSLayoutConstraint!
     @IBOutlet weak var missionInfoTop: NSLayoutConstraint!
@@ -158,15 +159,13 @@ class MissionViewController: UIViewController {
             } else if nameLines == 2 {
                 aboutLines = 1
             }
+            let maxHeight = aboutLabel.text!.height(withWidth: aboutLabel.frame.width, font: aboutLabel.font)
             if aboutLines == 0 || (mission.about?.isEmpty ?? true) {
                 aboutLabel.isHidden = true
             } else {
-                aboutLabel.numberOfLines = aboutLines
+                aboutLabelHeight.constant = min(maxHeight, aboutLabel.font.lineHeight * CGFloat(aboutLines) + CGFloat(aboutLines - 1) * (aboutLabel.font.lineHeight * 0.1))
                 aboutLabel.isHidden = false
             }
-            
-            aboutLabel.invalidateIntrinsicContentSize()
-            aboutLabel.superview!.layoutIfNeeded()
         }
     }
     
@@ -257,24 +256,30 @@ class MissionViewController: UIViewController {
         noRecommendedStepsView.isHidden = false
         noRecommendedStepsView.isUserInteractionEnabled = false
         
-        let needsNote = currentBlock?.nextAppears == NextBlockAppearRule.onNote.rawValue || currentBlock?.nextAppears == NextBlockAppearRule.onNoteRespectPeriod.rawValue
-        let needsEmotion = currentBlock?.nextAppears == NextBlockAppearRule.onEmotion.rawValue || currentBlock?.nextAppears == NextBlockAppearRule.onEmotionRespectPeriod.rawValue
+        let needsArtefact = currentBlock?.nextAppears == NextBlockAppearRule.onArtefacts.rawValue || currentBlock?.nextAppears == NextBlockAppearRule.onArtefactsRespectPeriod.rawValue
+        let artefatcts = currentBlock?.artefactsArray ?? []
+        let needsEmotion = needsArtefact && artefatcts.contains(.emotion)
+        
         let nextBlock = needsEmotion ? currentBlock?.nextEmotionBlock : currentBlock?.nextBlock
         if nextBlock != nil {
             noRecommendedStepsLabel.textColor = .textGrey60
             if let hint = currentBlock?.nextBlockHint {
                 noRecommendedStepsLabel.text = hint
-            } else if needsNote || needsEmotion {
-
-                let emotions = currentBlock?.notes.flatMap { $0.emotions?.allObjects.map { $0 as! MissionNoteEmotion } ?? [] } ?? []
+            } else if needsArtefact {
                 
                 if mission.archivedAt != nil {
                     noRecommendedStepsLabel.text = "Разархивируйте миссию, чтобы стали доступны новые шаги"
-                } else if needsNote && currentBlock?.notes.isEmpty ?? true {
-                    noRecommendedStepsLabel.text = "Добавьте заметку к любому шагу, чтобы открыть новые"
-                } else if needsEmotion && emotions.isEmpty {
-                    noRecommendedStepsLabel.text = "Добавьте эмоции к любому шагу, чтобы открыть новые"
-                } else if let recommendedAt = currentBlock?.recommendedAt {
+                } else if needsArtefact && !(currentBlock?.hasMandatoryArtefacts ?? false) {
+                    if artefatcts.contains(.note) {
+                        noRecommendedStepsLabel.text = "Добавьте заметку к любому шагу из последнего блока, чтобы открыть новые"
+                    } else if artefatcts.contains(.emotion) {
+                        noRecommendedStepsLabel.text = "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые"
+                    } else if artefatcts.contains(.video) {
+                        noRecommendedStepsLabel.text = "Добавьте видео к любому шагу из последнего блока, чтобы открыть новые"
+                    } else if artefatcts.contains(.photo) {
+                        noRecommendedStepsLabel.text = "Добавьте фото к любому шагу из последнего блока, чтобы открыть новые"
+                    }
+                } else if let recommendedAt = currentBlock?.recommendedAt, Int(currentBlock!.periodDays) > 0 {
                     let date = Calendar.current.date(byAdding: .day, value: Int(currentBlock!.periodDays), to: recommendedAt)!
                     noRecommendedStepsLabel.text = "Новые шаги откроются \(date.formatted3.lowercased())"
                 }
@@ -396,9 +401,14 @@ class MissionViewController: UIViewController {
                 self?.headerControlHeight.constant = 156
                 self?.tableView.layoutHeader()
             } completion: { [weak self] _ in
-                self?.isHeaderExpanded = false
-                self?.view.setNeedsLayout()
-                self?.view.layoutIfNeeded()
+                guard let `self` = self else {
+                    return
+                }
+                titleLabel.numberOfLines = 3
+                aboutLabelHeight.constant = aboutLabel.text!.height(withWidth: aboutLabel.frame.width, font: aboutLabel.font)
+                isHeaderExpanded = false
+                view.setNeedsLayout()
+                view.layoutIfNeeded()
             }
         } else {
             let width = titleLabel.frame.width
@@ -411,7 +421,8 @@ class MissionViewController: UIViewController {
             if labelsHeight > titleLabel.superview!.frame.height + 1 {
                 isHeaderExpanded = true
                 titleLabel.numberOfLines = 0
-                aboutLabel.numberOfLines = 0
+                aboutLabelHeight.constant = aboutLabel.text!.height(withWidth: aboutLabel.frame.width, font: aboutLabel.font)
+                aboutLabel.isHidden = false
                 
                 missionInfoTop.constant = titleLabel.superview!.frame.minY
                 missionInfoCenterY.priority = .defaultLow
@@ -567,7 +578,7 @@ class MissionViewController: UIViewController {
         if step.addedDate != nil {
             let stepIndex = addedSteps.firstIndex(of: step)!
             
-            if addedSteps.count > 1 && stepIndex > 0 && (mission.skipSortByImplemented || !step.isImplementedForDate(step.lastDate)) {
+            if !step.disableMove && addedSteps.count > 1 && stepIndex > 0 && (mission.skipSortByImplemented || !step.isImplementedForDate(step.lastDate)) {
                 items.append(
                     MenuItemData(text: "Вверх списка", image: .arrowUp, type: .normal, action: { [unowned self] in
                         menuUnderlayControl.removeFromSuperview()
@@ -581,17 +592,19 @@ class MissionViewController: UIViewController {
                     })
                 )
             }
-            items.append(
-                MenuItemData(text: "Удалить", image: .trash, type: .red, action: { [unowned self] in
-                    menuUnderlayControl.removeFromSuperview()
-                    deleteStep(step)
-                })
-            )
+            if !step.disableDelete {
+                items.append(
+                    MenuItemData(text: "Удалить", image: .trash, type: .red, action: { [unowned self] in
+                        menuUnderlayControl.removeFromSuperview()
+                        deleteStep(step)
+                    })
+                )
+            }
         } else {
             items = [
                 MenuItemData(text: "Изменить", image: .edit, type: .normal, action: { [unowned self] in
                     menuUnderlayControl.removeFromSuperview()
-                    let row = recommendedSteps.firstIndex(of: step)!
+
                     openEditStep(mission: mission, step: step) { [unowned self] step in
                         step.savedLastDate = step.lastDate
                         step.isImplemented = step.isImplementedForDate(step.savedLastDate)
@@ -788,7 +801,8 @@ extension MissionViewController: UITableViewDataSource {
             let step = addedSteps[indexPath.row]
             cell.step = step
             cell.onLongGesture = { [unowned self] step, image, rect in
-                if step.id >= 0 && (step.editable || (addedSteps.count > 1 && indexPath.row > 0) || (step.time?.contains(":") ?? false))  {
+                let showMove = !step.disableMove && addedSteps.count > 1 && indexPath.row > 0
+                if step.id >= 0 && (!step.disableDelete || showMove)  {
                     self.generator.impactOccurred()
                     self.generator.prepare()
                     self.showMenu(step: step, anchorRect: rect, image: image)

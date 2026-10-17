@@ -51,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func addNotification(text: String, secondaryText: String? = nil, mission: Mission? = nil, onTapped: (() -> ())? = nil) {
-        (UIApplication.shared.keyWindow?.rootViewController as? MainViewController)?.addNotification(text: text, secondaryText: secondaryText, mission: mission, onTapped: onTapped)
+        UIApplication.shared.mainViewController?.addNotification(text: text, secondaryText: secondaryText, mission: mission, onTapped: onTapped)
     }
     
     func openTemplate(id: Int) {

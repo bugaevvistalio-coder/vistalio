@@ -18,7 +18,12 @@ class PlayerControlsView: UIView, UIGestureRecognizerDelegate {
     private var view: UIView!
     
     private var isPlaying = false
-    private var isMuted = false
+    
+    var isMuted = true {
+        didSet {
+            soundButton.setImage(isMuted ? .muted : .unmuted, for: .normal)
+        }
+    }
     
     var onPlay: (() -> ())?
     var onPause: (() -> ())?
@@ -49,9 +54,7 @@ class PlayerControlsView: UIView, UIGestureRecognizerDelegate {
     
     func reset() {
         playButton.setImage(.play, for: .normal)
-        soundButton.setImage(.unmuted, for: .normal)
         isPlaying = false
-        isMuted = false
         progressViewWidth.constant = 0
     }
     
@@ -71,7 +74,6 @@ class PlayerControlsView: UIView, UIGestureRecognizerDelegate {
     
     @IBAction func soundTapped(_ sender: Any) {
         isMuted = !isMuted
-        soundButton.setImage(isMuted ? .muted : .unmuted, for: .normal)
         onMuted?(isMuted)
     }
     

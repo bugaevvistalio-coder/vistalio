@@ -138,10 +138,10 @@ class AddNoteView: UIView {
         }
     }
     
-    private func checkDoneCriteriaAndSave(step: MissionStep?) {
+    private func checkArtefactsAndSave(step: MissionStep?) {
         let photoCount = mediaHolder.media.filter { $0.type == "image" }.count
         let hasVideo = mediaHolder.media.contains { $0.type == "video" }
-        if let message = step?.block.checkDoneCriteria(title: titleTextView.text, text: bodyTextView.text, photoCount: photoCount, hasVideo: hasVideo) {
+        if let message = step?.block.checkArtefacts(title: titleTextView.text, text: bodyTextView.text, photoCount: photoCount, hasVideo: hasVideo) {
             parentViewController?.showHowToOpenNextStep(message: message) { [unowned self] in
                 save(step: step)
             }
@@ -168,10 +168,15 @@ class AddNoteView: UIView {
                         NotificationCenter.default.post(name: .noteUpdated, object: note)
                         
                         let hasEmotion = (note.emotions?.allObjects.count ?? 0) > 0
-                        step.onNoteAdded(from: parentViewController, hasEmotion: hasEmotion)
+                        if hasEmotion {
+                            MissionsHolder.shared.removeEmotionNotification(mission: step.block.mission)
+                        }
                     }
                 }
             }
+            
+            step.onNoteAdded(from: parentViewController)
+            
             mediaHolder.media.forEach { $0.saved = true }
             
             step.block.mission.checkEmotionsToOpenSpecialSteps()
@@ -276,7 +281,7 @@ class AddNoteView: UIView {
         onTappedInside?()
         
         if step != nil {
-            checkDoneCriteriaAndSave(step: step)
+            checkArtefactsAndSave(step: step)
         } else {
             let sb = UIStoryboard(name: "Missions", bundle: nil)
             let vc = sb.instantiateViewController(identifier: "MoveNoteVC") as! MoveNoteViewController
@@ -287,7 +292,7 @@ class AddNoteView: UIView {
                 vc.date = date
             }
             vc.onMoved = { [unowned self] mission, step, stepDeleted, missionDeleted in
-                self.checkDoneCriteriaAndSave(step: step)
+                self.checkArtefactsAndSave(step: step)
             }
             parentViewController?.presentFullScreen(vc)
         }

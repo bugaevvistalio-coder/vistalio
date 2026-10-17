@@ -60,7 +60,7 @@ class StepViewController: UIViewController {
     
     private var selectedDate: Date? {
         didSet {
-            let notes = step.notes?.allObjects.map { $0 as! MissionNote }.sorted { ($0.date ?? Date()) > ($1.date ?? Date()) } ?? []
+//            let notes = step.notes?.allObjects.map { $0 as! MissionNote }.sorted { ($0.date ?? Date()) > ($1.date ?? Date()) } ?? []
             if let selectedDate = selectedDate {
                 dateLabel.text = "За \(selectedDate.formatted1.lowercased())"
                 dateControl.backgroundColor = .darkGrey
@@ -70,7 +70,7 @@ class StepViewController: UIViewController {
                 dateImageView.image = .cross2
                 checkImageView.isHidden = false
                 checkImageView.image = step.isImplementedForDate(selectedDate) ? .checkCircleOn : .checkCircleOff
-                self.notes = notes.filter { $0.date?.startOfDay == selectedDate.startOfDay }
+//                self.notes = notes.filter { $0.date?.startOfDay == selectedDate.startOfDay }
             } else {
                 dateLabel.text = "За всё время"
                 dateControl.backgroundColor = .bgGrey
@@ -79,7 +79,7 @@ class StepViewController: UIViewController {
                 dateImageView.tintColor = .textGrey10
                 dateImageView.image = .calendar
                 checkImageView.isHidden = step.frequency != StepFrequency.once.rawValue || !step.hasFrequency
-                self.notes = notes
+//                self.notes = notes
             }
             tableView.reloadData()
         }
@@ -115,7 +115,7 @@ class StepViewController: UIViewController {
             addNoteButton.superview?.alpha = 0
             stackViewBottom.constant = -42
         } else {
-            menuButton.isHidden = !step.editable
+            menuButton.isHidden = step.disableEdit && step.disableDelete && step.disableMove
             setupAddNoteView()
         }
         
@@ -123,6 +123,7 @@ class StepViewController: UIViewController {
         nameTextView.textContainerInset = .zero
         descriptionTextView.textContainer.lineFragmentPadding = 0
         descriptionTextView.textContainerInset = .zero
+        descriptionTextView.delegate = self
         
         if let date = date, step.hasFrequency {
             selectedDate = date
@@ -130,6 +131,8 @@ class StepViewController: UIViewController {
         } else {
             selectedDate = nil
         }
+        
+        notes = step.notes?.allObjects.map { $0 as! MissionNote }.sorted { ($0.date ?? Date()) > ($1.date ?? Date()) } ?? []
         
         calendarView.generateMonths()
         calendarView.missionStep = step
@@ -240,7 +243,12 @@ class StepViewController: UIViewController {
         nameTextView.text = stepName
         smallHeaderNameLabel.text = stepName
         if let text = step.text, !text.isEmpty {
-            descriptionTextView.text = text
+            if text.contains("mission#") {
+                descriptionTextView.attributedText = step.createAttributedTextWithLinks(font: UIFont.systemFont(ofSize: 16, weight: .medium), color: .textGrey70)
+                descriptionTextView.linkTextAttributes = [.foregroundColor: UIColor.highlightBlue]
+            } else {
+                descriptionTextView.text = text
+            }
             descriptionTextView.isHidden = false
             smallHeaderDescriptionLabel.text = text
             smallHeaderDescriptionLabel.isHidden = false
@@ -262,9 +270,9 @@ class StepViewController: UIViewController {
     
     private func updateNotes() {
         notes = step.notes?.allObjects.map { $0 as! MissionNote }.sorted { ($0.date ?? Date()) > ($1.date ?? Date()) } ?? []
-        if let selectedDate = selectedDate {
-            notes = notes.filter { $0.date?.startOfDay == selectedDate.startOfDay }
-        }
+//        if let selectedDate = selectedDate {
+//            notes = notes.filter { $0.date?.startOfDay == selectedDate.startOfDay }
+//        }
         self.tableView.reloadData()
     }
     
@@ -341,51 +349,57 @@ class StepViewController: UIViewController {
         
         let menuView = MenuView()
         var items = [MenuItemData]()
-        items.append(MenuItemData(text: "Изменить", image: .edit, type: .normal, action: { [unowned self] in
-            menuUnderlayControl.removeFromSuperview()
-            
-            if step.canEditOnlyTime {
-                let vc = storyboard?.instantiateViewController(withIdentifier: "EditTimeVC") as! EditTimeViewController
+        if !step.disableEdit || step.canEditOnlyTime {
+            items.append(MenuItemData(text: "Изменить", image: .edit, type: .normal, action: { [unowned self] in
+                menuUnderlayControl.removeFromSuperview()
+                
+                if step.canEditOnlyTime {
+                    let vc = storyboard?.instantiateViewController(withIdentifier: "EditTimeVC") as! EditTimeViewController
+                    vc.step = step
+                    vc.onStepSaved = { [unowned self] in
+                        navigationStepButton.setTitle(step.fullName.limitCharacters(20), for: .normal)
+                        displayStep()
+                        (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг изменён")
+                    }
+                    presentFullScreen(vc)
+                } else {
+                    openEditStep(mission: step.block.mission, step: step) { [unowned self] step in
+                        navigationStepButton.setTitle(step.fullName.limitCharacters(20), for: .normal)
+                        displayStep()
+                        resetCalendar()
+                        (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг изменён")
+                    }
+                }
+            }))
+        }
+      
+        if !step.disableMove {
+            items.append(MenuItemData(text: "Переместить", image: .target, type: .normal, action: { [unowned self] in
+                menuUnderlayControl.removeFromSuperview()
+                
+                let vc = storyboard!.instantiateViewController(identifier: "MoveStepVC") as! MoveStepViewController
                 vc.step = step
-                vc.onStepSaved = { [unowned self] in
-                    navigationStepButton.setTitle(step.fullName.limitCharacters(20), for: .normal)
-                    displayStep()
-                    (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг изменён")
+                vc.onMoved = { [unowned self] in
+                    (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг перемещён")
+                    navigationMissionButton.setTitle(step.block.mission.name?.limitCharacters(20), for: .normal)
                 }
                 presentFullScreen(vc)
-            } else {
-                openEditStep(mission: step.block.mission, step: step) { [unowned self] step in
-                    navigationStepButton.setTitle(step.fullName.limitCharacters(20), for: .normal)
-                    displayStep()
+            }))
+        }
+        if !step.disableDelete {
+            items.append(MenuItemData(text: "Удалить", image: .trash, type: .red, action: { [unowned self] in
+                menuUnderlayControl.removeFromSuperview()
+                
+                openDeleteStep(step, date: selectedDate, onDeleted: { [unowned self] in
+                    NotificationCenter.default.post(name: .stepUpdated, object: step)
+                    navigationController?.popViewController(animated: true)
+                }, onUpdated: { [unowned self] in
+                    NotificationCenter.default.post(name: .stepUpdated, object: step)
                     resetCalendar()
-                    (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг изменён")
-                }
-            }
-        }))
-      
-        items.append(MenuItemData(text: "Переместить", image: .target, type: .normal, action: { [unowned self] in
-            menuUnderlayControl.removeFromSuperview()
-            
-            let vc = storyboard!.instantiateViewController(identifier: "MoveStepVC") as! MoveStepViewController
-            vc.step = step
-            vc.onMoved = { [unowned self] in
-                (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг перемещён")
-                navigationMissionButton.setTitle(step.block.mission.name?.limitCharacters(20), for: .normal)
-            }
-            presentFullScreen(vc)
-        }))
-        items.append(MenuItemData(text: "Удалить", image: .trash, type: .red, action: { [unowned self] in
-            menuUnderlayControl.removeFromSuperview()
-            
-            openDeleteStep(step, date: selectedDate, onDeleted: { [unowned self] in
-                NotificationCenter.default.post(name: .stepUpdated, object: step)
-                navigationController?.popViewController(animated: true)
-            }, onUpdated: { [unowned self] in
-                NotificationCenter.default.post(name: .stepUpdated, object: step)
-                resetCalendar()
-                tableView.reloadData()
-            })
-        }))
+                    tableView.reloadData()
+                })
+            }))
+        }
         
         menuView.items = items
         menuView.translatesAutoresizingMaskIntoConstraints = false
@@ -453,7 +467,7 @@ class StepViewController: UIViewController {
         }
         
         if step.block.nextAppears == NextBlockAppearRule.onDoneWithPreview.rawValue {
-            if step.block.fitsDoneCriteria {
+            if step.block.hasMandatoryArtefacts {
                 showStepImplementationUncancellable { [unowned self] in
                     let next = step.block.autoImplement()
                     checkImageView.image = .checkCircleOn
@@ -574,6 +588,25 @@ extension StepViewController: UITableViewDataSource, UITableViewDelegate {
                     smallHeaderNameLabel.superview!.layoutIfNeeded()
                 }
             }
+        }
+    }
+}
+
+extension StepViewController: UITextViewDelegate {
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        if URL.scheme == "mission" {
+            // Декодируем текст обратно из URL
+            if let missionText = URL.host?.removingPercentEncoding {
+                handleMissionTap(text: missionText)
+            }
+            return false
+        }
+        return true
+    }
+        
+    func handleMissionTap(text: String) {
+        if let template = MissionsHolder.shared.templates.first(where: { text.contains($0.name) }) {
+            openTemplate(template)
         }
     }
 }

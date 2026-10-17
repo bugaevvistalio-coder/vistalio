@@ -36,7 +36,7 @@ class RecommendedStepCell: UITableViewCell {
         didSet {
             nameLabel.text = step.fullName
             
-            descriptionLabel.text = step.expanded ? step.text : step.shortText
+            descriptionLabel.text = step.expanded ? step.cleanText : step.shortText
             descriptionLabel.numberOfLines = step.expanded ? 0 : 2
             
             if !(roundedView.gestureRecognizers?.contains(longGestureRecognizer) ?? false) {
@@ -62,9 +62,9 @@ class RecommendedStepCell: UITableViewCell {
     }
     
     @IBAction func tapped(_ sender: Any) {
-        if step.text != nil {
+        if let text = step.cleanText {
             step.expanded = !step.expanded
-            descriptionLabel.text = step.expanded ? step.text : step.shortText
+            descriptionLabel.text = step.expanded ? text : step.shortText
             descriptionLabel.numberOfLines = step.expanded ? 0 : 2
             onStepTapped?()
         }

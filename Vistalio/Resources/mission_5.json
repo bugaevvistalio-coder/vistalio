@@ -78,7 +78,7 @@
                 }
             ],
             "nextAppears": "onAllStepsDone",
-            "doneCriteria": ["photo"],
+            "artefacts": ["photo"],
             "nextBlockHint": "Выполни все задания недели, прикрепи фото к каждому из них — и разблокируй финальный лук!"
         },
         {

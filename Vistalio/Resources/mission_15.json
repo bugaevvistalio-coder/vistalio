@@ -28,7 +28,13 @@
                     "name": "💛 Благодарность себе",
                     "description": "Записать впечатления и мысли от сегодняшнего дня. Написать себе слова благодарности за сегодняшний день 🙏."
                 }
-            ]
+            ],
+            "emotionGroup": "fear",
+            "nextAppears": "onArtefactsRespectPeriod",
+            "artefacts": ["emotion"],
+            "periodDays": 7,
+            "nextBlockNotificationTitle": "Твой день тишины 🌿",
+            "nextBlockNotificationBody": "Устрой себе полную перезагрузку ✨"
         },
         {
             "steps": [
@@ -57,7 +63,13 @@
                     "name": "📖 Книга перед сном",
                     "description": "Заварить чай и читать купленную книгу до сна ☕."
                 }
-            ]
+            ],
+            "emotionGroup": "sadness",
+            "nextAppears": "onArtefactsRespectPeriod",
+            "artefacts": ["emotion"],
+            "periodDays": 7,
+            "nextBlockNotificationTitle": "Время творить! 🎨",
+            "nextBlockNotificationBody": "Устрой завтра день вдохновения, красок и новых впечатлений"
         },
         {
             "steps": [
@@ -81,7 +93,13 @@
                     "name": "🥘 Эксперимент на кухне",
                     "description": "Приготовить дома на ужин блюдо другой кухни мира по рецепту 🌏."
                 }
-            ]
+            ],
+            "emotionGroup": "sadness",
+            "nextAppears": "onArtefactsRespectPeriod",
+            "artefacts": ["emotion"],
+            "periodDays": 7,
+            "nextBlockNotificationTitle": "День открытий 🔍",
+            "nextBlockNotificationBody": "Всё надоело? Смени фокус! 🌍"
         },
         {
             "steps": [
@@ -105,7 +123,13 @@
                     "name": "🎶 Легкая тренировка",
                     "description": "Вечером — танцы под музыку или упражнения с весом тела 💃. Завершить день медитацией или дыхательными практиками перед сном."
                 }
-            ]
+            ],
+            "emotionGroup": "anger",
+            "nextAppears": "onArtefactsRespectPeriod",
+            "artefacts": ["emotion"],
+            "periodDays": 7,
+            "nextBlockNotificationTitle": "Хочешь взбодриться? ⚡",
+            "nextBlockNotificationBody": "Проведи день в движении и подари телу заслуженную заботу 🏃‍♀️"
         },
         {
             "steps": [
@@ -133,7 +157,13 @@
                     "name": "🕯️ Уютное завершение дня",
                     "description": "Укутаться в плед, зажечь свечи, съесть десерт (если еще не съеден), посмотреть романтическую комедию или почитать 💖."
                 }
-            ]
+            ],
+            "emotionGroup": "joy",
+            "nextAppears": "onArtefactsRespectPeriod",
+            "artefacts": ["emotion"],
+            "periodDays": 7,
+            "nextBlockNotificationTitle": "Побалуй себя! 🍭",
+            "nextBlockNotificationBody": "Устрой день маленьких радостей и приятных мелочей. Сегодня можно всё, что приносит тебе улыбку ✨"
         }
     ]
 }

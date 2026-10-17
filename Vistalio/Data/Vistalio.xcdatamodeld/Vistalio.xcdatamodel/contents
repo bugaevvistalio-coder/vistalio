@@ -70,9 +70,12 @@
     </entity>
     <entity name="MissionStep" representedClassName="MissionStep" syncable="YES">
         <attribute name="addedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="artefacts" optional="YES" attributeType="String"/>
         <attribute name="canEditOnlyTime" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="dailyNotificationScheduled" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="editable" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="disableDelete" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="disableEdit" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="disableMove" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="endDate" optional="YES" attributeType="String"/>
         <attribute name="frequency" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="hidden" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -111,8 +114,8 @@
     </entity>
     <entity name="StepsBlock" representedClassName="StepsBlock" syncable="YES">
         <attribute name="answerHint" optional="YES" attributeType="String"/>
+        <attribute name="artefacts" optional="YES" attributeType="String"/>
         <attribute name="checkPeriod" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="doneCriteria" optional="YES" attributeType="String"/>
         <attribute name="emotionGroup" optional="YES" attributeType="String"/>
         <attribute name="emotionsCountToOpenBlock" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>

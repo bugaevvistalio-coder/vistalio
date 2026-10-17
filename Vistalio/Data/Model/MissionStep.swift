@@ -54,7 +54,7 @@ extension StepsBlock {
     @NSManaged public var id: Int
     
     @NSManaged public var nextAppears: String?
-    @NSManaged public var doneCriteria: String?
+    @NSManaged public var artefacts: String?
     @NSManaged public var photoMin: Int16
     @NSManaged public var searchText: String?
     @NSManaged public var recommendedAt: Date?
@@ -89,18 +89,21 @@ extension StepsBlock {
     }
     
     var isNoteMandatory: Bool {
-        let array = doneCriteriaArray
-        return array.contains(BlockDoneCriteria.geo) || array.contains(BlockDoneCriteria.photo) || array.contains(BlockDoneCriteria.video) || array.contains(BlockDoneCriteria.searchText)
+        let array = artefactsArray
+        return array.contains(BlockArtefact.geo) || array.contains(BlockArtefact.photo) || array.contains(BlockArtefact.video) || array.contains(BlockArtefact.searchText)
     }
     
-    var fitsDoneCriteria: Bool {
-        let array = doneCriteriaArray
+    var hasMandatoryArtefacts: Bool {
+        let array = artefactsArray
         let notes = notes
         
-//        if array.contains(BlockDoneCriteria.geo) {
+//        if array.contains(BlockArtefact.geo) {
 //            return false
 //        }
-        if array.contains(BlockDoneCriteria.emotion) {
+        if array.contains(.note) && notes.isEmpty {
+            return false
+        }
+        if array.contains(BlockArtefact.emotion) {
             var hasEmotion = false
             for n in notes {
                 if !(n.emotions?.allObjects.isEmpty ?? true) {
@@ -113,16 +116,16 @@ extension StepsBlock {
             }
         }
         let media = notes.flatMap { $0.images?.allObjects.map { $0 as! MissionNoteImage } ?? [] }
-        if array.contains(BlockDoneCriteria.photo), media.filter({ $0.type == "image" }).count < photoMin {
+        if array.contains(BlockArtefact.photo), media.filter({ $0.type == "image" }).count < photoMin {
             return false
         }
-        if array.contains(BlockDoneCriteria.video), media.filter({ $0.type == "video" }).count == 0 {
+        if array.contains(BlockArtefact.video), media.filter({ $0.type == "video" }).count == 0 {
             return false
         }
-        if array.contains(BlockDoneCriteria.photoOrVideo), media.count == 0 {
+        if array.contains(BlockArtefact.photoOrVideo), media.count == 0 {
             return false
         }
-        if array.contains(BlockDoneCriteria.searchText), let searchText = searchText?.lowercased(), !notes.contains(where: { ($0.text?.lowercased().contains(searchText) ?? false) || ($0.name?.lowercased().contains(searchText) ?? false) }) {
+        if array.contains(BlockArtefact.searchText), let searchText = searchText?.lowercased(), !notes.contains(where: { ($0.text?.lowercased().contains(searchText) ?? false) || ($0.name?.lowercased().contains(searchText) ?? false) }) {
             return false
         }
         return true
@@ -132,15 +135,15 @@ extension StepsBlock {
         return steps?.allObjects.map { $0 as! MissionStep }.flatMap { $0.notes?.allObjects.map { $0 as! MissionNote } ?? [] }.filter { $0.byUser && $0.step!.id >= 0 } ?? []
     }
     
-    var doneCriteriaArray: [BlockDoneCriteria] {
-        let array = doneCriteria?.components(separatedBy: ",") ?? []
-        return array.map { BlockDoneCriteria(rawValue: $0)! }
+    var artefactsArray: [BlockArtefact] {
+        let array = artefacts?.components(separatedBy: ",") ?? []
+        return array.map { BlockArtefact(rawValue: $0)! }
     }
     
     @discardableResult
     func unlockNextBlock(date: Date? = nil) -> Bool {
         let isLastBlock = mission.lastBlock?.recommendedAt == recommendedAt
-        let isEmotionBlock = (nextAppears == NextBlockAppearRule.onEmotion.rawValue || nextAppears == NextBlockAppearRule.onEmotionRespectPeriod.rawValue)
+        let isEmotionBlock = (nextAppears == NextBlockAppearRule.onArtefacts.rawValue || nextAppears == NextBlockAppearRule.onArtefactsRespectPeriod.rawValue) && artefactsArray.contains(.emotion)
         if !isLastBlock {
             return false
         }
@@ -212,14 +215,15 @@ extension StepsBlock {
     }
     
     var nextEmotionBlock: StepsBlock? {
-        let notes = mission.addedSteps.flatMap { $0.notes?.allObjects.map { $0 as! MissionNote } ?? [] }
+        let openedBlocks = mission.openedBlocks
+        let notes = openedBlocks.last?.steps?.allObjects.map { $0 as! MissionStep }.flatMap { $0.notes?.allObjects.map { $0 as! MissionNote } ?? [] } ?? []
         let emotions = notes.flatMap { $0.emotions?.allObjects.map({ MissionEmotion(rawValue: ($0 as! MissionNoteEmotion).emotion)! }) ?? [] }
-        let grouped = Dictionary(grouping: emotions, by: { $0.group } )
-        let emotionGroups: [EmotionGroup] = Array(grouped.keys)
+        let groupedBlockEmotions = Dictionary(grouping: emotions, by: { $0.group } )
+        let emotionGroups: [EmotionGroup] = Array(groupedBlockEmotions.keys)
         let priorities: [EmotionGroup] = [.anger, .joy, .fear, .sadness]
         var sortedGroups = emotionGroups.sorted {
-            let count1 = grouped[$0]!.count
-            let count2 = grouped[$1]!.count
+            let count1 = groupedBlockEmotions[$0]!.count
+            let count2 = groupedBlockEmotions[$1]!.count
             if count1 == count2 {
                 return priorities.firstIndex(of: $0)! < priorities.firstIndex(of: $1)!
             }
@@ -232,6 +236,20 @@ extension StepsBlock {
                 }
             }
         }
+        
+        let groupedBlocks = Dictionary(grouping: openedBlocks.filter { $0.emotionGroup != nil }, by: { $0.emotionGroup! } )
+        let maxCount = groupedBlocks.values.map({ $0.count }).max() ?? 0
+        let macCountBlocks = groupedBlocks.filter { $0.value.count == maxCount }
+        
+        let availableEmotionGroups: [EmotionGroup]
+        if macCountBlocks.count == 0 || macCountBlocks.count == 4 {
+            availableEmotionGroups = priorities
+        } else {
+            let maxEmotionGroups = macCountBlocks.map { EmotionGroup(rawValue: $0.key)! }
+            availableEmotionGroups = priorities.filter { !maxEmotionGroups.contains($0) }
+        }
+        
+        sortedGroups = sortedGroups.filter { availableEmotionGroups.contains($0) }
         
         let blocks = mission.emotionBlocks.filter { $0.recommendedAt == nil && sortedGroups.contains(EmotionGroup(rawValue: $0.emotionGroup!)!) }.sorted {
             let index1 = sortedGroups.firstIndex(of: EmotionGroup(rawValue: $0.emotionGroup!)!)!
@@ -276,20 +294,20 @@ extension StepsBlock {
     @discardableResult
     func checkAutoImplementAfterNoteCreated() -> MissionStep? {
         if recommendedAt != nil {
-            if nextAppears == NextBlockAppearRule.onDoneWithPreview.rawValue && (doneCriteriaArray.contains(.note) || fitsDoneCriteria) {
+            if nextAppears == NextBlockAppearRule.onDoneWithPreview.rawValue && (artefactsArray.contains(.note) || hasMandatoryArtefacts) {
                 return autoImplement()
             }
         }
         return nil
     }
     
-    func checkDoneCriteria(title: String?, text: String?, photoCount: Int, hasVideo: Bool) -> NSAttributedString? {
+    func checkArtefacts(title: String?, text: String?, photoCount: Int, hasVideo: Bool) -> NSAttributedString? {
         var attrString: NSMutableAttributedString?
         if recommendedAt != nil && nextAppears == NextBlockAppearRule.onDoneWithPreview.rawValue {
-            let array = doneCriteriaArray
+            let array = artefactsArray
             let notes = notes
             
-            if array.contains(BlockDoneCriteria.searchText), let searchText = searchText?.lowercased() {
+            if array.contains(BlockArtefact.searchText), let searchText = searchText?.lowercased() {
                 let titleContains = title?.lowercased().contains(searchText) ?? false
                 let textContains = text?.lowercased().contains(searchText) ?? false
                 let notesContain = notes.contains(where: { ($0.text?.lowercased().contains(searchText) ?? false) || ($0.name?.lowercased().contains(searchText) ?? false) })
@@ -305,7 +323,7 @@ extension StepsBlock {
             
             var criteria = [String]()
             let media = notes.flatMap { $0.images?.allObjects.map { $0 as! MissionNoteImage } ?? [] }
-            if array.contains(BlockDoneCriteria.photo) {
+            if array.contains(BlockArtefact.photo) {
                 let count = media.filter({ $0.type == "image" }).count + photoCount
                 if count < photoMin {
                     var text = "фото"
@@ -315,10 +333,10 @@ extension StepsBlock {
                     criteria.append(text)
                 }
             }
-            if array.contains(BlockDoneCriteria.video) && !hasVideo && media.filter({ $0.type == "video" }).count == 0 {
+            if array.contains(BlockArtefact.video) && !hasVideo && media.filter({ $0.type == "video" }).count == 0 {
                 criteria.append("видео")
             }
-            if array.contains(BlockDoneCriteria.photoOrVideo) && !hasVideo && photoCount == 0 && media.isEmpty {
+            if array.contains(BlockArtefact.photoOrVideo) && !hasVideo && photoCount == 0 && media.isEmpty {
                 criteria.append("фото или видео")
             }
             
@@ -338,6 +356,28 @@ extension StepsBlock {
         return attrString
     }
     
+    func checkAllStepsArtefacts() {
+        let steps = steps?.allObjects.map { $0 as! MissionStep } ?? []
+        for s in steps {
+            if !s.hasMandatoryArtefacts {
+                return
+            }
+        }
+        if unlockNextBlock() {
+            showStepsAdded()
+        }
+    }
+    
+    func showStepsAdded() {
+        let mission = mission
+        (UIApplication.shared.delegate as! AppDelegate).addNotification(text: nextBlockNotificationTitle ?? "Открылись новые шаги в \(mission.name ?? "")", secondaryText: nextBlockNotificationBody ?? "К рекомендуемым шагам →", mission: mission) {
+            if let mainVC = UIApplication.shared.mainViewController {
+                mainVC.dismiss(animated: false)
+                mainVC.switchTab(tabIndex: 1, toRoot: true)
+                (mainVC.controllers[1] as! UINavigationController).topViewController?.openMission(mission, recommendedExpanded: true)
+            }
+        }
+    }
     
     func scheduleAppearNotification() {
         guard let recommendedAt = recommendedAt else {
@@ -395,7 +435,10 @@ extension MissionStep {
     @NSManaged public var hidden: Bool
     @NSManaged public var addedDate: Date?
     @NSManaged public var sortOrder: Int32
-    @NSManaged public var editable: Bool
+    @NSManaged public var disableEdit: Bool
+    @NSManaged public var disableDelete: Bool
+    @NSManaged public var disableMove: Bool
+    @NSManaged public var artefacts: String?
     
     @NSManaged public var startDate: String?
     @NSManaged public var endDate: String?
@@ -417,7 +460,60 @@ extension MissionStep {
     @NSManaged public var originalBlock: StepsBlock?
     
     var shortText: String? {
-        return text?.replacingOccurrences(of: "\n\n", with: " ").replacingOccurrences(of: "\n", with: " ")
+        let text = text?.replacingOccurrences(of: "\n\n", with: " ").replacingOccurrences(of: "\n", with: " ")
+        if let text = text, text.contains("mission#") {
+            return text.replacingOccurrences(of: "mission#([^#]+)#", with: "$1", options: .regularExpression)
+        }
+        return text
+    }
+    
+    var cleanText: String? {
+        if let text = text, text.contains("mission#") {
+            return text.replacingOccurrences(of: "mission#([^#]+)#", with: "$1", options: .regularExpression)
+        }
+        return text
+    }
+    
+    func createAttributedTextWithLinks(font: UIFont, color: UIColor) -> NSAttributedString? {
+        guard let text = text else {
+            return nil
+        }
+        // Регулярное выражение ищет шаблон: mission#любой_текст#
+        // Круглые скобки ( ) задают capture group, чтобы достать текст внутри
+        let pattern = "mission#([^#]+)#"
+        let regex = try! NSRegularExpression(pattern: pattern, options: [])
+        
+        let mutableString = NSMutableAttributedString(string: text)
+        let fullRange = NSRange(location: 0, length: mutableString.length)
+        mutableString.addAttributes([.font: font, .foregroundColor: color], range: fullRange)
+        
+        // Ищем совпадения с конца строки к началу!
+        // Это критически важно, так как при замене текста длина строки меняется,
+        // и если идти с начала, все последующие индексы «съедут».
+        let matches = regex.matches(in: text, options: [], range: fullRange).reversed()
+        
+        for match in matches {
+            let fullMatchRange = match.range(at: 0) // Диапазон вместе с "mission#...#"
+            let textInsideRange = match.range(at: 1) // Диапазон только текста внутри кусков # #
+            
+            // Извлекаем чистый текст (например, "первое задание")
+            let nsString = mutableString.string as NSString
+            let cleanText = nsString.substring(with: textInsideRange)
+            
+            // Создаем временную подстроку с атрибутом ссылки
+            let attributedLink = NSMutableAttributedString(string: cleanText, attributes: [.font: font])
+            
+            // Кодируем чистый текст в URL, чтобы передать его в обработчик нажатия
+            if let encodedText = cleanText.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed),
+               let url = URL(string: "mission://\(encodedText)") {
+                attributedLink.addAttribute(.link, value: url, range: NSRange(location: 0, length: attributedLink.length))
+            }
+            
+            // Заменяем весь кусок "mission#текст#" на чистый кликабельный "текст"
+            mutableString.replaceCharacters(in: fullMatchRange, with: attributedLink)
+        }
+        
+        return mutableString
     }
     
     var hasFrequency: Bool {
@@ -429,6 +525,11 @@ extension MissionStep {
             return "\(time) \(name ?? "")"
         }
         return name ?? ""
+    }
+    
+    var artefactsArray: [BlockArtefact] {
+        let array = artefacts?.components(separatedBy: ",") ?? []
+        return array.map { BlockArtefact(rawValue: $0)! }
     }
     
     var formattedTime: String? {
@@ -472,7 +573,6 @@ extension MissionStep {
         step.frequency = frequency.rawValue
         step.startDate = startDate.toDateString
         step.endDate = endDate?.toDateString
-        step.editable = true
         return step
     }
     
@@ -484,13 +584,16 @@ extension MissionStep {
         step.id = id
         step.name = template.name
         step.text = template.description
-        step.editable = template.editable ?? true
+        step.disableEdit = template.disableEdit ?? false
+        step.disableDelete = template.disableDelete ?? false
+        step.disableMove = template.disableMove ?? false
         step.noteTitle = template.noteTitle
         step.frequency = template.frequency?.rawValue ?? 0
         step.time = template.time
         step.startDate = startDate?.toDateString
         step.sortOrder = Int32(template.sortOrder ?? 0)
         step.canEditOnlyTime = template.canEditOnlyTime ?? false
+        step.artefacts = template.artefacts?.map { $0.rawValue }.joined(separator: ",")
         step.block = block
         
         if let notes = template.notes {
@@ -525,6 +628,41 @@ extension MissionStep {
             return true
         }
         return originalName == name && originalText == text && frequency == 0
+    }
+    
+    var hasMandatoryArtefacts: Bool {
+        let array = artefactsArray
+        let notes = notes?.allObjects.map { $0 as! MissionNote } ?? []
+        
+//        if array.contains(BlockArtefact.geo) {
+//            return false
+//        }
+        if array.contains(.note) && notes.isEmpty {
+            return false
+        }
+        if array.contains(BlockArtefact.emotion) {
+            var hasEmotion = false
+            for n in notes {
+                if !(n.emotions?.allObjects.isEmpty ?? true) {
+                    hasEmotion = true
+                    break
+                }
+            }
+            if !hasEmotion {
+                return false
+            }
+        }
+        let media = notes.flatMap { $0.images?.allObjects.map { $0 as! MissionNoteImage } ?? [] }
+        if array.contains(BlockArtefact.photo), media.filter({ $0.type == "image" }).count == 0 {
+            return false
+        }
+        if array.contains(BlockArtefact.video), media.filter({ $0.type == "video" }).count == 0 {
+            return false
+        }
+        if array.contains(BlockArtefact.photoOrVideo), media.count == 0 {
+            return false
+        }
+        return true
     }
     
     func generateDatesForMonth(_ month: Date) -> [Date] {
@@ -842,38 +980,39 @@ extension MissionStep {
         return moved
     }
     
-    func onNoteAdded(from vc: UIViewController?, hasEmotion: Bool) {
+    func onNoteAdded(from vc: UIViewController?) {
         if block.nextAppears == NextBlockAppearRule.onDoneWithPreview.rawValue {
             if let nextStep = block.checkAutoImplementAfterNoteCreated() {
                 vc?.showStepImplemented(nextStep: nextStep)
             } else if block.locked {
                 vc?.archiveAndShowMissionCompleted(mission: block.mission)
             }
-        } else if (block.nextAppears == NextBlockAppearRule.onNote.rawValue || (block.nextAppears == NextBlockAppearRule.onEmotion.rawValue && hasEmotion)) && id >= 0 {
-            if block.mission.archivedAt == nil && block.unlockNextBlock() {
-                showStepsAdded()
-            }
-        } else if (block.nextAppears == NextBlockAppearRule.onNoteRespectPeriod.rawValue || (block.nextAppears == NextBlockAppearRule.onEmotionRespectPeriod.rawValue && hasEmotion)) && id >= 0 && block.mission.archivedAt == nil, let recommendedAt = block.recommendedAt {
-            let daysBetween = Calendar.current.dateComponents([.minute], from: recommendedAt, to: Date()).minute!
-            if daysBetween >= Int(block.periodDays) {
-                print("Try to unlock next block")
-                if block.unlockNextBlock() {
-                    showStepsAdded()
+        } else if (block.nextAppears == NextBlockAppearRule.onArtefacts.rawValue || block.nextAppears == NextBlockAppearRule.onArtefactsRespectPeriod.rawValue) && id >= 0 && block.mission.archivedAt == nil {
+            if block.hasMandatoryArtefacts {
+                if block.nextAppears == NextBlockAppearRule.onArtefacts.rawValue {
+                    if block.unlockNextBlock() {
+                        block.showStepsAdded()
+                    }
+                } else if block.nextAppears == NextBlockAppearRule.onArtefactsRespectPeriod.rawValue, let recommendedAt = block.recommendedAt {
+                    let daysBetween = Calendar.current.dateComponents([.minute], from: recommendedAt, to: Date()).minute!
+                    if daysBetween >= Int(block.periodDays) {
+                        print("Try to unlock next block")
+                        if block.unlockNextBlock() {
+                            block.showStepsAdded()
+                        }
+                    } else if !block.checkPeriod  {
+                        print("Setup check period")
+                        CoreDataStack.shared.performAndWait { [unowned self] context in
+                            block.checkPeriod = true
+                            block.scheduleAppearNotification()
+                        }
+                    }
                 }
-            } else if !block.checkPeriod  {
-                print("Setup check period")
-                CoreDataStack.shared.performAndWait { [unowned self] context in
-                    block.checkPeriod = true
-                    block.scheduleAppearNotification()
-                }
             }
-        } else if let lastBlock = block.mission.lastBlock, lastBlock.nextAppears == NextBlockAppearRule.onAllStepsDone.rawValue && lastBlock.doneCriteriaArray.contains(.photo) {
+        } else if let lastBlock = block.mission.lastBlock, lastBlock.nextAppears == NextBlockAppearRule.onAllStepsDone.rawValue && lastBlock.artefactsArray.contains(.photo) {
             checkAllStepsDone()
-        }
-        
-        if hasEmotion {
-            print("Schedule - emotion given")
-            MissionsHolder.shared.removeEmotionNotification(mission: block.mission)
+        } else if block.nextAppears == NextBlockAppearRule.onAllStepsArtefacts.rawValue && id >= 0 && block.mission.archivedAt == nil {
+            block.checkAllStepsArtefacts()
         }
     }
     
@@ -884,12 +1023,14 @@ extension MissionStep {
             } else if block.locked {
                 vc?.archiveAndShowMissionCompleted(mission: block.mission)
             }
-        } else if block.nextAppears == NextBlockAppearRule.onEmotion.rawValue && id >= 0 {
+        } else if block.nextAppears == NextBlockAppearRule.onArtefacts.rawValue && block.hasMandatoryArtefacts && id >= 0 {
             if block.mission.archivedAt == nil && block.unlockNextBlock() {
-                showStepsAdded()
+                block.showStepsAdded()
             }
-        } else if let lastBlock = block.mission.lastBlock, lastBlock.nextAppears == NextBlockAppearRule.onAllStepsDone.rawValue && lastBlock.doneCriteriaArray.contains(.photo) {
+        } else if let lastBlock = block.mission.lastBlock, lastBlock.nextAppears == NextBlockAppearRule.onAllStepsDone.rawValue && lastBlock.artefactsArray.contains(.photo) {
             checkAllStepsDone()
+        } else if block.nextAppears == NextBlockAppearRule.onAllStepsArtefacts.rawValue && id >= 0 && block.mission.archivedAt == nil {
+            block.checkAllStepsArtefacts()
         }
     }
     
@@ -906,7 +1047,7 @@ extension MissionStep {
         guard let lastBlock = block.mission.lastBlock else {
             return
         }
-        let checkPhoto = lastBlock.doneCriteriaArray.contains(.photo)
+        let checkPhoto = lastBlock.artefactsArray.contains(.photo)
         let blocks = block.mission.openedBlocks
         let steps = blocks.flatMap { $0.steps?.allObjects.map { $0 as! MissionStep } ?? [] }.filter { $0.id > 0 }
         for s in steps {
@@ -922,18 +1063,7 @@ extension MissionStep {
             }
         }
         if lastBlock.unlockNextBlock() {
-            showStepsAdded()
-        }
-    }
-    
-    private func showStepsAdded() {
-        let mission = block.mission
-        (UIApplication.shared.delegate as! AppDelegate).addNotification(text: block.nextBlockNotificationTitle ?? "Открылись новые шаги в \(block.mission.name ?? "")", secondaryText: block.nextBlockNotificationBody ?? "К рекомендуемым шагам →", mission: mission) {
-            if let mainVC = UIApplication.shared.mainViewController {
-                mainVC.dismiss(animated: false)
-                mainVC.switchTab(tabIndex: 1, toRoot: true)
-                (mainVC.controllers[1] as! UINavigationController).topViewController?.openMission(mission, recommendedExpanded: true)
-            }
+            lastBlock.showStepsAdded()
         }
     }
     

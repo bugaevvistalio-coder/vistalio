@@ -67,14 +67,16 @@
                     "description": "Для этого можно поставить его подальше от кровати.",
                     "frequency": 1,
                     "days": [14],
-                    "sortOrder": 6
+                    "sortOrder": 6,
+                    "disableEdit": true
                 },
                 {
                     "name": "Попробовать лечь раньше 😴",
                     "description": "Провести экспериментальный день — попробовать лечь спать на 15–30 минут раньше обычного.",
                     "frequency": 1,
                     "days": [21],
-                    "sortOrder": 7
+                    "sortOrder": 7,
+                    "disableEdit": true
                 }
             ],
             "stepDayStartPoint": "blockOpened"

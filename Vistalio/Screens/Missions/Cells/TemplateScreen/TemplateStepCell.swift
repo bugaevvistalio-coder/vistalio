@@ -18,7 +18,7 @@ class TemplateStepCell: UICollectionViewCell {
     
     func setStep(_ step: TemplateStep, mission: MissionContents) {
         nameLabel.text = step.getFullName(mission: mission)
-        if let description = step.description {
+        if let description = step.cleanDescription {
             descriptionLabel.text = (step.expanded ?? false) ? description : step.shortDescription
             descriptionLabel.isHidden = false
         } else {
@@ -27,9 +27,9 @@ class TemplateStepCell: UICollectionViewCell {
     }
     
     @IBAction func stepTapped(_ sender: Any) {
-        if step.description != nil {
+        if let description = step.cleanDescription {
             step.expanded = !(step.expanded ?? false)
-            descriptionLabel.text = step.expanded! ? step.description : step.shortDescription
+            descriptionLabel.text = step.expanded! ? description : step.shortDescription
             descriptionLabel.numberOfLines = (step.expanded ?? false) ? 0 : 2
             onStepTapped?()
         }

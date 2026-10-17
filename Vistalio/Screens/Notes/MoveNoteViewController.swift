@@ -214,7 +214,7 @@ class MoveNoteViewController: UIViewController {
         
         let photoCount = nc.mediaHolder.media.filter { $0.type == "image" }.count
         let hasVideo = nc.mediaHolder.media.contains { $0.type == "video" }
-        if let message = selectedStep?.block.checkDoneCriteria(title: nc.noteTitle, text: nc.body, photoCount: photoCount, hasVideo: hasVideo) {
+        if let message = selectedStep?.block.checkArtefacts(title: nc.noteTitle, text: nc.body, photoCount: photoCount, hasVideo: hasVideo) {
             showHowToOpenNextStep(message: message) { [unowned self] in
                 save()
             }
@@ -249,8 +249,11 @@ class MoveNoteViewController: UIViewController {
                     presenting?.openNote(note)
                 }
                 
+                note.step!.onNoteAdded(from: presenting)
                 let hasEmotion = (note.emotions?.allObjects.count ?? 0) > 0
-                note.step!.onNoteAdded(from: presenting, hasEmotion: hasEmotion)
+                if hasEmotion {
+                    MissionsHolder.shared.removeEmotionNotification(mission: note.step!.block.mission)
+                }
             }
         }
     }

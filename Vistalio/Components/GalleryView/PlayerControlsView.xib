@@ -86,7 +86,7 @@
                         <constraint firstAttribute="height" constant="40" id="mve-GI-cUJ"/>
                     </constraints>
                     <state key="normal" title="Button"/>
-                    <buttonConfiguration key="configuration" style="plain" image="unmuted"/>
+                    <buttonConfiguration key="configuration" style="plain" image="muted"/>
                     <connections>
                         <action selector="soundTapped:" destination="-1" eventType="touchUpInside" id="t6o-uB-aIP"/>
                     </connections>
@@ -119,7 +119,7 @@
         </view>
     </objects>
     <resources>
+        <image name="muted" width="24" height="24"/>
         <image name="play" width="24" height="24"/>
-        <image name="unmuted" width="24" height="24"/>
     </resources>
 </document>

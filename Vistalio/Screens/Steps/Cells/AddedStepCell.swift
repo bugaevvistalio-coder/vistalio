@@ -159,7 +159,7 @@ class AddedStepCell: UITableViewCell {
             return
         }
         if step.block.nextAppears == NextBlockAppearRule.onDoneWithPreview.rawValue {
-            if step.block.fitsDoneCriteria {
+            if step.block.hasMandatoryArtefacts {
                 vc.showStepImplementationUncancellable { [unowned self] in
                     let next = step.block.autoImplement()
                     checkImageView.image = .checkCircleOn

@@ -106,7 +106,7 @@ public class Mission: NSManagedObject {
                 block.id = i+1
                 block.mission = mission
                 block.nextAppears = b.nextAppears?.rawValue
-                block.doneCriteria = b.doneCriteria?.map { $0.rawValue }.joined(separator: ",")
+                block.artefacts = b.artefacts?.map { $0.rawValue }.joined(separator: ",")
                 block.photoMin = Int16(b.photoMin ?? 1)
                 block.searchText = b.searchText
                 block.textPlaceholder = b.textPlaceholder
@@ -249,28 +249,22 @@ public class Mission: NSManagedObject {
     func backFromArchived(context: NSManagedObjectContext, viewController: UIViewController) {
         archivedAt = nil
         if let lastOpenedBlock = openedBlocks.last {
-            if lastOpenedBlock.nextAppears == NextBlockAppearRule.onNoteRespectPeriod.rawValue || lastOpenedBlock.nextAppears == NextBlockAppearRule.onNote.rawValue {
-                let notes = lastOpenedBlock.notes
-                if !notes.isEmpty {
+            if lastOpenedBlock.nextAppears == NextBlockAppearRule.onArtefactsRespectPeriod.rawValue || lastOpenedBlock.nextAppears == NextBlockAppearRule.onArtefacts.rawValue {
+                if lastOpenedBlock.hasMandatoryArtefacts {
                     lastOpenedBlock.checkPeriod = false
+                    let notes = lastOpenedBlock.notes
                     DispatchQueue.main.async {
-                        notes.last!.step?.onNoteAdded(from: viewController, hasEmotion: false)
+                        notes.last!.step?.onNoteAdded(from: viewController)
                     }
                 }
-            } else if lastOpenedBlock.nextAppears == NextBlockAppearRule.onEmotionRespectPeriod.rawValue || lastOpenedBlock.nextAppears == NextBlockAppearRule.onEmotion.rawValue {
-                let notes = lastOpenedBlock.notes
-                let emotions = notes.flatMap { $0.emotions?.allObjects ?? [] }
-                if !emotions.isEmpty {
-                    lastOpenedBlock.checkPeriod = false
-                    DispatchQueue.main.async {
-                        notes.last!.step?.onNoteAdded(from: viewController, hasEmotion: true)
-                    }
-                }
-            } else if lastOpenedBlock.nextAppears == NextBlockAppearRule.respectPeriod.rawValue {
+            }
+            else if lastOpenedBlock.nextAppears == NextBlockAppearRule.respectPeriod.rawValue {
                 let daysBetween = Calendar.current.dateComponents([.minute], from: lastOpenedBlock.recommendedAt!, to: Date()).minute!
                 if daysBetween >= Int(lastOpenedBlock.periodDays) {
                     lastOpenedBlock.unlockNextBlock()
                 }
+            } else if lastOpenedBlock.nextAppears == NextBlockAppearRule.onAllStepsArtefacts.rawValue {
+                lastOpenedBlock.checkAllStepsArtefacts()
             }
         }
         NotificationCenter.default.post(name: .notificationsUpdated, object: nil)

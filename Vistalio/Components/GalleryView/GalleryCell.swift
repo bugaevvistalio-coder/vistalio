@@ -26,6 +26,8 @@ class GalleryCell: UICollectionViewCell {
     private var timeObserver: Any?
     private var playAfterSeek = false
     
+    var onMuted: ((Bool) -> ())?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -47,6 +49,7 @@ class GalleryCell: UICollectionViewCell {
         }
         playerControlsView.onMuted = { [unowned self] isMuted in
             player?.isMuted = isMuted
+            onMuted?(isMuted)
         }
         playerControlsView.onSeekStarted = { [unowned self] in
             if let player = player {
@@ -136,6 +139,13 @@ class GalleryCell: UICollectionViewCell {
         }
     }
     
+    var isMuted: Bool = true {
+        didSet {
+            player?.isMuted = isMuted
+            playerControlsView.isMuted = isMuted
+        }
+    }
+    
     private func updateBorder() {
         imageScrollView.zoomView?.layer.cornerRadius = 12 / imageScrollView.zoomScale
         imageScrollView.zoomView?.layer.borderWidth = 6 / imageScrollView.zoomScale
@@ -215,7 +225,7 @@ class GalleryCell: UICollectionViewCell {
     }
     
     func stopPlayback() {
-        player?.isMuted = false
+//        player?.isMuted = true
         player?.pause()
         player?.seek(to: .zero)
         removeProgressObserver()
