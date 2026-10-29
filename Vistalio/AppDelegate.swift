@@ -136,19 +136,17 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         let isReminder = notification.request.content.userInfo["isReminder"] as? Bool ?? false
         if isReminder {
-            if let mission = MissionsHolder.shared.getNotificationMission(notificationId: notification.request.identifier) {
-                print("Scheduled when notification presented")
-                if mission.reminderNotificationRequestId == notification.request.identifier {
-                    if let lastReminderAt = mission.lastReminderAt {
-                        MissionsHolder.shared.scheduleReminderNotificationOnStepImplemented(mission: mission, date: lastReminderAt)
-                        MissionsHolder.shared.removeEmotionNotification(mission: mission)
-                    }
-                } else if mission.emotionReminderNotificationRequestId == notification.request.identifier {
-                    MissionsHolder.shared.rescheduleEmotionNotifications(mission: mission)
-                }
-            }
+//            if let mission = MissionsHolder.shared.getNotificationMission(notificationId: notification.request.identifier) {
+//                print("Scheduled when notification presented")
+//                if mission.reminderNotificationRequestId == notification.request.identifier {
+//                    MissionsHolder.shared.removeEmotionNotification(mission: mission)
+//                } else if mission.emotionReminderNotificationRequestId == notification.request.identifier {
+////                    MissionsHolder.shared.rescheduleEmotionNotifications(mission: mission)
+//                }
+//            }
         } else if notification.request.trigger != nil {
-            MissionsHolder.shared.getNotificationBlock(notificationId: notification.request.identifier)?.unlockNextBlock()
+            let block = MissionsHolder.shared.getNotificationBlock(notificationId: notification.request.identifier)
+            block?.unlockNextBlock()
         }
         completionHandler([.banner, .list, .sound])
     }

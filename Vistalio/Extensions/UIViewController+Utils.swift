@@ -98,16 +98,16 @@ extension UIViewController {
                         
                         let blocks = mission.allBlocks
                         var notificationsToRemove = blocks.filter { $0.checkPeriod }.compactMap { $0.notificationId }
-                        if let reminderId = mission.reminderNotificationRequestId {
-                            notificationsToRemove.append(reminderId)
-                        }
-                        if let reminderId = mission.emotionReminderNotificationRequestId {
-                            notificationsToRemove.append(reminderId)
+                        mission.reminderGroups?.allObjects.map { $0 as! RemindersGroup }.forEach {
+                            notificationsToRemove.append($0.notificationRequestId)
                         }
                         removeScheduledNotifications(notificationsToRemove)
-                        NotificationCenter.default.post(name: .notificationsUpdated, object: nil)
                         
+                        mission.lastOpenedBlock?.checkPeriod = false
                         
+                        DispatchQueue.main.async {
+                            NotificationCenter.default.post(name: .notificationsUpdated, object: nil)
+                        }
                     }
                 }
                 NotificationCenter.default.post(name: .missionUpdated, object: nil)

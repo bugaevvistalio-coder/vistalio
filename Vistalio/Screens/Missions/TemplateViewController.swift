@@ -194,9 +194,19 @@ class TemplateViewController: UIViewController {
         CoreDataStack.shared.performAndWait { [unowned self] context in
             mission = Mission.create(context: context, template: template, contents: contents)
         }
+        if let block = mission?.allBlocks.min(by: { $0.id < $1.id }), block.emotionGroup == nil {
+            CoreDataStack.shared.performAndWait { context in
+                block.unlock()
+            }
+        } else if let block = mission?.nextEmotionBlock {
+            CoreDataStack.shared.performAndWait { context in
+                block.unlock()
+            }
+        }
+        
         NotificationCenter.default.post(name: .missionUpdated, object: nil)
         if let mission = mission {
-            MissionsHolder.shared.scheduleReminderNotificationOnStepImplemented(mission: mission)
+            MissionsHolder.shared.scheduleReminders(mission: mission)
             dismissAndOpenMission(mission, justCreated: true)
         }
     }

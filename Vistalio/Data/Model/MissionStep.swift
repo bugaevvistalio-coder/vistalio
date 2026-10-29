@@ -69,6 +69,7 @@ extension StepsBlock {
     @NSManaged public var isSpecialBlock: Bool
     @NSManaged public var nextBlockHint: String?
     @NSManaged public var stepDayStartPoint: String?
+    @NSManaged public var nextBlockDependsOnEmotion: Bool
     
     @NSManaged public var nextBlockNotificationTitle: String?
     @NSManaged public var nextBlockNotificationBody: String?
@@ -142,12 +143,11 @@ extension StepsBlock {
     
     @discardableResult
     func unlockNextBlock(date: Date? = nil) -> Bool {
-        let isLastBlock = mission.lastBlock?.recommendedAt == recommendedAt
-        let isEmotionBlock = (nextAppears == NextBlockAppearRule.onArtefacts.rawValue || nextAppears == NextBlockAppearRule.onArtefactsRespectPeriod.rawValue) && artefactsArray.contains(.emotion)
+        let isLastBlock = mission.lastOpenedBlock?.recommendedAt == recommendedAt
         if !isLastBlock {
             return false
         }
-        guard let nextBlock = isEmotionBlock ? nextEmotionBlock : nextBlock, nextBlock.recommendedAt == nil else {
+        guard let nextBlock = nextBlockDependsOnEmotion ? mission.nextEmotionBlock : nextBlock, nextBlock.recommendedAt == nil else {
             print("Skip next block unlock")
             return false
         }
@@ -195,7 +195,7 @@ extension StepsBlock {
             }
         }
         if nextAppears == NextBlockAppearRule.respectPeriod.rawValue {
-            let nextBlockDate = Calendar.current.date(byAdding: .minute, value: Int(periodDays), to: recommendedAt!)!
+            let nextBlockDate = Calendar.current.date(byAdding: blocksTimeUnit, value: Int(periodDays), to: recommendedAt!)!
             if nextBlockDate <= Date() {
                 DispatchQueue.global().async {
                     self.unlockNextBlock(date: nextBlockDate)
@@ -212,54 +212,6 @@ extension StepsBlock {
     
     var nextBlock: StepsBlock? {
         return mission.mainBlocks.first(where: { $0.id > id })
-    }
-    
-    var nextEmotionBlock: StepsBlock? {
-        let openedBlocks = mission.openedBlocks
-        let notes = openedBlocks.last?.steps?.allObjects.map { $0 as! MissionStep }.flatMap { $0.notes?.allObjects.map { $0 as! MissionNote } ?? [] } ?? []
-        let emotions = notes.flatMap { $0.emotions?.allObjects.map({ MissionEmotion(rawValue: ($0 as! MissionNoteEmotion).emotion)! }) ?? [] }
-        let groupedBlockEmotions = Dictionary(grouping: emotions, by: { $0.group } )
-        let emotionGroups: [EmotionGroup] = Array(groupedBlockEmotions.keys)
-        let priorities: [EmotionGroup] = [.anger, .joy, .fear, .sadness]
-        var sortedGroups = emotionGroups.sorted {
-            let count1 = groupedBlockEmotions[$0]!.count
-            let count2 = groupedBlockEmotions[$1]!.count
-            if count1 == count2 {
-                return priorities.firstIndex(of: $0)! < priorities.firstIndex(of: $1)!
-            }
-            return count1 > count2
-        }
-        if sortedGroups.count < priorities.count {
-            for p in priorities {
-                if !sortedGroups.contains(p) {
-                    sortedGroups.append(p)
-                }
-            }
-        }
-        
-        let groupedBlocks = Dictionary(grouping: openedBlocks.filter { $0.emotionGroup != nil }, by: { $0.emotionGroup! } )
-        let maxCount = groupedBlocks.values.map({ $0.count }).max() ?? 0
-        let macCountBlocks = groupedBlocks.filter { $0.value.count == maxCount }
-        
-        let availableEmotionGroups: [EmotionGroup]
-        if macCountBlocks.count == 0 || macCountBlocks.count == 4 {
-            availableEmotionGroups = priorities
-        } else {
-            let maxEmotionGroups = macCountBlocks.map { EmotionGroup(rawValue: $0.key)! }
-            availableEmotionGroups = priorities.filter { !maxEmotionGroups.contains($0) }
-        }
-        
-        sortedGroups = sortedGroups.filter { availableEmotionGroups.contains($0) }
-        
-        let blocks = mission.emotionBlocks.filter { $0.recommendedAt == nil && sortedGroups.contains(EmotionGroup(rawValue: $0.emotionGroup!)!) }.sorted {
-            let index1 = sortedGroups.firstIndex(of: EmotionGroup(rawValue: $0.emotionGroup!)!)!
-            let index2 = sortedGroups.firstIndex(of: EmotionGroup(rawValue: $1.emotionGroup!)!)!
-            if index1 == index2 {
-                return $0.id < $1.id
-            }
-            return index1 < index2
-        }
-        return blocks.first
     }
     
     func autoImplement() -> MissionStep? {
@@ -356,15 +308,48 @@ extension StepsBlock {
         return attrString
     }
     
-    func checkAllStepsArtefacts() {
+    var allStepsHaveArtefacts: Bool {
         let steps = steps?.allObjects.map { $0 as! MissionStep } ?? []
         for s in steps {
             if !s.hasMandatoryArtefacts {
-                return
+                return false
             }
         }
-        if unlockNextBlock() {
-            showStepsAdded()
+        return true
+    }
+    
+    func checkRespectsPeriod() {
+        if periodDays == 0 {
+            if unlockNextBlock() {
+                showStepsAdded()
+            }
+            return
+        }
+        
+        guard let recommendedAt = recommendedAt else {
+            return
+        }
+        let daysBetween: Int
+        let components = Calendar.current.dateComponents([blocksTimeUnit], from: recommendedAt, to: Date())
+        if blocksTimeUnit == .minute {
+            daysBetween = components.minute!
+        } else if blocksTimeUnit == .hour {
+            daysBetween = components.hour!
+        } else {
+            daysBetween = components.day!
+        }
+        
+        if daysBetween >= Int(periodDays) {
+            print("Try to unlock next block")
+            if unlockNextBlock() {
+                showStepsAdded()
+            }
+        } else if !checkPeriod  {
+            print("Setup check period")
+            CoreDataStack.shared.performAndWait { [unowned self] context in
+                checkPeriod = true
+                scheduleAppearNotification()
+            }
         }
     }
     
@@ -388,7 +373,7 @@ extension StepsBlock {
         }
         let notificationId = UUID().uuidString
         let calendar = Calendar.current
-        let date = calendar.date(byAdding: .minute, value: Int(periodDays), to: recommendedAt)!
+        let date = calendar.date(byAdding: blocksTimeUnit, value: Int(periodDays), to: recommendedAt)!
         let userInfo: [AnyHashable: Any] = ["fireDate": date]
 
         addNotification(title: nextBlockNotificationTitle ?? mission.name ?? "", body: nextBlockNotificationBody ?? "Открылись новые шаги", notificationId: notificationId, userInfo: userInfo, triggerDate: date)
@@ -559,7 +544,7 @@ extension MissionStep {
     class func create(context: NSManagedObjectContext, mission: Mission, name: String, text: String?, frequency: StepFrequency, startDate: Date, endDate: Date?) -> MissionStep? {
         guard let entityDescription = NSEntityDescription.entity(forEntityName: "MissionStep", in: context) else { return nil }
         
-        guard let block = mission.lastBlock ?? mission.allBlocks.first(where: { $0.id == -1 }) ?? StepsBlock.create(context: context, mission: mission) else {
+        guard let block = mission.lastOpenedBlock ?? mission.allBlocks.first(where: { $0.id == -1 }) ?? StepsBlock.create(context: context, mission: mission) else {
             return nil
         }
         
@@ -631,16 +616,21 @@ extension MissionStep {
     }
     
     var hasMandatoryArtefacts: Bool {
-        let array = artefactsArray
+        return hasArtefacts(artefactsArray)
+    }
+    
+    func hasArtefacts(_ artefacts: [BlockArtefact]) -> Bool {
+        if artefacts.isEmpty {
+            return true
+        }
         let notes = notes?.allObjects.map { $0 as! MissionNote } ?? []
-        
-//        if array.contains(BlockArtefact.geo) {
-//            return false
-//        }
-        if array.contains(.note) && notes.isEmpty {
+        //        if array.contains(BlockArtefact.geo) {
+        //            return false
+        //        }
+        if artefacts.contains(.note) && notes.isEmpty {
             return false
         }
-        if array.contains(BlockArtefact.emotion) {
+        if artefacts.contains(BlockArtefact.emotion) {
             var hasEmotion = false
             for n in notes {
                 if !(n.emotions?.allObjects.isEmpty ?? true) {
@@ -653,13 +643,13 @@ extension MissionStep {
             }
         }
         let media = notes.flatMap { $0.images?.allObjects.map { $0 as! MissionNoteImage } ?? [] }
-        if array.contains(BlockArtefact.photo), media.filter({ $0.type == "image" }).count == 0 {
+        if artefacts.contains(BlockArtefact.photo), media.filter({ $0.type == "image" }).count == 0 {
             return false
         }
-        if array.contains(BlockArtefact.video), media.filter({ $0.type == "video" }).count == 0 {
+        if artefacts.contains(BlockArtefact.video), media.filter({ $0.type == "video" }).count == 0 {
             return false
         }
-        if array.contains(BlockArtefact.photoOrVideo), media.count == 0 {
+        if artefacts.contains(BlockArtefact.photoOrVideo), media.count == 0 {
             return false
         }
         return true
@@ -981,90 +971,54 @@ extension MissionStep {
     }
     
     func onNoteAdded(from vc: UIViewController?) {
-        if block.nextAppears == NextBlockAppearRule.onDoneWithPreview.rawValue {
-            if let nextStep = block.checkAutoImplementAfterNoteCreated() {
-                vc?.showStepImplemented(nextStep: nextStep)
-            } else if block.locked {
-                vc?.archiveAndShowMissionCompleted(mission: block.mission)
-            }
-        } else if (block.nextAppears == NextBlockAppearRule.onArtefacts.rawValue || block.nextAppears == NextBlockAppearRule.onArtefactsRespectPeriod.rawValue) && id >= 0 && block.mission.archivedAt == nil {
-            if block.hasMandatoryArtefacts {
-                if block.nextAppears == NextBlockAppearRule.onArtefacts.rawValue {
-                    if block.unlockNextBlock() {
-                        block.showStepsAdded()
-                    }
-                } else if block.nextAppears == NextBlockAppearRule.onArtefactsRespectPeriod.rawValue, let recommendedAt = block.recommendedAt {
-                    let daysBetween = Calendar.current.dateComponents([.minute], from: recommendedAt, to: Date()).minute!
-                    if daysBetween >= Int(block.periodDays) {
-                        print("Try to unlock next block")
-                        if block.unlockNextBlock() {
-                            block.showStepsAdded()
-                        }
-                    } else if !block.checkPeriod  {
-                        print("Setup check period")
-                        CoreDataStack.shared.performAndWait { [unowned self] context in
-                            block.checkPeriod = true
-                            block.scheduleAppearNotification()
-                        }
-                    }
-                }
-            }
-        } else if let lastBlock = block.mission.lastBlock, lastBlock.nextAppears == NextBlockAppearRule.onAllStepsDone.rawValue && lastBlock.artefactsArray.contains(.photo) {
-            checkAllStepsDone()
-        } else if block.nextAppears == NextBlockAppearRule.onAllStepsArtefacts.rawValue && id >= 0 && block.mission.archivedAt == nil {
-            block.checkAllStepsArtefacts()
+        if id < 0 {
+            return
         }
-    }
-    
-    func onNoteEdited(from vc: UIViewController?) {
-        if block.nextAppears == NextBlockAppearRule.onDoneWithPreview.rawValue && !block.locked {
-            if let nextStep = block.checkAutoImplementAfterNoteCreated() {
+        guard let lastOpenedBlock = block.mission.lastOpenedBlock else {
+            return
+        }
+        
+        let mission = block.mission
+        if mission.archivedAt != nil && lastOpenedBlock.nextAppears != NextBlockAppearRule.onDoneWithPreview.rawValue {
+            return
+        }
+        
+        let missionLevel = lastOpenedBlock.nextAppears == NextBlockAppearRule.onAllMissionStepsArtefacts.rawValue || lastOpenedBlock.nextAppears == NextBlockAppearRule.onAllMissionStepsDone.rawValue
+        if !missionLevel && lastOpenedBlock !== block {
+            print("One of the previous blocks")
+            return
+        }
+        
+        if lastOpenedBlock.nextAppears == NextBlockAppearRule.onDoneWithPreview.rawValue {
+            if let nextStep = lastOpenedBlock.checkAutoImplementAfterNoteCreated() {
                 vc?.showStepImplemented(nextStep: nextStep)
-            } else if block.locked {
-                vc?.archiveAndShowMissionCompleted(mission: block.mission)
+            } else if lastOpenedBlock.locked {
+                vc?.archiveAndShowMissionCompleted(mission: mission)
             }
-        } else if block.nextAppears == NextBlockAppearRule.onArtefacts.rawValue && block.hasMandatoryArtefacts && id >= 0 {
-            if block.mission.archivedAt == nil && block.unlockNextBlock() {
-                block.showStepsAdded()
+        } else if lastOpenedBlock.nextAppears == NextBlockAppearRule.onAnyBlockStepArtefacts.rawValue {
+            if lastOpenedBlock.hasMandatoryArtefacts {
+                lastOpenedBlock.checkRespectsPeriod()
             }
-        } else if let lastBlock = block.mission.lastBlock, lastBlock.nextAppears == NextBlockAppearRule.onAllStepsDone.rawValue && lastBlock.artefactsArray.contains(.photo) {
-            checkAllStepsDone()
-        } else if block.nextAppears == NextBlockAppearRule.onAllStepsArtefacts.rawValue && id >= 0 && block.mission.archivedAt == nil {
-            block.checkAllStepsArtefacts()
+        } else if lastOpenedBlock.nextAppears == NextBlockAppearRule.onAllMissionStepsDone.rawValue {
+            mission.checkAllStepsDone()
+        } else if lastOpenedBlock.nextAppears == NextBlockAppearRule.onAllBlockStepsArtefacts.rawValue {
+            if lastOpenedBlock.allStepsHaveArtefacts {
+                lastOpenedBlock.checkRespectsPeriod()
+            }
+        } else if lastOpenedBlock.nextAppears == NextBlockAppearRule.onAllMissionStepsArtefacts.rawValue {
+            if mission.hasMandatoryArtefacts {
+                lastOpenedBlock.checkRespectsPeriod()
+            }
         }
     }
     
     func onImplemented(implementedStep: ImplementedStep) {
         print("Schedule on implemented")
-        MissionsHolder.shared.scheduleReminderNotificationOnStepImplemented(mission: block.mission)
-        MissionsHolder.shared.scheduleEmotionNotifications(implementedStep: implementedStep)
-        if let lastBlock = block.mission.lastBlock, lastBlock.nextAppears == NextBlockAppearRule.onAllStepsDone.rawValue {
-            checkAllStepsDone()
+        if let lastBlock = block.mission.lastOpenedBlock, lastBlock.nextAppears == NextBlockAppearRule.onAllMissionStepsDone.rawValue {
+            lastBlock.mission.checkAllStepsDone()
         }
-    }
-    
-    private func checkAllStepsDone() {
-        guard let lastBlock = block.mission.lastBlock else {
-            return
-        }
-        let checkPhoto = lastBlock.artefactsArray.contains(.photo)
-        let blocks = block.mission.openedBlocks
-        let steps = blocks.flatMap { $0.steps?.allObjects.map { $0 as! MissionStep } ?? [] }.filter { $0.id > 0 }
-        for s in steps {
-            if s.implementedSteps?.allObjects.isEmpty ?? true {
-                return
-            }
-            if checkPhoto {
-                let notes = s.notes?.allObjects.map { $0 as! MissionNote } ?? []
-                let photos = notes.flatMap { $0.images?.allObjects.map { $0 as! MissionNoteImage } ?? [] }.filter { $0.type == "image" }
-                if photos.isEmpty {
-                    return
-                }
-            }
-        }
-        if lastBlock.unlockNextBlock() {
-            lastBlock.showStepsAdded()
-        }
+
+        MissionsHolder.shared.scheduleReminders(mission: block.mission)
     }
     
     func delete(withNotes: Bool) {

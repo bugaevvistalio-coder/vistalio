@@ -19,6 +19,7 @@ class MediaData {
     var saved = false
     
     var onLoaded: (() -> ())?
+    var onImageCreated: (() -> ())?
     
     init(type: String, image: UIImage?, path: String?) {
         self.type = type

@@ -30,11 +30,13 @@
                 }
             ],
             "emotionGroup": "fear",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "respectPeriod",
             "artefacts": ["emotion"],
-            "periodDays": 7,
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "periodDays": 1,
             "nextBlockNotificationTitle": "Твой день тишины 🌿",
-            "nextBlockNotificationBody": "Устрой себе полную перезагрузку ✨"
+            "nextBlockNotificationBody": "Устрой себе полную перезагрузку ✨",
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -65,11 +67,13 @@
                 }
             ],
             "emotionGroup": "sadness",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "respectPeriod",
             "artefacts": ["emotion"],
-            "periodDays": 7,
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "periodDays": 1,
             "nextBlockNotificationTitle": "Время творить! 🎨",
-            "nextBlockNotificationBody": "Устрой завтра день вдохновения, красок и новых впечатлений"
+            "nextBlockNotificationBody": "Устрой завтра день вдохновения, красок и новых впечатлений",
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -95,11 +99,13 @@
                 }
             ],
             "emotionGroup": "sadness",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "respectPeriod",
             "artefacts": ["emotion"],
-            "periodDays": 7,
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "periodDays": 1,
             "nextBlockNotificationTitle": "День открытий 🔍",
-            "nextBlockNotificationBody": "Всё надоело? Смени фокус! 🌍"
+            "nextBlockNotificationBody": "Всё надоело? Смени фокус! 🌍",
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -125,11 +131,13 @@
                 }
             ],
             "emotionGroup": "anger",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "respectPeriod",
             "artefacts": ["emotion"],
-            "periodDays": 7,
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "periodDays": 1,
             "nextBlockNotificationTitle": "Хочешь взбодриться? ⚡",
-            "nextBlockNotificationBody": "Проведи день в движении и подари телу заслуженную заботу 🏃‍♀️"
+            "nextBlockNotificationBody": "Проведи день в движении и подари телу заслуженную заботу 🏃‍♀️",
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -159,12 +167,18 @@
                 }
             ],
             "emotionGroup": "joy",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "respectPeriod",
             "artefacts": ["emotion"],
-            "periodDays": 7,
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "periodDays": 1,
             "nextBlockNotificationTitle": "Побалуй себя! 🍭",
-            "nextBlockNotificationBody": "Устрой день маленьких радостей и приятных мелочей. Сегодня можно всё, что приносит тебе улыбку ✨"
+            "nextBlockNotificationBody": "Устрой день маленьких радостей и приятных мелочей. Сегодня можно всё, что приносит тебе улыбку ✨",
+            "nextBlockDependsOnEmotion": true
         }
-    ]
+    ],
+    "emotionsPriority": "sadness,fear,joy,anger",
+    "selectEmotionScope": "app",
+    "selectEmotionAlgorithm": "alwaysChooseDominant",
+    "selectEmotionPeriod": 1
 }
 

@@ -124,9 +124,12 @@ extension MissionNoteImage {
         let type = self.type
         let m = MediaData(type: type, image: nil, path: path)
         if type == "video" {
-            DispatchQueue.global().async { 
+            DispatchQueue.global().async {
                 let url = FilesHelper().buildFileUrl(path: path)
                 m.image = createVideoSnapshot(from: url)
+                DispatchQueue.main.async {
+                    m.onImageCreated?()
+                }
             }
         }
         return m

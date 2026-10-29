@@ -256,38 +256,38 @@ class MissionViewController: UIViewController {
         noRecommendedStepsView.isHidden = false
         noRecommendedStepsView.isUserInteractionEnabled = false
         
-        let needsArtefact = currentBlock?.nextAppears == NextBlockAppearRule.onArtefacts.rawValue || currentBlock?.nextAppears == NextBlockAppearRule.onArtefactsRespectPeriod.rawValue
+        let needsArtefact = currentBlock?.nextAppears == NextBlockAppearRule.onAnyBlockStepArtefacts.rawValue
         let artefatcts = currentBlock?.artefactsArray ?? []
-        let needsEmotion = needsArtefact && artefatcts.contains(.emotion)
         
-        let nextBlock = needsEmotion ? currentBlock?.nextEmotionBlock : currentBlock?.nextBlock
-        if nextBlock != nil {
+        let hasNextBlocks = mission.allBlocks.contains { $0.recommendedAt == nil }
+        if hasNextBlocks {
             noRecommendedStepsLabel.textColor = .textGrey60
-            if let hint = currentBlock?.nextBlockHint {
-                noRecommendedStepsLabel.text = hint
-            } else if needsArtefact {
+            
+            if mission.archivedAt != nil {
+                noRecommendedStepsLabel.text = "Разархивируйте миссию, чтобы стали доступны новые шаги"
+            } else if let block = currentBlock {
                 
-                if mission.archivedAt != nil {
-                    noRecommendedStepsLabel.text = "Разархивируйте миссию, чтобы стали доступны новые шаги"
-                } else if needsArtefact && !(currentBlock?.hasMandatoryArtefacts ?? false) {
-                    if artefatcts.contains(.note) {
-                        noRecommendedStepsLabel.text = "Добавьте заметку к любому шагу из последнего блока, чтобы открыть новые"
-                    } else if artefatcts.contains(.emotion) {
-                        noRecommendedStepsLabel.text = "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые"
-                    } else if artefatcts.contains(.video) {
-                        noRecommendedStepsLabel.text = "Добавьте видео к любому шагу из последнего блока, чтобы открыть новые"
-                    } else if artefatcts.contains(.photo) {
-                        noRecommendedStepsLabel.text = "Добавьте фото к любому шагу из последнего блока, чтобы открыть новые"
-                    }
-                } else if let recommendedAt = currentBlock?.recommendedAt, Int(currentBlock!.periodDays) > 0 {
-                    let date = Calendar.current.date(byAdding: .day, value: Int(currentBlock!.periodDays), to: recommendedAt)!
-                    noRecommendedStepsLabel.text = "Новые шаги откроются \(date.formatted3.lowercased())"
+                var hasArtefacts = true
+                if block.nextAppears == NextBlockAppearRule.onAnyBlockStepArtefacts.rawValue {
+                    hasArtefacts = block.hasMandatoryArtefacts
+                } else if block.nextAppears == NextBlockAppearRule.onAllBlockStepsArtefacts.rawValue {
+                    hasArtefacts = block.allStepsHaveArtefacts
+                } else if block.nextAppears == NextBlockAppearRule.onAllMissionStepsArtefacts.rawValue {
+                    hasArtefacts = block.mission.hasMandatoryArtefacts
                 }
-            } else if currentBlock?.nextAppears == NextBlockAppearRule.respectPeriod.rawValue, let recommendedAt = currentBlock?.recommendedAt {
-                let date = Calendar.current.date(byAdding: .day, value: Int(currentBlock!.periodDays), to: recommendedAt)!
-                noRecommendedStepsLabel.text = "Новые шаги откроются \(date.formatted3.lowercased())"
-            } else {
-                noRecommendedStepsView.isHidden = true
+                
+                if hasArtefacts {
+                    if block.periodDays > 0, let recommendedAt = block.recommendedAt {
+                        let date = Calendar.current.date(byAdding: .day, value: Int(currentBlock!.periodDays), to: recommendedAt)!
+                        noRecommendedStepsLabel.text = "Новые шаги откроются \(date.formatted3.lowercased())"
+                    } else {
+                        noRecommendedStepsView.isHidden = true
+                    }
+                } else if let hint = currentBlock?.nextBlockHint {
+                    noRecommendedStepsLabel.text = hint
+                } else {
+                    noRecommendedStepsView.isHidden = true
+                }
             }
         } else if mission.canCreateSteps {
             noRecommendedStepsLabel.textColor = .highlightBlue

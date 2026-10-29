@@ -50,7 +50,7 @@
                     "artefacts": ["video"]
                 }
             ],
-            "nextAppears": "onAllStepsArtefacts",
+            "nextAppears": "onAllBlockStepsArtefacts",
             "nextBlockHint": "Добавьте артефакты ко всем шагам, чтобы открыть новые"
         },
         {

@@ -129,12 +129,12 @@ class AddNoteView: UIView {
     func fillDefaultData() {
         if let step = step, let noteTitle = step.noteTitle {
             let notes = step.block.notes
-            if !notes.contains(where: { $0.name == noteTitle }) {
+//            if !notes.contains(where: { $0.name == noteTitle }) {
                 titleTextView.text = noteTitle
                 if let placeholder = step.block.textPlaceholder {
                     bodyTextView.placeholder = placeholder
                 }
-            }
+//            }
         }
     }
     

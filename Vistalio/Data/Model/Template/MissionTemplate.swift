@@ -26,16 +26,18 @@ class MissionTemplate: Codable {
 
 class MissionContents: Codable {
     let blocks: [TemplateBlock]
-    let reminderNotifications: [TemplateReminder]?
-    let emotionNotifications: [TemplateReminder]?
+    let reminderGroups: [TemplateRemindersGroup]?
     let showCompleted: Bool?
     let canCreateSteps: Bool?
     let skipRecommend: Bool?
     let autoAddFirstBlock: Bool?
-    let reminderDays: Int?
     let sortOrderUpTo: Int?
     let skipSortByImplemented: Bool?
     let dailyNotificationText: String?
+    let emotionsPriority: String?
+    let selectEmotionScope: SelectEmotionScope?
+    let selectEmotionAlgorithm: SelectEmotionAlgorithm?
+    let selectEmotionPeriod: Int?
     
     func findStep(id: Int) -> TemplateStep? {
         var i = 1
@@ -53,11 +55,11 @@ class MissionContents: Codable {
 
 enum NextBlockAppearRule: String, Codable {
     case onDoneWithPreview
-    case onArtefacts
-    case onArtefactsRespectPeriod
     case respectPeriod
-    case onAllStepsDone
-    case onAllStepsArtefacts
+    case onAllMissionStepsDone
+    case onAnyBlockStepArtefacts
+    case onAllBlockStepsArtefacts
+    case onAllMissionStepsArtefacts
 }
 
 enum StepDayStartPoint: String, Codable {
@@ -73,6 +75,17 @@ enum BlockArtefact: String, Codable {
     case geo
     case searchText
     case emotion
+}
+
+enum SelectEmotionScope: String, Codable {
+    case block
+    case mission
+    case app
+}
+
+enum SelectEmotionAlgorithm: String, Codable {
+    case goThroughAll
+    case alwaysChooseDominant
 }
 
 class TemplateBlock: Codable {
@@ -91,6 +104,7 @@ class TemplateBlock: Codable {
     let isSpecialBlock: Bool?
     let nextBlockHint: String?
     let stepDayStartPoint: StepDayStartPoint?
+    let nextBlockDependsOnEmotion: Bool?
 }
 
 class TemplateStep: Codable {
@@ -166,6 +180,12 @@ class TemplateNote: Codable {
     var shortDescription: String? {
         return description?.replacingOccurrences(of: "\n\n", with: " ").replacingOccurrences(of: "\n", with: " ")
     }
+}
+
+class TemplateRemindersGroup: Codable {
+    let isEmotionReminder: Bool?
+    let reminderDays: Int
+    let reminders: [TemplateReminder]
 }
 
 class TemplateReminder: Codable {

@@ -88,6 +88,8 @@ class GalleryCell: UICollectionViewCell {
             videoContainerView.frame = CGRect(origin: point, size: zoomView.frame.size)
             playerLayer?.frame = videoContainerView.bounds
             
+            print("Frame is \(videoContainerView.frame)")
+            
             if let borderLayer = videoBorderLayer {
                 borderLayer.frame = videoContainerView.bounds
                 borderLayer.path = UIBezierPath(
@@ -133,6 +135,18 @@ class GalleryCell: UICollectionViewCell {
             if media.type == "video", let url = url {
                 configure(with: url)
                 playerControlsView.isHidden = false
+                if media.image == nil {
+                    let path = media.path
+                    media.onImageCreated = { [weak self] in
+                        if let `self` = self, let image = media.image, path == media.path {
+                            imageScrollView.display(image: image, enableDoubleTap: false)
+                            DispatchQueue.main.async {
+                                self.updateBorder()
+                                self.layoutSubviews()
+                            }
+                        }
+                    }
+                }
             } else {
                 playerControlsView.isHidden = true
             }

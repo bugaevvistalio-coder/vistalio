@@ -41,8 +41,9 @@
                     "description": "Запиши приветственное голосовое сообщение и внеси свой первый символический вклад в общее дело.\n\nВызовись на роль Joy Keeper («Хранителя радости») на первую неделю: назначь даты встреч и предложи темы для обсуждения.\n\n🙋‍♂️ Если выполняешь миссию самостоятельно, добавь голосовое сообщение с представлением себя в заметку."
                 }
             ],
-            "nextAppears": "onArtefacts",
-            "artefacts": ["note"]
+            "nextAppears": "onAnyBlockStepArtefacts",
+            "artefacts": ["note"],
+            "nextBlockHint": "Добавьте заметку к любому шагу из последнего блока, чтобы открыть новые"
         },
         {
             "steps": [
@@ -87,8 +88,9 @@
                     "description": "Инициируй в группе выбор нового Joy Keeper.\n\nЭтот участник группы должен будет выбрать ежедневные задания. Твоя роль — помочь в этом и предложить варианты (например, из рекомендуемых шагов в этой миссии).\n\nНе забывай делиться в миссии впечатлениями дня."
                 }
             ],
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
             "artefacts": ["note"],
+            "nextBlockHint": "Добавьте заметку к любому шагу из последнего блока, чтобы открыть новые",
             "periodDays": 7,
             "nextBlockNotificationTitle": "English Joy Club 😛",
             "nextBlockNotificationBody": "Следующая тема клуба — «Повседневные радости» ☕. Открыть?",
@@ -133,8 +135,9 @@
                     "description": "Выбрать Joy Keeper на третью неделю 👑\nИнициируй в группе выбор нового Joy Keeper."
                 }
             ],
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
             "artefacts": ["note"],
+            "nextBlockHint": "Добавьте заметку к любому шагу из последнего блока, чтобы открыть новые",
             "periodDays": 7,
             "nextBlockNotificationTitle": "English Joy Club 😛",
             "nextBlockNotificationBody": "Тема третьей недели — «Мои мечты» 😌. Посмотреть задания?"
@@ -178,8 +181,9 @@
                     "description": "Выбрать Joy Keeper на последнюю неделю челленджа 👑\n\nИнициируй в группе выбор нового Joy Keeper."
                 }
             ],
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
             "artefacts": ["note"],
+            "nextBlockHint": "Добавьте заметку к любому шагу из последнего блока, чтобы открыть новые",
             "periodDays": 7,
             "nextBlockNotificationTitle": "English Joy Club 😛",
             "nextBlockNotificationBody": "Тема последнего блока English Joy Club — «Советы себе» 💡. Открыть?"
@@ -263,21 +267,26 @@
             ]
         }
     ],
-    "reminderNotifications": [
+    "reminderGroups": [
         {
-            "id": 1,
-            "title": "BREAKING NEWS! 📰",
-            "body": "Вы пропали с радаров English Joy Club. Последний раз вас видели с улыбкой и отличным английским. Вернемся к практике? 😉"
-        },
-        {
-            "id": 2,
-            "title": "I miss you! 💔",
-            "body": "Твой английский уже начал грустить без тебя 😂. Давай сегодня сделаем что-нибудь легкое и веселое вместе?🎈"
-        },
-        {
-            "id": 3,
-            "title": "Hello there! 👀",
-            "body": "Просто проверяю, всё ли у тебя в порядке ❤️. Ты всегда можешь продолжить English Joy Club или начать снова"
+            "reminderDays": 2,
+            "reminders": [
+                {
+                    "id": 1,
+                    "title": "BREAKING NEWS! 📰",
+                    "body": "Вы пропали с радаров English Joy Club. Последний раз вас видели с улыбкой и отличным английским. Вернемся к практике? 😉"
+                },
+                {
+                    "id": 2,
+                    "title": "I miss you! 💔",
+                    "body": "Твой английский уже начал грустить без тебя 😂. Давай сегодня сделаем что-нибудь легкое и веселое вместе?🎈"
+                },
+                {
+                    "id": 3,
+                    "title": "Hello there! 👀",
+                    "body": "Просто проверяю, всё ли у тебя в порядке ❤️. Ты всегда можешь продолжить English Joy Club или начать снова"
+                }
+            ]
         }
     ],
     "autoAddFirstBlock": true

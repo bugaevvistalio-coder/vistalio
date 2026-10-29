@@ -91,12 +91,13 @@ public class Mission: NSManagedObject {
         mission.showCompleted = contents.showCompleted ?? false
         mission.canCreateSteps = contents.canCreateSteps ?? true
         mission.skipRecommend = contents.skipRecommend ?? false
-        mission.reminderNotificationRequestId = UUID().uuidString
-        mission.emotionReminderNotificationRequestId = UUID().uuidString
-        mission.reminderDays = Int16(contents.reminderDays ?? 2)
         mission.sortOrderUpTo = Int32(contents.sortOrderUpTo ?? 0)
         mission.skipSortByImplemented = contents.skipSortByImplemented ?? false
         mission.dailyNotificationText = contents.dailyNotificationText
+        mission.emotionsPriority = contents.emotionsPriority
+        mission.selectEmotionScope = contents.selectEmotionScope?.rawValue
+        mission.selectEmotionAlgorithm = contents.selectEmotionAlgorithm?.rawValue
+        mission.selectEmotionPeriod = Int16(contents.selectEmotionPeriod ?? 0)
         
         var stepIndex = 0
         
@@ -119,10 +120,11 @@ public class Mission: NSManagedObject {
                 block.isSpecialBlock = b.isSpecialBlock ?? false
                 block.nextBlockHint = b.nextBlockHint
                 block.stepDayStartPoint = b.stepDayStartPoint?.rawValue
+                block.nextBlockDependsOnEmotion = b.nextBlockDependsOnEmotion ?? false
                 
-                if i == 0 {
-                    block.unlock()
-                }
+//                if i == 0 {
+//                    block.unlock()
+//                }
                 
                 let now = Date().startOfDay
                 let calendar = Calendar.current
@@ -162,11 +164,8 @@ public class Mission: NSManagedObject {
             }
         }
         
-        for r in (contents.reminderNotifications ?? []) {
-            Reminder.create(context: context, templateReminder: r, mission: mission, isEmotionReminder: false)
-        }
-        for r in (contents.emotionNotifications ?? []) {
-            Reminder.create(context: context, templateReminder: r, mission: mission, isEmotionReminder: true)
+        for g in (contents.reminderGroups ?? []) {
+            RemindersGroup.create(context: context, templateGroup: g, mission: mission)
         }
         
         return mission
@@ -177,12 +176,10 @@ public class Mission: NSManagedObject {
             FilesHelper().deleteFile(path: photoPath)
             print("Mission cover file deleted")
         }
+        
         var notifications = [String]()
-        if let id = reminderNotificationRequestId {
-            notifications.append(id)
-        }
-        if let id = emotionReminderNotificationRequestId {
-            notifications.append(id)
+        reminderGroups?.allObjects.map { $0 as! RemindersGroup }.forEach {
+            notifications.append($0.notificationRequestId)
         }
         addedSteps.forEach {
             if let id = $0.notificationId {
@@ -234,6 +231,37 @@ public class Mission: NSManagedObject {
         return (blocks?.allObjects as? [StepsBlock])?.filter { $0.id >= 0 && $0.recommendedAt != nil }.sorted(by: { $0.recommendedAt! < $1.recommendedAt! }) ?? []
     }
     
+    func checkAllStepsDone() {
+        guard let lastOpenedBlock = lastOpenedBlock else {
+            return
+        }
+        let artefacts = lastOpenedBlock.artefactsArray
+        let steps = openedBlocks.flatMap { $0.steps?.allObjects.map { $0 as! MissionStep } ?? [] }.filter { $0.id > 0 }
+        for s in steps {
+            if (s.implementedSteps?.allObjects.isEmpty ?? true) || !s.hasArtefacts(artefacts) {
+                return
+            }
+        }
+        lastOpenedBlock.checkRespectsPeriod()
+    }
+    
+    var hasMandatoryArtefacts: Bool {
+        guard let lastOpenedBlock = lastOpenedBlock else {
+            return false
+        }
+        let artefacts = lastOpenedBlock.artefactsArray
+        if artefacts.isEmpty {
+            return true
+        }
+        let steps = openedBlocks.flatMap { $0.steps?.allObjects.map { $0 as! MissionStep } ?? [] }.filter { $0.id > 0 }
+        for s in steps {
+            if !s.hasArtefacts(artefacts) {
+                return false
+            }
+        }
+        return true
+    }
+    
     @discardableResult func getNotesStep() -> MissionStep? {
         var step = addedSteps.first { $0.id == -1 }
         if step == nil {
@@ -249,27 +277,26 @@ public class Mission: NSManagedObject {
     func backFromArchived(context: NSManagedObjectContext, viewController: UIViewController) {
         archivedAt = nil
         if let lastOpenedBlock = openedBlocks.last {
-            if lastOpenedBlock.nextAppears == NextBlockAppearRule.onArtefactsRespectPeriod.rawValue || lastOpenedBlock.nextAppears == NextBlockAppearRule.onArtefacts.rawValue {
+            if lastOpenedBlock.nextAppears == NextBlockAppearRule.onAnyBlockStepArtefacts.rawValue {
                 if lastOpenedBlock.hasMandatoryArtefacts {
-                    lastOpenedBlock.checkPeriod = false
-                    let notes = lastOpenedBlock.notes
-                    DispatchQueue.main.async {
-                        notes.last!.step?.onNoteAdded(from: viewController)
-                    }
+                    lastOpenedBlock.checkRespectsPeriod()
                 }
             }
             else if lastOpenedBlock.nextAppears == NextBlockAppearRule.respectPeriod.rawValue {
-                let daysBetween = Calendar.current.dateComponents([.minute], from: lastOpenedBlock.recommendedAt!, to: Date()).minute!
-                if daysBetween >= Int(lastOpenedBlock.periodDays) {
-                    lastOpenedBlock.unlockNextBlock()
+                lastOpenedBlock.checkRespectsPeriod()
+            } else if lastOpenedBlock.nextAppears == NextBlockAppearRule.onAllBlockStepsArtefacts.rawValue {
+                if lastOpenedBlock.allStepsHaveArtefacts {
+                    lastOpenedBlock.checkRespectsPeriod()
                 }
-            } else if lastOpenedBlock.nextAppears == NextBlockAppearRule.onAllStepsArtefacts.rawValue {
-                lastOpenedBlock.checkAllStepsArtefacts()
+            } else if lastOpenedBlock.nextAppears == NextBlockAppearRule.onAllMissionStepsArtefacts.rawValue {
+                if hasMandatoryArtefacts {
+                    lastOpenedBlock.checkRespectsPeriod()
+                }
+            } else if lastOpenedBlock.nextAppears == NextBlockAppearRule.onAllMissionStepsDone.rawValue {
+                checkAllStepsDone()
             }
         }
         NotificationCenter.default.post(name: .notificationsUpdated, object: nil)
-        
-        MissionsHolder.shared.scheduleReminderNotificationOnStepImplemented(mission: self)
         
         let steps = addedSteps
         steps.forEach {
@@ -295,18 +322,6 @@ public class Mission: NSManagedObject {
         }
     }
     
-    var remindersSorted: [Reminder]? {
-        return reminders?.allObjects.map { $0 as! Reminder }.filter { !$0.isEmotionReminder }.sorted {
-            return $0.id < $1.id
-        }
-    }
-    
-    var emotionRemindersSorted: [Reminder]? {
-        return reminders?.allObjects.map { $0 as! Reminder }.filter { $0.isEmotionReminder }.sorted {
-            return $0.id < $1.id
-        }
-    }
-    
     var allBlocks: [StepsBlock] {
         return blocks?.allObjects.map({ $0 as! StepsBlock }) ?? []
     }
@@ -316,10 +331,10 @@ public class Mission: NSManagedObject {
     }
     
     var emotionBlocks: [StepsBlock] {
-        return blocks?.allObjects.map({ $0 as! StepsBlock }).filter { $0.emotionGroup != nil } ?? []
+        return blocks?.allObjects.map({ $0 as! StepsBlock }).filter { $0.emotionGroup != nil && !$0.isSpecialBlock } ?? []
     }
     
-    var lastBlock: StepsBlock? {
+    var lastOpenedBlock: StepsBlock? {
         return allBlocks.filter { $0.recommendedAt != nil }.max { $0.recommendedAt! < $1.recommendedAt! }
     }
     
@@ -337,7 +352,7 @@ public class Mission: NSManagedObject {
                 let groupEmotions = emotions.filter { MissionEmotion(rawValue:  $0.emotion)!.group.rawValue == group }
                 if groupEmotions.count >= b.emotionsCountToOpenBlock {
                     if b.periodDays > 0 {
-                        let dateSince = Calendar.current.date(byAdding: .minute, value: -Int(b.periodDays), to: Date())!
+                        let dateSince = Calendar.current.date(byAdding: blocksTimeUnit, value: -Int(b.periodDays), to: Date())!
                         let emotionsSinceDateCount = groupEmotions.count { $0.date >= dateSince }
                         if emotionsSinceDateCount < b.emotionsCountToOpenBlock {
                             continue
@@ -399,6 +414,84 @@ public class Mission: NSManagedObject {
             removeScheduledNotifications(toRemove)
         }
     }
+    
+    
+    var nextEmotionBlock: StepsBlock? {
+        let algorithm = (selectEmotionAlgorithm != nil ? SelectEmotionAlgorithm(rawValue: selectEmotionAlgorithm!) : .goThroughAll)
+        let scope = (selectEmotionScope != nil ? SelectEmotionScope(rawValue: selectEmotionScope!) : .block)
+        var blocks = [StepsBlock]()
+        if scope == .app {
+            blocks = MissionsHolder.shared.getMyMissions().flatMap { $0.openedBlocks }
+        } else if scope == .mission {
+            blocks = openedBlocks
+        } else if let block = lastOpenedBlock {
+            blocks.append(block)
+        }
+        let notes = blocks.flatMap { $0.steps?.allObjects ?? [] }.map { $0 as! MissionStep }.flatMap { $0.notes?.allObjects.map { $0 as! MissionNote } ?? [] }
+        var missionEmotions = notes.flatMap { $0.emotions?.allObjects.map({ $0 as! MissionNoteEmotion }) ?? [] }
+        
+        if selectEmotionPeriod > 0 {
+            let date = Calendar.current.date(byAdding: blocksTimeUnit, value: -Int(selectEmotionPeriod), to: Date())!
+            missionEmotions = missionEmotions.filter { $0.date >= date }
+        }
+        
+        let emotions = missionEmotions.map { MissionEmotion(rawValue: $0.emotion)! }
+        print("Emotions: \(emotions)")
+        let priorities: [EmotionGroup] = emotionsPriority?.components(separatedBy: ",").map { EmotionGroup(rawValue: $0)! } ?? [.anger, .joy, .fear, .sadness]
+        var sortedGroups: [EmotionGroup]
+        
+        if emotions.isEmpty {
+            sortedGroups = priorities
+        } else {
+            let groupedBlockEmotions = Dictionary(grouping: emotions, by: { $0.group } )
+            let emotionGroups: [EmotionGroup] = Array(groupedBlockEmotions.keys)
+            
+            sortedGroups = emotionGroups.sorted {
+                let count1 = groupedBlockEmotions[$0]!.count
+                let count2 = groupedBlockEmotions[$1]!.count
+                if count1 == count2 {
+                    return priorities.firstIndex(of: $0)! < priorities.firstIndex(of: $1)!
+                }
+                return count1 > count2
+            }
+            if sortedGroups.count < priorities.count {
+                for p in priorities {
+                    if !sortedGroups.contains(p) {
+                        sortedGroups.append(p)
+                    }
+                }
+            }
+        }
+        
+        let emotionBlocks = emotionBlocks
+        
+        if algorithm == .goThroughAll {
+            let groupedBlocks: [String: [StepsBlock]]
+            var availableEmotionGroups = [EmotionGroup]()
+            let openedBlocks = emotionBlocks.filter { $0.recommendedAt != nil }
+            groupedBlocks = Dictionary(grouping: openedBlocks.filter { $0.emotionGroup != nil }, by: { $0.emotionGroup! } )
+            let maxCount = groupedBlocks.values.map({ $0.count }).max() ?? 0
+            let maxCountBlocks = groupedBlocks.filter { $0.value.count == maxCount }
+            
+            if maxCountBlocks.count == 0 || maxCountBlocks.count == 4 {
+                availableEmotionGroups = priorities
+            } else {
+                let maxEmotionGroups = maxCountBlocks.map { EmotionGroup(rawValue: $0.key)! }
+                availableEmotionGroups = priorities.filter { !maxEmotionGroups.contains($0) }
+            }
+            sortedGroups = sortedGroups.filter { availableEmotionGroups.contains($0) }
+        }
+        
+        let sortedBlocks = emotionBlocks.filter { $0.recommendedAt == nil && sortedGroups.contains(EmotionGroup(rawValue: $0.emotionGroup!)!) }.sorted {
+            let index1 = sortedGroups.firstIndex(of: EmotionGroup(rawValue: $0.emotionGroup!)!)!
+            let index2 = sortedGroups.firstIndex(of: EmotionGroup(rawValue: $1.emotionGroup!)!)!
+            if index1 == index2 {
+                return $0.id < $1.id
+            }
+            return index1 < index2
+        }
+        return sortedBlocks.first
+    }
 }
 
 extension Mission {
@@ -420,21 +513,17 @@ extension Mission {
     @NSManaged public var showCompleted: Bool
     @NSManaged public var canCreateSteps: Bool
     @NSManaged public var skipRecommend: Bool
-    @NSManaged public var lastReminderAt: Date?
-    @NSManaged public var lastEmotionReminderAt: Date?
-    @NSManaged public var reminderDays: Int16
     @NSManaged public var sortOrderUpTo: Int32
     @NSManaged public var skipSortByImplemented: Bool
     @NSManaged public var dailyNotificationText: String?
-    
-    @NSManaged public var reminderNotificationId: Int16
-    @NSManaged public var emotionReminderNotificationId: Int16
-    @NSManaged public var reminderNotificationRequestId: String?
-    @NSManaged public var emotionReminderNotificationRequestId: String?
+    @NSManaged public var emotionsPriority: String?
+    @NSManaged public var selectEmotionScope: String?
+    @NSManaged public var selectEmotionAlgorithm: String?
+    @NSManaged public var selectEmotionPeriod: Int16
     
     @NSManaged public var blocks: NSSet?
     @NSManaged public var notifications: NSSet?
-    @NSManaged public var reminders: NSSet?
+    @NSManaged public var reminderGroups: NSSet?
 }
 
 extension Mission {

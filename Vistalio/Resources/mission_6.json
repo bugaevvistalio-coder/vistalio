@@ -7,8 +7,10 @@
                     "description": "Запиши в заметке, сколько ты зарабатываешь сейчас и хочешь заработать через год (хотя бы примерно).\n\nВыбери максимально точные эмоции, которые у тебя вызывают эти цифры."
                 }
             ],
-            "nextAppears": "onArtefacts",
-            "artefacts": ["emotion"]
+            "nextAppears": "onAnyBlockStepArtefacts",
+            "artefacts": ["emotion"],
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -31,9 +33,11 @@
                 }
             ],
             "emotionGroup": "joy",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
             "artefacts": ["emotion"],
-            "periodDays": 7
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "periodDays": 7,
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -55,9 +59,11 @@
                 }
             ],
             "emotionGroup": "joy",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
             "artefacts": ["emotion"],
-            "periodDays": 7
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "periodDays": 7,
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -71,9 +77,11 @@
                 }
             ],
             "emotionGroup": "joy",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
             "artefacts": ["emotion"],
-            "periodDays": 7
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "periodDays": 7,
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -121,9 +129,11 @@
                 }
             ],
             "emotionGroup": "joy",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
             "artefacts": ["emotion"],
-            "periodDays": 7
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "periodDays": 7,
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -165,9 +175,11 @@
                 }
             ],
             "emotionGroup": "anger",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
             "artefacts": ["emotion"],
-            "periodDays": 7
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "periodDays": 7,
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -189,9 +201,11 @@
                 }
             ],
             "emotionGroup": "anger",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
             "artefacts": ["emotion"],
-            "periodDays": 7
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "periodDays": 7,
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -216,9 +230,11 @@
                 }
             ],
             "emotionGroup": "anger",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
             "artefacts": ["emotion"],
-            "periodDays": 7
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "periodDays": 7,
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -238,9 +254,11 @@
                 }
             ],
             "emotionGroup": "anger",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
             "artefacts": ["emotion"],
-            "periodDays": 7
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "periodDays": 7,
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -268,9 +286,11 @@
                 }
             ],
             "emotionGroup": "fear",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
             "artefacts": ["emotion"],
-            "periodDays": 7
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "periodDays": 7,
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -295,9 +315,11 @@
                 }
             ],
             "emotionGroup": "fear",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
             "artefacts": ["emotion"],
-            "periodDays": 7
+            "periodDays": 7,
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -332,9 +354,11 @@
                 }
             ],
             "emotionGroup": "fear",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
             "artefacts": ["emotion"],
-            "periodDays": 7
+            "periodDays": 7,
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -348,9 +372,11 @@
                 }
             ],
             "emotionGroup": "fear",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
             "artefacts": ["emotion"],
-            "periodDays": 7
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "periodDays": 7,
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -375,9 +401,11 @@
                 }
             ],
             "emotionGroup": "sadness",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
             "artefacts": ["emotion"],
-            "periodDays": 7
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "periodDays": 7,
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -396,9 +424,11 @@
                 }
             ],
             "emotionGroup": "sadness",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
             "artefacts": ["emotion"],
-            "periodDays": 7
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "periodDays": 7,
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -421,9 +451,11 @@
                 }
             ],
             "emotionGroup": "sadness",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
             "artefacts": ["emotion"],
-            "periodDays": 7
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "periodDays": 7,
+            "nextBlockDependsOnEmotion": true
         },
         {
             "steps": [
@@ -441,10 +473,15 @@
                 }
             ],
             "emotionGroup": "sadness",
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
             "artefacts": ["emotion"],
-            "periodDays": 7
+            "nextBlockHint": "Добавьте эмоции к любому шагу из последнего блока, чтобы открыть новые",
+            "periodDays": 7,
+            "nextBlockDependsOnEmotion": true
         }
     ],
-    "autoAddFirstBlock": true
+    "autoAddFirstBlock": true,
+    "emotionsPriority": "anger,joy,fear,sadness",
+    "selectEmotionScope": "block",
+    "selectEmotionAlgorithm": "goThroughAll"
 }

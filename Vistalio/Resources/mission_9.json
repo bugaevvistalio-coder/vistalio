@@ -9,7 +9,8 @@
                 }
             ],
             "artefacts": ["video"],
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextBlockHint": "Добавьте видео к последнему шагу, чтобы открыть новые",
+            "nextAppears": "onAnyBlockStepArtefacts",
             "periodDays": 1
         },
         {
@@ -21,7 +22,8 @@
                 }
             ],
             "artefacts": ["video"],
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextBlockHint": "Добавьте видео к последнему шагу, чтобы открыть новые",
+            "nextAppears": "onAnyBlockStepArtefacts",
             "periodDays": 1
         },
         {
@@ -32,7 +34,8 @@
                 }
             ],
             "artefacts": ["video"],
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
+            "nextBlockHint": "Добавьте видео к последнему шагу, чтобы открыть новые",
             "periodDays": 1
         },
         {
@@ -43,7 +46,8 @@
                 }
             ],
             "artefacts": ["video"],
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
+            "nextBlockHint": "Добавьте видео к последнему шагу, чтобы открыть новые",
             "periodDays": 1
         },
         {
@@ -55,7 +59,8 @@
                 }
             ],
             "artefacts": ["video"],
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
+            "nextBlockHint": "Добавьте видео к последнему шагу, чтобы открыть новые",
             "periodDays": 1
         },
         {
@@ -66,7 +71,8 @@
                 }
             ],
             "artefacts": ["video"],
-            "nextAppears": "onArtefactsRespectPeriod",
+            "nextAppears": "onAnyBlockStepArtefacts",
+            "nextBlockHint": "Добавьте видео к последнему шагу, чтобы открыть новые",
             "periodDays": 1
         },
         {
@@ -78,37 +84,41 @@
             ]
         }
     ],
-    "reminderNotifications": [
+    "reminderGroups": [
         {
-            "id": 1,
-            "title": "Ты — суперзвезда! ⭐",
-            "body": "Включи камеру — ты круче, чем думаешь 😎"
-        },
-        {
-            "id": 2,
-            "title": "Миссия заждалась ⏳",
-            "body": "Веди съемку непринужденно, как будто записываешь кружок для лучшего друга 🤳"
-        },
-        {
-            "id": 3,
-            "title": "Один дубль, одно видео,",
-            "body": "одна маленькая победа🏆. Ты справишься 💪"
-        },
-        {
-            "id": 4,
-            "title": "Дар оратора 🔥",
-            "body": "Зачем скрывать в себе талант? Сделай 60-секундное видео"
-        },
-        {
-            "id": 5,
-            "title": "Время улыбнуться! 😊",
-            "body": "Пора подарить миру свою улыбку! ✨ Включай камеру и начинай запись🌟"
-        },
-        {
-            "id": 6,
-            "title": "Всего 60 секунд! ⏱️",
-            "body": "Минута — и ты на шаг увереннее в себе! Поехали! 🚀"
+            "reminderDays": 1,
+            "reminders": [
+                {
+                    "id": 1,
+                    "title": "Ты — суперзвезда! ⭐",
+                    "body": "Включи камеру — ты круче, чем думаешь 😎"
+                },
+                {
+                    "id": 2,
+                    "title": "Миссия заждалась ⏳",
+                    "body": "Веди съемку непринужденно, как будто записываешь кружок для лучшего друга 🤳"
+                },
+                {
+                    "id": 3,
+                    "title": "Один дубль, одно видео,",
+                    "body": "одна маленькая победа🏆. Ты справишься 💪"
+                },
+                {
+                    "id": 4,
+                    "title": "Дар оратора 🔥",
+                    "body": "Зачем скрывать в себе талант? Сделай 60-секундное видео"
+                },
+                {
+                    "id": 5,
+                    "title": "Время улыбнуться! 😊",
+                    "body": "Пора подарить миру свою улыбку! ✨ Включай камеру и начинай запись🌟"
+                },
+                {
+                    "id": 6,
+                    "title": "Всего 60 секунд! ⏱️",
+                    "body": "Минута — и ты на шаг увереннее в себе! Поехали! 🚀"
+                }
+            ]
         }
-    ],
-    "reminderDays": 1
+    ]
 }

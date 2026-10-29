@@ -27,16 +27,13 @@
         <attribute name="category" optional="YES" attributeType="String"/>
         <attribute name="creationDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="dailyNotificationText" optional="YES" attributeType="String"/>
-        <attribute name="emotionReminderNotificationId" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="emotionReminderNotificationRequestId" optional="YES" attributeType="String"/>
+        <attribute name="emotionsPriority" optional="YES" attributeType="String"/>
         <attribute name="finishedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="lastEmotionReminderAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="lastReminderAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="photoPath" optional="YES" attributeType="String"/>
-        <attribute name="reminderDays" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="reminderNotificationId" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="reminderNotificationRequestId" optional="YES" attributeType="String"/>
+        <attribute name="selectEmotionAlgorithm" optional="YES" attributeType="String"/>
+        <attribute name="selectEmotionPeriod" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="selectEmotionScope" optional="YES" attributeType="String"/>
         <attribute name="showCompleted" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="skipRecommend" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="skipSortByImplemented" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -46,7 +43,7 @@
         <attribute name="updateDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="blocks" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="StepsBlock" inverseName="mission" inverseEntity="StepsBlock"/>
         <relationship name="notifications" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AppNotification" inverseName="mission" inverseEntity="AppNotification"/>
-        <relationship name="reminders" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Reminder" inverseName="mission" inverseEntity="Reminder"/>
+        <relationship name="reminderGroups" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RemindersGroup" inverseName="mission" inverseEntity="RemindersGroup"/>
     </entity>
     <entity name="MissionNote" representedClassName="MissionNote" syncable="YES">
         <attribute name="audio" optional="YES" attributeType="String"/>
@@ -98,9 +95,17 @@
     <entity name="Reminder" representedClassName="Reminder" syncable="YES">
         <attribute name="body" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="isEmotionReminder" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
-        <relationship name="mission" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Mission" inverseName="reminders" inverseEntity="Mission"/>
+        <relationship name="remindersGroup" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RemindersGroup" inverseName="reminders" inverseEntity="RemindersGroup"/>
+    </entity>
+    <entity name="RemindersGroup" representedClassName="RemindersGroup" syncable="YES">
+        <attribute name="isEmotionReminder" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="lastReminderId" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="lastScheduledAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="notificationRequestId" attributeType="String"/>
+        <attribute name="reminderDays" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="mission" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Mission" inverseName="reminderGroups" inverseEntity="Mission"/>
+        <relationship name="reminders" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Reminder" inverseName="remindersGroup" inverseEntity="Reminder"/>
     </entity>
     <entity name="RemovedStep" representedClassName="RemovedStep" syncable="YES">
         <attribute name="date" attributeType="String"/>
@@ -122,6 +127,7 @@
         <attribute name="isSpecialBlock" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="locked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="nextAppears" optional="YES" attributeType="String"/>
+        <attribute name="nextBlockDependsOnEmotion" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="nextBlockHint" optional="YES" attributeType="String"/>
         <attribute name="nextBlockNotificationBody" optional="YES" attributeType="String"/>
         <attribute name="nextBlockNotificationTitle" optional="YES" attributeType="String"/>

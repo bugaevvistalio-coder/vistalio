@@ -294,7 +294,7 @@ class CreateNoteViewController: UIViewController {
         
         let presenting = presentingViewController
         self.dismiss(animated: true) {
-            note.step?.onNoteEdited(from: presenting)
+            note.step?.onNoteAdded(from: presenting)
         }
     }
     
