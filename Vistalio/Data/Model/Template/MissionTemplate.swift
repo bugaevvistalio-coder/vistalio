@@ -97,8 +97,8 @@ class TemplateBlock: Codable {
     let textPlaceholder: String?
     let answerHint: String?
     let periodDays: Int?
-    let nextBlockNotificationTitle: String?
-    let nextBlockNotificationBody: String?
+    let notificationTitle: String?
+    let notificationBody: String?
     let emotionGroup: String?
     let emotionsCountToOpenBlock: Int?
     let isSpecialBlock: Bool?
@@ -123,6 +123,7 @@ class TemplateStep: Codable {
     let sortOrder: Int?
     let canEditOnlyTime: Bool?
     let artefacts: [BlockArtefact]?
+    let ml: Int?
     
     var shortDescription: String? {
         let description = description?.replacingOccurrences(of: "\n\n", with: " ").replacingOccurrences(of: "\n", with: " ")

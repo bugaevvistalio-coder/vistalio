@@ -113,8 +113,8 @@ public class Mission: NSManagedObject {
                 block.textPlaceholder = b.textPlaceholder
                 block.answerHint = b.answerHint
                 block.periodDays = Int16(b.periodDays ?? 0)
-                block.nextBlockNotificationTitle = b.nextBlockNotificationTitle
-                block.nextBlockNotificationBody = b.nextBlockNotificationBody
+                block.notificationTitle = b.notificationTitle
+                block.notificationBody = b.notificationBody
                 block.emotionGroup = b.emotionGroup
                 block.emotionsCountToOpenBlock = Int16(b.emotionsCountToOpenBlock ?? 0)
                 block.isSpecialBlock = b.isSpecialBlock ?? false
@@ -431,7 +431,10 @@ public class Mission: NSManagedObject {
         var missionEmotions = notes.flatMap { $0.emotions?.allObjects.map({ $0 as! MissionNoteEmotion }) ?? [] }
         
         if selectEmotionPeriod > 0 {
-            let date = Calendar.current.date(byAdding: blocksTimeUnit, value: -Int(selectEmotionPeriod), to: Date())!
+            let lastOpenedBlock = lastOpenedBlock
+            let lastBlockDate = lastOpenedBlock?.recommendedAt ?? creationDate!
+            let periodDays = lastOpenedBlock?.periodDays ?? 0
+            let date = Calendar.current.date(byAdding: blocksTimeUnit, value: Int(periodDays - selectEmotionPeriod), to: lastBlockDate)!
             missionEmotions = missionEmotions.filter { $0.date >= date }
         }
         

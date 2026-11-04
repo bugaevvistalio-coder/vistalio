@@ -65,9 +65,7 @@
                 }
             ],
             "nextAppears": "respectPeriod",
-            "periodDays": 28,
-            "nextBlockNotificationTitle": "Новый уровень бега! 📈",
-            "nextBlockNotificationBody": "Вы успешно освоили регулярный бег! 🏃‍♂️ Следующий этап — плавно нарастить объем нагрузок"
+            "periodDays": 28
         },
         {
             "steps": [
@@ -129,8 +127,8 @@
             ],
             "nextAppears": "respectPeriod",
             "periodDays": 28,
-            "nextBlockNotificationTitle": "Выход на пик! 🏔️",
-            "nextBlockNotificationBody": "Длинная пробежка 18 км покорена! 💪 Твоя задача — выйти на максимум возможностей"
+            "notificationTitle": "Новый уровень бега! 📈",
+            "notificationBody": "Вы успешно освоили регулярный бег! 🏃‍♂️ Следующий этап — плавно нарастить объем нагрузок"
         },
         {
             "steps": [
@@ -185,8 +183,8 @@
             ],
             "nextAppears": "respectPeriod",
             "periodDays": 28,
-            "nextBlockNotificationTitle": "Время восстановления 🌊",
-            "nextBlockNotificationBody": "Пик нагрузок позади! Теперь мы снижаем объем, чтобы подойти к старту, полными сил 🔋"
+            "notificationTitle": "Выход на пик! 🏔️",
+            "notificationBody": "Длинная пробежка 18 км покорена! 💪 Твоя задача — выйти на максимум возможностей"
         },
         {
             "steps": [
@@ -229,8 +227,8 @@
             ],
             "nextAppears": "respectPeriod",
             "periodDays": 21,
-            "nextBlockNotificationTitle": "Финишная прямая! 🏅",
-            "nextBlockNotificationBody": "Вся тяжелая работа сделана! 🥳 Открой план последней недели подготовки. Удачи! ✨"
+            "notificationTitle": "Время восстановления 🌊",
+            "notificationBody": "Пик нагрузок позади! Теперь мы снижаем объем, чтобы подойти к старту, полными сил 🔋"
         },
         {
             "steps": [
@@ -258,7 +256,9 @@
                     "frequency": 1,
                     "days": [112]
                 }
-            ]
+            ],
+            "notificationTitle": "Финишная прямая! 🏅",
+            "notificationBody": "Вся тяжелая работа сделана! 🥳 Открой план последней недели подготовки. Удачи! ✨"
         },
         {
             "emotionGroup": "joy",

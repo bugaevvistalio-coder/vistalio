@@ -9,6 +9,7 @@ import UIKit
 
 struct DropItemData {
     let text: String
+    let image: UIImage?
 }
 
 class DropDownView: UIView {
@@ -31,8 +32,6 @@ class DropDownView: UIView {
         setup()
     }
     
-    
-    
     func setup() {
         backgroundColor = .white
         setShadow(offset: CGSize(width: 0, height: 0), radius: 20, cornerRadius: 30, shadowOpacity: 0.22)
@@ -44,6 +43,7 @@ class DropDownView: UIView {
                 let itemView = DropDownItemView()
                 itemView.index = i
                 itemView.text = item.text
+                itemView.image = item.image
                 itemView.onChecked = { [unowned self] index in
                     self.checkedIndex = index
                     self.onChecked?(index)

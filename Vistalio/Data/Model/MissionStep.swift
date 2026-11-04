@@ -71,8 +71,8 @@ extension StepsBlock {
     @NSManaged public var stepDayStartPoint: String?
     @NSManaged public var nextBlockDependsOnEmotion: Bool
     
-    @NSManaged public var nextBlockNotificationTitle: String?
-    @NSManaged public var nextBlockNotificationBody: String?
+    @NSManaged public var notificationTitle: String?
+    @NSManaged public var notificationBody: String?
     
     @NSManaged public var mission: Mission
     @NSManaged public var steps: NSSet?
@@ -142,21 +142,22 @@ extension StepsBlock {
     }
     
     @discardableResult
-    func unlockNextBlock(date: Date? = nil) -> Bool {
+    func unlockNextBlock(date: Date? = nil) -> StepsBlock? {
         let isLastBlock = mission.lastOpenedBlock?.recommendedAt == recommendedAt
         if !isLastBlock {
-            return false
+            print("Is not last block")
+            return nil
         }
         guard let nextBlock = nextBlockDependsOnEmotion ? mission.nextEmotionBlock : nextBlock, nextBlock.recommendedAt == nil else {
             print("Skip next block unlock")
-            return false
+            return nil
         }
         print("Next block unlocked")
         CoreDataStack.shared.performAndWait { context in
             nextBlock.unlock(date: date)
             checkPeriod = false
             
-            AppNotification.create(context: context, title: nextBlockNotificationTitle ?? mission.name ?? "", text: nextBlockNotificationBody ?? "Открылись новые шаги", isRead: false, mission: mission, type: .newSteps)
+            AppNotification.create(context: context, title: nextBlock.notificationTitle ?? mission.name ?? "", text: nextBlock.notificationBody ?? "Открылись новые шаги", isRead: false, mission: mission, type: .newSteps)
         }
         DispatchQueue.main.async {
             if self.mission.skipRecommend {
@@ -166,7 +167,7 @@ extension StepsBlock {
             }
             NotificationCenter.default.post(name: .notificationsUpdated, object: nil)
         }
-        return true
+        return nextBlock
     }
     
     func unlock(date: Date? = nil) {
@@ -197,13 +198,12 @@ extension StepsBlock {
         if nextAppears == NextBlockAppearRule.respectPeriod.rawValue {
             let nextBlockDate = Calendar.current.date(byAdding: blocksTimeUnit, value: Int(periodDays), to: recommendedAt!)!
             if nextBlockDate <= Date() {
-                DispatchQueue.global().async {
-                    self.unlockNextBlock(date: nextBlockDate)
+                if let next = unlockNextBlock(date: nextBlockDate) {
+                    addNotification(title: next.notificationTitle ?? mission.name ?? "", body: next.notificationBody ?? "Открылись новые шаги", notificationId: UUID().uuidString)
                 }
-                addNotification(title: nextBlockNotificationTitle ?? mission.name ?? "", body: nextBlockNotificationBody ?? "Открылись новые шаги", notificationId: UUID().uuidString)
             } else {
                 checkPeriod = true
-                DispatchQueue.global().async { [weak self] in
+                DispatchQueue.main.async { [weak self] in
                     self?.scheduleAppearNotification()
                 }
             }
@@ -320,8 +320,8 @@ extension StepsBlock {
     
     func checkRespectsPeriod() {
         if periodDays == 0 {
-            if unlockNextBlock() {
-                showStepsAdded()
+            if let next = unlockNextBlock() {
+                next.showStepsAdded()
             }
             return
         }
@@ -341,8 +341,8 @@ extension StepsBlock {
         
         if daysBetween >= Int(periodDays) {
             print("Try to unlock next block")
-            if unlockNextBlock() {
-                showStepsAdded()
+            if let next = unlockNextBlock() {
+                next.showStepsAdded()
             }
         } else if !checkPeriod  {
             print("Setup check period")
@@ -355,7 +355,7 @@ extension StepsBlock {
     
     func showStepsAdded() {
         let mission = mission
-        (UIApplication.shared.delegate as! AppDelegate).addNotification(text: nextBlockNotificationTitle ?? "Открылись новые шаги в \(mission.name ?? "")", secondaryText: nextBlockNotificationBody ?? "К рекомендуемым шагам →", mission: mission) {
+        (UIApplication.shared.delegate as! AppDelegate).addNotification(text: notificationTitle ?? "Открылись новые шаги в \(mission.name ?? "")", secondaryText: notificationBody ?? "К рекомендуемым шагам →", mission: mission) {
             if let mainVC = UIApplication.shared.mainViewController {
                 mainVC.dismiss(animated: false)
                 mainVC.switchTab(tabIndex: 1, toRoot: true)
@@ -371,15 +371,19 @@ extension StepsBlock {
         if mission.archivedAt != nil {
             return
         }
-        let notificationId = UUID().uuidString
+        let notificationId = self.notificationId ?? UUID().uuidString
         let calendar = Calendar.current
         let date = calendar.date(byAdding: blocksTimeUnit, value: Int(periodDays), to: recommendedAt)!
         let userInfo: [AnyHashable: Any] = ["fireDate": date]
 
-        addNotification(title: nextBlockNotificationTitle ?? mission.name ?? "", body: nextBlockNotificationBody ?? "Открылись новые шаги", notificationId: notificationId, userInfo: userInfo, triggerDate: date)
+        if let nextBlock = nextBlockDependsOnEmotion ? mission.nextEmotionBlock : nextBlock, nextBlock.recommendedAt == nil {
+            addNotification(title: nextBlock.notificationTitle ?? mission.name ?? "", body: nextBlock.notificationBody ?? "Открылись новые шаги", notificationId: notificationId, userInfo: userInfo, triggerDate: date)
+        }
         
-        CoreDataStack.shared.performAndWait { context in
-            self.notificationId = notificationId
+        if self.notificationId == nil {
+            CoreDataStack.shared.performAndWait { context in
+                self.notificationId = notificationId
+            }
         }
     }
 }
@@ -434,6 +438,8 @@ extension MissionStep {
     @NSManaged public var noteTitle: String?
     @NSManaged public var notificationId: String?
     @NSManaged public var dailyNotificationScheduled: Bool
+    
+    @NSManaged public var ml: Int16
     
     @NSManaged public var block: StepsBlock
     @NSManaged public var notes: NSSet?
@@ -512,6 +518,41 @@ extension MissionStep {
         return name ?? ""
     }
     
+    var mlImage: UIImage? {
+        if ml == 200 {
+            return .ml200
+        } else if ml == 250 {
+            return .ml250
+        } else if ml == 300 {
+            return .ml300
+        } else if ml == 330 {
+            return .ml330
+        } else if ml == 500 {
+            return .ml500
+        }
+        return nil
+    }
+    
+    var fullNameWithMl: NSAttributedString {
+        return getFullNameWithMl(imageSize: 15, yOffset: -2)
+    }
+    
+    func getFullNameWithMl(imageSize: Int, yOffset: Int) -> NSAttributedString {
+        
+        let fullString = NSMutableAttributedString(string: fullName + " ")
+        if let image = mlImage {
+            let attachment = NSTextAttachment()
+            attachment.image = image
+            attachment.bounds = CGRect(x: 0, y: yOffset, width: imageSize, height: imageSize)
+            let imageString = NSAttributedString(attachment: attachment)
+            fullString.append(imageString)
+            fullString.append(NSAttributedString(string: " "))
+        }
+        fullString.append(NSAttributedString(string: "\(ml) мл"))
+
+        return fullString
+    }
+    
     var artefactsArray: [BlockArtefact] {
         let array = artefacts?.components(separatedBy: ",") ?? []
         return array.map { BlockArtefact(rawValue: $0)! }
@@ -579,6 +620,7 @@ extension MissionStep {
         step.sortOrder = Int32(template.sortOrder ?? 0)
         step.canEditOnlyTime = template.canEditOnlyTime ?? false
         step.artefacts = template.artefacts?.map { $0.rawValue }.joined(separator: ",")
+        step.ml = Int16(template.ml ?? 0)
         step.block = block
         
         if let notes = template.notes {
@@ -983,6 +1025,10 @@ extension MissionStep {
             return
         }
         
+        if lastOpenedBlock.nextBlockDependsOnEmotion, let next = mission.nextEmotionBlock, next.notificationTitle != nil {
+            lastOpenedBlock.scheduleAppearNotification()
+        }
+        
         let missionLevel = lastOpenedBlock.nextAppears == NextBlockAppearRule.onAllMissionStepsArtefacts.rawValue || lastOpenedBlock.nextAppears == NextBlockAppearRule.onAllMissionStepsDone.rawValue
         if !missionLevel && lastOpenedBlock !== block {
             print("One of the previous blocks")
@@ -1099,6 +1145,7 @@ extension MissionStep {
         df.dateFormat = "yyyy-MM-dd HH:mm"
         let date = df.date(from: dateStr)!
         let daysBetween = Calendar.current.dateComponents([.day], from: Date(), to: date).day!
+        let name = ml > 0 ? "\(name!) \(ml) мл" : name!
         
         if daysBetween <= 0 {
             self.dailyNotificationScheduled = true
@@ -1107,11 +1154,11 @@ extension MissionStep {
             let h = Int(parts[0])!
             let m = Int(parts[1])!
             DispatchQueue.main.async {
-                addDailyNotification(title: self.name!, body: self.block.mission.dailyNotificationText ?? "", hour: h, minute: m, notificationId: self.notificationId!)
+                addDailyNotification(title: name, body: self.block.mission.dailyNotificationText ?? "", hour: h, minute: m, notificationId: self.notificationId!)
             }
         } else if !scheduled || rescheduleExisting {
             DispatchQueue.main.async {
-                addNotification(title: self.name!, body: self.block.mission.dailyNotificationText ?? "", notificationId: self.notificationId!, triggerDate: date)
+                addNotification(title: name, body: self.block.mission.dailyNotificationText ?? "", notificationId: self.notificationId!, triggerDate: date)
             }
         }
     }

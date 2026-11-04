@@ -40,12 +40,14 @@ PODS:
   - IQTextView (1.0.5):
     - IQKeyboardToolbar/Placeholderable
   - Kingfisher (8.8.1)
+  - MapLibre (6.30.0)
 
 DEPENDENCIES:
   - AppsFlyerFramework/Strict
   - FittedSheets
   - IQKeyboardManagerSwift
   - Kingfisher (~> 8.0)
+  - MapLibre
 
 SPEC REPOS:
   trunk:
@@ -60,6 +62,7 @@ SPEC REPOS:
     - IQTextInputViewNotification
     - IQTextView
     - Kingfisher
+    - MapLibre
 
 SPEC CHECKSUMS:
   AppsFlyerFramework: c1e1e4cd3b98ffdca2fe32b17ae93909e409b6ab
@@ -73,7 +76,8 @@ SPEC CHECKSUMS:
   IQTextInputViewNotification: 3b9fb27a16e7ee8958cc9092cfb07a1a9e1fd559
   IQTextView: ae13b4922f22e6f027f62c557d9f4f236b19d5c7
   Kingfisher: b6c16059112dd6bdadf3d7ae01472ea1ef01a6b8
+  MapLibre: 0612a7bd22d9e025c2aafa87bbea4f4685a1b15b
 
-PODFILE CHECKSUM: 49e9651875bf0e224637089b9c4d26e42167e1c4
+PODFILE CHECKSUM: 6cade3f1d8e769603d14413daea11b7413a144c3
 
 COCOAPODS: 1.15.2

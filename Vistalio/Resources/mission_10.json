@@ -3,47 +3,55 @@
         {
             "steps": [
                 {
-                    "name": "☕Кофе 200 мл",
+                    "name": "☕ Кофе",
                     "preview": true,
                     "frequency": 2,
-                    "time": "08:00"
+                    "time": "08:00",
+                    "ml": 200
                 },
                 {
-                    "name": "🫖Чай 300 мл",
+                    "name": "🫖 Чай",
                     "preview": true,
                     "frequency": 2,
-                    "time": "10:00"
+                    "time": "10:00",
+                    "ml": 300
                 },
                 {
-                    "name": "💧Вода 200 мл",
+                    "name": "💧 Вода",
                     "preview": true,
                     "frequency": 2,
-                    "time": "12:00"
+                    "time": "12:00",
+                    "ml": 200
                 },
                 {
-                    "name": "🍎Сок 300 мл",
+                    "name": "🍎 Сок",
                     "frequency": 2,
-                    "time": "14:00"
+                    "time": "14:00",
+                    "ml": 300
                 },
                 {
-                    "name": "🥤Газировка 300 мл",
+                    "name": "🥤 Газировка",
                     "frequency": 2,
-                    "time": "16:00"
+                    "time": "16:00",
+                    "ml": 300
                 },
                 {
-                    "name": "🫖Чай 300 мл",
+                    "name": "🫖 Чай",
                     "frequency": 2,
-                    "time": "18:00"
+                    "time": "18:00",
+                    "ml": 300
                 },
                 {
-                    "name": "💧Вода 200 мл",
+                    "name": "💧 Вода",
                     "frequency": 2,
-                    "time": "20:00"
+                    "time": "20:00",
+                    "ml": 200
                 },
                 {
-                    "name": "💧Вода 200 мл",
+                    "name": "💧 Вода",
                     "frequency": 2,
-                    "time": "22:00"
+                    "time": "22:00",
+                    "ml": 200
                 }
             ]
         },
@@ -56,7 +64,8 @@
             ]
         }
     ],
-    "autoAddFirstBlock": true,
+    "skipRecommend": true,
+    "canCreateSteps": false,
     "dailyNotificationText": "💧💧",
     "reminderGroups": [
         {

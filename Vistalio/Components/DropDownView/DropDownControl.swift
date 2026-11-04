@@ -9,7 +9,10 @@ import UIKit
 class DropDownControl: UIView {
     
     @IBOutlet private weak var label: UILabel!
+    @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var arrowImageView: UIImageView!
+    
+    @IBOutlet private weak var labelLeading: NSLayoutConstraint!
     
     private var view: UIView!
     
@@ -18,7 +21,17 @@ class DropDownControl: UIView {
     var checkedIndex: Int = 0 {
         didSet {
             if checkedIndex < items.count {
-                label.text = items[checkedIndex].text
+                let item = items[checkedIndex]
+                label.text = item.text
+                
+                if let image = item.image {
+                    imageView.isHidden = false
+                    imageView.image = image
+                    labelLeading.constant = 36
+                } else {
+                    imageView.isHidden = true
+                    labelLeading.constant = 12
+                }
             }
         }
     }
@@ -81,5 +94,33 @@ class DropDownControl: UIView {
     
     var height: Int {
         return items.count * 40 + (items.count - 1) * 8 + 24
+    }
+    
+    func reset() {
+        arrowImageView.image = UIImage.chevronDown
+    }
+    
+    @IBInspectable var mainColor: UIColor? {
+        didSet {
+            label.superview?.backgroundColor = mainColor ?? .darkGrey
+        }
+    }
+    
+    @IBInspectable var arrowBackgroundColor: UIColor? {
+        didSet {
+            arrowImageView.backgroundColor = arrowBackgroundColor ?? .white.withAlphaComponent(0.4)
+        }
+    }
+    
+    @IBInspectable var arrowTintColor: UIColor? {
+        didSet {
+            arrowImageView.tintColor = arrowTintColor ?? .black
+        }
+    }
+    
+    @IBInspectable var labelColor: UIColor? {
+        didSet {
+            label.textColor = labelColor ?? .white
+        }
     }
 }

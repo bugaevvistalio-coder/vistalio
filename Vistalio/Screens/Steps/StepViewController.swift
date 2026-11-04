@@ -97,7 +97,7 @@ class StepViewController: UIViewController {
         smallHeaderView.isHidden = true
         
         navigationMissionButton.setTitle(step.block.mission.name?.limitCharacters(20), for: .normal)
-        navigationStepButton.setTitle(step.fullName.limitCharacters(20), for: .normal)
+        updateNavigationStepButtonTitle()
         
         navigationGradientLeft.setGradientLayer(colors: [.white, .white.withAlphaComponent(0.01)], startPoint: CGPoint(x: 0.0, y: 0.5), endPoint: CGPoint(x: 1.0, y: 0.5), cornerRadius: 0)
         navigationGradientRight.setGradientLayer(colors: [.white, .white.withAlphaComponent(0.01)], startPoint: CGPoint(x: 1.0, y: 0.5), endPoint: CGPoint(x: 0.0, y: 0.5), cornerRadius: 0)
@@ -173,6 +173,22 @@ class StepViewController: UIViewController {
         updateAddNoteViewShadows()
     }
     
+    private func updateNavigationStepButtonTitle() {
+        if step.ml > 0 {
+            let fullNameWithMl = step.fullNameWithMl
+            if fullNameWithMl.length > 20 {
+                let truncatedString = fullNameWithMl.attributedSubstring(from: NSRange(location: 0, length: 20))
+                let finalString = NSMutableAttributedString(attributedString: truncatedString)
+                finalString.append(NSAttributedString(string: "..."))
+                navigationStepButton.setAttributedTitle(finalString, for: .normal)
+            } else {
+                navigationStepButton.setAttributedTitle(fullNameWithMl, for: .normal)
+            }
+        } else {
+            navigationStepButton.setTitle(step.fullName.limitCharacters(20), for: .normal)
+        }
+    }
+    
     private func showCreateNote() {
         addNoteTapped(addNoteButton!)
         addNoteView.layer.cornerRadius = 30
@@ -239,9 +255,19 @@ class StepViewController: UIViewController {
     }
     
     private func displayStep() {
-        let stepName = step.fullName
-        nameTextView.text = stepName
-        smallHeaderNameLabel.text = stepName
+        if step.ml > 0 {
+            let stepName = step.fullNameWithMl
+            let mStepName = NSMutableAttributedString(attributedString: step.getFullNameWithMl(imageSize: 28, yOffset: -5))
+            mStepName.addAttribute(.font, value: nameTextView.font!, range: NSRange(location: 0, length: stepName.length))
+            
+            nameTextView.attributedText = mStepName
+            smallHeaderNameLabel.attributedText = stepName
+        } else {
+            let stepName = step.fullName
+            nameTextView.text = stepName
+            smallHeaderNameLabel.text = stepName
+        }
+        
         if let text = step.text, !text.isEmpty {
             if text.contains("mission#") {
                 descriptionTextView.attributedText = step.createAttributedTextWithLinks(font: UIFont.systemFont(ofSize: 16, weight: .medium), color: .textGrey70)
@@ -353,18 +379,18 @@ class StepViewController: UIViewController {
             items.append(MenuItemData(text: "Изменить", image: .edit, type: .normal, action: { [unowned self] in
                 menuUnderlayControl.removeFromSuperview()
                 
-                if step.canEditOnlyTime {
+                if step.canEditOnlyTime || step.ml > 0 {
                     let vc = storyboard?.instantiateViewController(withIdentifier: "EditTimeVC") as! EditTimeViewController
                     vc.step = step
                     vc.onStepSaved = { [unowned self] in
-                        navigationStepButton.setTitle(step.fullName.limitCharacters(20), for: .normal)
+                        updateNavigationStepButtonTitle()
                         displayStep()
                         (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг изменён")
                     }
                     presentFullScreen(vc)
                 } else {
                     openEditStep(mission: step.block.mission, step: step) { [unowned self] step in
-                        navigationStepButton.setTitle(step.fullName.limitCharacters(20), for: .normal)
+                        updateNavigationStepButtonTitle()
                         displayStep()
                         resetCalendar()
                         (UIApplication.shared.delegate as! AppDelegate).addNotification(text: "Шаг изменён")

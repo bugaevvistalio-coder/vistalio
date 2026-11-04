@@ -146,6 +146,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 //            }
         } else if notification.request.trigger != nil {
             let block = MissionsHolder.shared.getNotificationBlock(notificationId: notification.request.identifier)
+            print("Notification block found \(block?.id ?? 0) wtih request identifier \(notification.request.identifier)")
             block?.unlockNextBlock()
         }
         completionHandler([.banner, .list, .sound])

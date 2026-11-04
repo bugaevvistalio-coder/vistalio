@@ -83,7 +83,7 @@ class CreateStepViewController: UIViewController {
         nameTextView.delegate = self
         
         frequencyControl.parentVC = sheetViewController
-        frequencyControl.items = StepFrequency.allCases.map { DropItemData(text: $0.displayName) }
+        frequencyControl.items = StepFrequency.allCases.map { DropItemData(text: $0.displayName, image: nil) }
         frequencyControl.checkedIndex = 0
         frequencyControl.onBeforeShowItems = { [unowned self] in
             let screenHeight = UIScreen.main.bounds.height
@@ -338,6 +338,7 @@ class CreateStepViewController: UIViewController {
     
     @objc func onDropDownClosed(notification: Notification) {
         contentView.transform = CGAffineTransform(translationX: 0, y: 0)
+        frequencyControl.reset()
     }
     
     @objc func endDateImageTapped(_ gesture: UITapGestureRecognizer) {

@@ -91,9 +91,7 @@
             "nextAppears": "onAnyBlockStepArtefacts",
             "artefacts": ["note"],
             "nextBlockHint": "Добавьте заметку к любому шагу из последнего блока, чтобы открыть новые",
-            "periodDays": 7,
-            "nextBlockNotificationTitle": "English Joy Club 😛",
-            "nextBlockNotificationBody": "Следующая тема клуба — «Повседневные радости» ☕. Открыть?",
+            "periodDays": 7
         },
         {
             "steps": [
@@ -139,8 +137,8 @@
             "artefacts": ["note"],
             "nextBlockHint": "Добавьте заметку к любому шагу из последнего блока, чтобы открыть новые",
             "periodDays": 7,
-            "nextBlockNotificationTitle": "English Joy Club 😛",
-            "nextBlockNotificationBody": "Тема третьей недели — «Мои мечты» 😌. Посмотреть задания?"
+            "notificationTitle": "English Joy Club 😛",
+            "notificationBody": "Следующая тема клуба — «Повседневные радости» ☕. Открыть?"
         },
         {
             "steps": [
@@ -185,8 +183,8 @@
             "artefacts": ["note"],
             "nextBlockHint": "Добавьте заметку к любому шагу из последнего блока, чтобы открыть новые",
             "periodDays": 7,
-            "nextBlockNotificationTitle": "English Joy Club 😛",
-            "nextBlockNotificationBody": "Тема последнего блока English Joy Club — «Советы себе» 💡. Открыть?"
+            "notificationTitle": "English Joy Club 😛",
+            "notificationBody": "Тема третьей недели — «Мои мечты» 😌. Посмотреть задания?"
         },
         {
             "steps": [
@@ -231,7 +229,9 @@
                     "name": "👥 Финальная встреча: Grand Finale 🎉",
                     "description": "🎤 “What this challenge gave me” — каждый делится 1–2 минутами о том, что было самым лучшим в этом челлендже\n🕺 Совместное создание «English Joy Playlist» — все кидают любимые треки на английском\n📸 Групповое фото, голосовое поздравление и планы на продолжение (может, новый челлендж?)"
                 }
-            ]
+            ],
+            "notificationTitle": "English Joy Club 😛",
+            "notificationBody": "Тема последнего блока English Joy Club — «Советы себе» 💡. Открыть?"
         },
         {
             "emotionGroup": "anger",

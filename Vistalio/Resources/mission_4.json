@@ -41,9 +41,7 @@
                 }
             ],
             "nextAppears": "respectPeriod",
-            "periodDays": 7,
-            "nextBlockNotificationTitle": "Стань шеф-художником! 🎨",
-            "nextBlockNotificationBody": "Хочешь создавать шедевры на тарелке? 🖌️ Приготовь вместе с Мармеладной бабушкой разноцветную закуску 🍅✨"
+            "periodDays": 7
         },
         {
             "steps": [
@@ -83,8 +81,8 @@
             ],
             "nextAppears": "respectPeriod",
             "periodDays": 7,
-            "nextBlockNotificationTitle": "Секрет десерта 🤫",
-            "nextBlockNotificationBody": "Мармеладная бабушка готова раскрыть тайну самого вкусного шоколадного десерта в мире! 🍫 Заходи!"
+            "notificationTitle": "Стань шеф-художником! 🎨",
+            "notificationBody": "Хочешь создавать шедевры на тарелке? 🖌️ Приготовь вместе с Мармеладной бабушкой разноцветную закуску 🍅✨"
         },
         {
             "steps": [
@@ -126,8 +124,8 @@
             ],
             "nextAppears": "respectPeriod",
             "periodDays": 7,
-            "nextBlockNotificationTitle": "Ммм, что это пахнет? 🥧",
-            "nextBlockNotificationBody": "Мармеладная бабушка достает из печи горячий пирог с ягодами🍓. Хочешь кусочек?"
+            "notificationTitle": "Секрет десерта 🤫",
+            "notificationBody": "Мармеладная бабушка готова раскрыть тайну самого вкусного шоколадного десерта в мире! 🍫 Заходи!"
         },
         {
             "steps": [
@@ -164,7 +162,9 @@
                         }
                     ]
                 }
-            ]
+            ],
+            "notificationTitle": "Ммм, что это пахнет? 🥧",
+            "notificationBody": "Мармеладная бабушка достает из печи горячий пирог с ягодами🍓. Хочешь кусочек?"
         }
     ]
 }

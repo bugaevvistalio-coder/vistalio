@@ -23,6 +23,13 @@ class MissionViewController: UIViewController {
     
     @IBOutlet weak var segmentedControl: SegmentedControl!
     
+    @IBOutlet weak var drinkView: UIView!
+    @IBOutlet weak var drinkImageView: UIImageView!
+    @IBOutlet weak var drinkEmotionView1: UIView!
+    @IBOutlet weak var drinkEmotionView2: UIView!
+    @IBOutlet weak var drinkEmotionView3: UIView!
+    @IBOutlet weak var drinkLabel: UILabel!
+    
     @IBOutlet weak var addItemView: UIView!
     @IBOutlet weak var addItemButton: UIButton!
     
@@ -120,6 +127,8 @@ class MissionViewController: UIViewController {
             mission.readNotifications()
         }
         
+        setupDrinkView()
+        
         generator.prepare()
         
         NotificationCenter.default.addObserver(self, selector: #selector(onMissionsUpdated(notification:)), name: .missionUpdated, object: nil)
@@ -177,6 +186,41 @@ class MissionViewController: UIViewController {
         let hide = (mission.category == MissionCategory.notes.rawValue || (!mission.canCreateSteps && segmentedControl.selectedIndex == 0))
         addItemView.isHidden = hide
         headerBottom.constant = hide ? 0 : 4
+    }
+    
+    private func setupDrinkView() {
+        if mission.templateId == 10 {
+            drinkView.isHidden = false
+            (drinkView.superview as! UIStackView).setCustomSpacing(0, after: drinkView)
+            
+            let litres = Float(addedSteps.reduce(0) { $0 + $1.ml }) / 1000.0
+            
+            let formatter = NumberFormatter()
+            formatter.minimumFractionDigits = 0
+            formatter.maximumFractionDigits = 1
+            formatter.roundingMode = .halfUp
+
+            drinkLabel.text = "\(formatter.string(from: NSNumber(value: litres))!)"
+            
+            let textWidth = drinkLabel.text!.width(withHeight: 15, font: UIFont.systemFont(ofSize: 14, weight: .semibold))
+            
+            var colors = MissionEmotion.fear.colors
+            drinkImageView.image = .drinkHappy
+            if litres < 1 {
+                colors = MissionEmotion.anger.colors
+                drinkImageView.image = .drinkSad
+            } else if litres < 2 {
+                colors = MissionEmotion.joy.colors
+                drinkImageView.image = .drinkMiddle
+            }
+            drinkEmotionView3.setGradientLayer(colors: colors.0, startPoint: CGPoint(x: 0.5, y: 0.0), endPoint: CGPoint(x: 0.5, y: 1.0), cornerRadius: 14, bounds: CGRect(x: 0, y: 0, width: textWidth + 70, height: 28))
+            drinkEmotionView2.setGradientLayer(colors: colors.1, startPoint: CGPoint(x: 0.5, y: 0.0), endPoint: CGPoint(x: 0.5, y: 1.0), cornerRadius: 15, bounds: CGRect(x: 0, y: 0, width: textWidth + 72, height: 30))
+            drinkEmotionView2.setShadow(offset: CGSize(width: 0, height: 1.24), radius: 1.24, cornerRadius: 15, shadowOpacity: 0.12)
+            
+            drinkEmotionView1.layer.borderColor = colors.2.cgColor
+        } else {
+            drinkView.isHidden = true
+        }
     }
     
     private func setupAddNoteView() {
@@ -359,6 +403,7 @@ class MissionViewController: UIViewController {
         if segmentedControl.selectedIndex == 0 {
             tableView.reloadSections(IndexSet(arrayLiteral: 3), with: .none)
         }
+        setupDrinkView()
         
         if let step = notification.object as? MissionStep {
             print("Step \(step.isDeleted || step.managedObjectContext == nil), \(step.block.id)")
