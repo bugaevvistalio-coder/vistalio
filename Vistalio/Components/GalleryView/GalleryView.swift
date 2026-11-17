@@ -26,6 +26,7 @@ class GalleryView: UIView {
             collectionView.reloadData()
             for m in media {
                 m.onLoaded = { [weak self] in
+                    print("Handle loaded")
                     self?.collectionView.reloadData()
                 }
             }

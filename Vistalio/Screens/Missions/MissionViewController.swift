@@ -366,6 +366,7 @@ class MissionViewController: UIViewController {
         vc.popupTitle = "Недобавленная заметка будет удалена"
         vc.buttons = [
             ActionButton(type: .red, title: "Удалить и закрыть", action: { [unowned self] _ in
+                addNoteView.deleteRecord()
                 navigationController?.popViewController(animated: true)
             }),
             ActionButton(type: .secondary, title: "Вернуться к редактированию", action: { [unowned self] _ in

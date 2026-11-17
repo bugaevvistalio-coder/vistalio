@@ -30,6 +30,9 @@ class CreateNoteViewController: UIViewController {
     @IBOutlet private weak var titleTextView: GrowingTextView!
     @IBOutlet private weak var bodyTextView: GrowingTextView!
     
+    @IBOutlet private weak var locationView: UIView!
+    @IBOutlet private weak var addressLabel: UILabel!
+    
     @IBOutlet private weak var finishButtonsStackView: UIStackView!
     @IBOutlet private weak var buttonsStackView: UIStackView!
     @IBOutlet weak var saveButton: UIButton!
@@ -40,6 +43,20 @@ class CreateNoteViewController: UIViewController {
     var note: MissionNote?
     
     private var mediaHolder = MediaHolder()
+    
+    
+    var place: Place? {
+        didSet {
+            if let place = place {
+                locationView.isHidden = false
+                addressLabel.text = place.address ?? "\(place.latitude.formatToMaxDecimals(6)), \(place.longitude.formatToMaxDecimals(6))"
+                buttonsStackView.arrangedSubviews[2].isHidden = true
+            } else {
+                locationView.isHidden = true
+                buttonsStackView.arrangedSubviews[2].isHidden = false
+            }
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,13 +98,22 @@ class CreateNoteViewController: UIViewController {
             mediaHolder = nc.mediaHolder
             saveButton.isHidden = true
             addEmotionControl.removeFromSuperview()
+            place = nc.place
         } else if let note = note {
             emotionsFlowView.emotions = note.emotions?.allObjects.map { $0 as! MissionNoteEmotion }.sorted { $0.date > $1.date }.map { MissionEmotion(rawValue: ($0.emotion))! } ?? []
             titleTextView.text = note.name
             bodyTextView.text = note.text
+            
             date = note.date ?? Date()
             mediaHolder.media = note.images?.allObjects.map { $0 as! MissionNoteImage }.sorted { $0.date > $1.date }.map { $0.mediaData } ?? []
             mediaHolder.media.forEach { $0.saved = true }
+            
+            if let geoTag = note.location {
+                place = Place(latitude: geoTag.latitude, longitude: geoTag.longitude, address: geoTag.address)
+            } else {
+                place = nil
+            }
+            
             finishButtonsStackView.isHidden = true
             
             addEmotionControl.setShadow(offset: CGSize(width: 0, height: 0), radius: 5, cornerRadius: 20, shadowOpacity: 0.09)
@@ -102,6 +128,7 @@ class CreateNoteViewController: UIViewController {
             date = Date()
             saveButton.isHidden = true
             addEmotionControl.removeFromSuperview()
+            place = nil
         }
         
         titleTextView.highlightLinks()
@@ -142,6 +169,7 @@ class CreateNoteViewController: UIViewController {
             nc.body = bodyTextView.text.trim()
             nc.date = date
             nc.mediaHolder = mediaHolder
+            nc.place = place
         }
     }
     
@@ -203,6 +231,16 @@ class CreateNoteViewController: UIViewController {
         }
     }
     
+    @IBAction func locationTapped(_ sender: Any) {
+        openPlaceViewController { [unowned self] place in
+            self.place = place
+        }
+    }
+    
+    @IBAction func removeLocationTapped(_ sender: Any) {
+        self.place = nil
+    }
+    
     @IBAction func saveTapped(_ sender: Any) {
         view.endEditing(true)
         
@@ -218,6 +256,9 @@ class CreateNoteViewController: UIViewController {
         CoreDataStack.shared.performAndWait { [unowned self] context in
             if let mission = MissionsHolder.shared.getNotesMission(context: context), let step = mission.getNotesStep() {
                 note = MissionNote.create(context: context, step: step, date: self.date ?? Date(), name: !name.isEmpty ? name : nil, text: !text.isEmpty ? text : nil, emotions: self.emotions, media: self.mediaHolder.media)
+                if let place = place, let note = note {
+                    GeoTag.create(context: context, latitude: place.latitude, longitude: place.longitude, address: place.address, note: note)
+                }
             }
         }
         mediaHolder.media.forEach { $0.saved = true }
@@ -285,6 +326,12 @@ class CreateNoteViewController: UIViewController {
             mediaHolder.media.reversed().forEach {
                 MissionNoteImage.create(context: context, note: note, media: $0)
                 $0.saved = true
+            }
+            
+            if let place = place {
+                GeoTag.create(context: context, latitude: place.latitude, longitude: place.longitude, address: place.address, note: note)
+            } else {
+                note.location = nil
             }
         }
         
@@ -424,11 +471,11 @@ extension CreateNoteViewController: PHPickerViewControllerDelegate, UIImagePicke
         let indexPaths = (0..<media.count).map { IndexPath(item: $0 + 1, section: 0) }
         self.mediaCollectionView.isHidden = false
         
-        self.mediaCollectionView.performBatchUpdates({
+//        self.mediaCollectionView.performBatchUpdates({
             self.mediaHolder.media.insert(contentsOf: media, at: 0)
             self.buttonsStackView.arrangedSubviews.first!.isHidden = self.mediaHolder.media.count > 0
-            self.mediaCollectionView.insertItems(at: indexPaths)
-        }, completion: { _ in })
+            self.mediaCollectionView.reloadData()//insertItems(at: indexPaths)
+//        }, completion: { _ in })
     }
 }
 

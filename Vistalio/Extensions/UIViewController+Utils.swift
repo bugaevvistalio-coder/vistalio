@@ -11,27 +11,30 @@ import PhotosUI
 
 extension UIViewController {
     
-    func presentFullScreen(_ vc: UIViewController) {
+    func presentFullScreen(_ vc: UIViewController, autoAdjustToKeyboard: Bool = true) {
         let window = UIApplication.shared.windows.first
         let top = (window?.safeAreaInsets.top ?? 20)
-        presentBottomSheet(vc, height: UIScreen.main.bounds.height - top)
+        presentBottomSheet(vc, height: UIScreen.main.bounds.height - top, autoAdjustToKeyboard: autoAdjustToKeyboard)
     }
     
-    func presentBottomSheet(_ controller: UIViewController, height: CGFloat? = nil) {
+    func presentBottomSheet(_ controller: UIViewController, height: CGFloat? = nil, autoAdjustToKeyboard: Bool = true, canDismiss: Bool = true) {
         let options = SheetOptions(shrinkPresentingViewController: false)
         let sizes: [SheetSize] = height != nil ? [.fixed(height!)] : [.intrinsic]
         let sheetController = SheetViewController(controller: controller, sizes: sizes, options: options)
         sheetController.allowPullingPastMaxHeight = false
         sheetController.cornerRadius = 30
         sheetController.gripColor = .clear
+        sheetController.autoAdjustToKeyboard = autoAdjustToKeyboard
+        sheetController.dismissOnPull = canDismiss
+        sheetController.dismissOnOverlayTap = canDismiss
         present(sheetController, animated: true, completion: nil)
     }
     
-    func setupBottomConstraint(_ view: UIView) {
+    func setupBottomConstraint(_ view: UIView, bottom: CGFloat = 20) {
         let window = UIApplication.shared.windows.first
         let hasSafeArea = (window?.safeAreaInsets.bottom ?? 0) > 0
         view.superview?.constraints.filter { $0.firstAttribute == .bottom && $0.firstItem === view || $0.secondAttribute == .bottom && $0.secondItem === view }.forEach {
-            $0.constant = hasSafeArea ? 0 : 20
+            $0.constant = hasSafeArea ? 0 : bottom
         }
     }
     
@@ -550,5 +553,20 @@ extension UIViewController {
             })
         ]
         presentBottomSheet(vc, height: 200)
+    }
+    
+    func openPlaceViewController(onPlaceSelected: @escaping (Place) -> ()) {
+        let sb = UIStoryboard(name: "Missions", bundle: nil)
+        let vc = sb.instantiateViewController(identifier: "SelectPlaceVC") as! SelectPlaceViewController
+        vc.onPlaceSelected = onPlaceSelected
+        presentFullScreen(vc)
+    }
+    
+    func openRecordAudioController(onFinished: @escaping (URL) -> ()) {
+        let sb = UIStoryboard(name: "Missions", bundle: nil)
+        let vc = sb.instantiateViewController(identifier: "RecordAudioVC") as! RecordAudioViewController
+        vc.onRecordingFinished = onFinished
+        let bottom = UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
+        presentBottomSheet(vc, height: 276 + (bottom > 0 ? bottom : 20))
     }
 }

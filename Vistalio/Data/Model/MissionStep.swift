@@ -98,11 +98,14 @@ extension StepsBlock {
         let array = artefactsArray
         let notes = notes
         
-//        if array.contains(BlockArtefact.geo) {
-//            return false
-//        }
         if array.contains(.note) && notes.isEmpty {
             return false
+        }
+        if array.contains(BlockArtefact.geo) {
+            let hasLocation = notes.contains { $0.location != nil }
+            if !hasLocation {
+                return false
+            }
         }
         if array.contains(BlockArtefact.emotion) {
             var hasEmotion = false
@@ -253,7 +256,7 @@ extension StepsBlock {
         return nil
     }
     
-    func checkArtefacts(title: String?, text: String?, photoCount: Int, hasVideo: Bool) -> NSAttributedString? {
+    func checkArtefacts(title: String?, text: String?, photoCount: Int, hasVideo: Bool, hasGeoTag: Bool) -> NSAttributedString? {
         var attrString: NSMutableAttributedString?
         if recommendedAt != nil && nextAppears == NextBlockAppearRule.onDoneWithPreview.rawValue {
             let array = artefactsArray
@@ -274,6 +277,11 @@ extension StepsBlock {
             }
             
             var criteria = [String]()
+            
+            if array.contains(BlockArtefact.geo) && !hasGeoTag && !notes.contains(where: { $0.location != nil }) {
+                criteria.append("геопозицию")
+            }
+            
             let media = notes.flatMap { $0.images?.allObjects.map { $0 as! MissionNoteImage } ?? [] }
             if array.contains(BlockArtefact.photo) {
                 let count = media.filter({ $0.type == "image" }).count + photoCount
@@ -631,6 +639,7 @@ extension MissionStep {
                     note.name = n.name
                     note.text = n.description
                     note.audio = n.audio
+                    note.audioSource = AudioSource.bundle.rawValue
                     note.step = step
                     
                     if let images = n.images {
@@ -666,9 +675,13 @@ extension MissionStep {
             return true
         }
         let notes = notes?.allObjects.map { $0 as! MissionNote } ?? []
-        //        if array.contains(BlockArtefact.geo) {
-        //            return false
-        //        }
+
+        if artefacts.contains(BlockArtefact.geo) {
+            let hasLocation = notes.contains { $0.location != nil }
+            if !hasLocation {
+                return false
+            }
+        }
         if artefacts.contains(.note) && notes.isEmpty {
             return false
         }

@@ -29,6 +29,9 @@ class NoteViewController: UIViewController {
     
     @IBOutlet private weak var mediaCollectionView: UICollectionView!
     
+    @IBOutlet private weak var locationView: UIView!
+    @IBOutlet private weak var addressLabel: UILabel!
+    
     var note: MissionNote!
     private var media = [MediaData]()
     
@@ -67,18 +70,18 @@ class NoteViewController: UIViewController {
     
     private func displayNote() {
         emotionsFlowView.emotions = note.emotions?.allObjects.map { $0 as! MissionNoteEmotion }.sorted { $0.date > $1.date }.map { MissionEmotion(rawValue: ($0.emotion))! } ?? []
-        if emotionsFlowView.emotions.isEmpty {
-            emotionsFlowView.superview?.isHidden = true
-        }
+        emotionsFlowView.superview?.isHidden = emotionsFlowView.emotions.isEmpty
         
         if note.name?.trim().isEmpty ?? true {
             titleTextView.superview?.isHidden = true
         } else {
+            titleTextView.superview?.isHidden = false
             titleTextView.text = note.name
         }
         if note.text?.trim().isEmpty ?? true {
             bodyTextView.superview?.isHidden = true
         } else {
+            bodyTextView.superview?.isHidden = false
             bodyTextView.text = note.text
         }
         dateLabel.text = note.date?.formatted3
@@ -86,6 +89,13 @@ class NoteViewController: UIViewController {
         media = note.images?.allObjects.map { $0 as! MissionNoteImage }.sorted { $0.date > $1.date }.map { $0.mediaData } ?? []
         mediaCollectionView.isHidden = media.isEmpty
         mediaCollectionView.reloadData()
+        
+        if let geoTag = note.location {
+            locationView.isHidden = false
+            addressLabel.text = geoTag.address ?? "\(geoTag.latitude.formatToMaxDecimals(6)), \(geoTag.longitude.formatToMaxDecimals(6))"
+        } else {
+            locationView.isHidden = true
+        }
     }
     
     private func updateNavigation() {
@@ -191,6 +201,12 @@ class NoteViewController: UIViewController {
         NSLayoutConstraint.activate(constraints)
         
         menuView.setShadow(offset: CGSize(width: 0, height: 0), radius: 20, cornerRadius: 30, shadowOpacity: 0.22)
+    }
+    
+    @IBAction func locationTapped(_ sender: Any) {
+        let placeVC = storyboard?.instantiateViewController(withIdentifier: "PlaceVC") as! PlaceViewController
+        placeVC.location = note.location
+        presentFullScreen(placeVC)
     }
     
     @discardableResult

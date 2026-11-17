@@ -18,6 +18,7 @@ class AddNoteView: UIView {
     @IBOutlet private weak var changeDateButton: UIButton!
     @IBOutlet private weak var titleTextView: GrowingTextView!
     @IBOutlet private weak var bodyTextView: GrowingTextView!
+    @IBOutlet private weak var bodyTop: NSLayoutConstraint!
     @IBOutlet private weak var buttonsStackView: UIStackView!
     
     @IBOutlet private weak var emotionsStackView: UIStackView!
@@ -30,6 +31,13 @@ class AddNoteView: UIView {
     @IBOutlet private weak var emotion3View: EmotionCircleView!
     
     @IBOutlet private weak var mediaCollectionView: UICollectionView!
+    
+    @IBOutlet private weak var locationView: UIView!
+    @IBOutlet private weak var addressLabel: UILabel!
+    
+    @IBOutlet private weak var audioView: AudioView!
+    
+    @IBOutlet private weak var okWidth: NSLayoutConstraint!
     
     var step: MissionStep?
     var mission: Mission?
@@ -63,6 +71,41 @@ class AddNoteView: UIView {
     }
     
     private var mediaHolder = MediaHolder()
+    
+    private var place: Place? {
+        didSet {
+            if let place = place {
+                locationView.isHidden = false
+                addressLabel.text = place.address ?? "\(place.latitude.formatToMaxDecimals(6)), \(place.longitude.formatToMaxDecimals(6))"
+                buttonsStackView.arrangedSubviews[2].isHidden = true
+            } else {
+                locationView.isHidden = true
+                buttonsStackView.arrangedSubviews[2].isHidden = false
+            }
+            updateUI()
+        }
+    }
+    
+    private var recordUrl: URL? {
+        didSet {
+            if let recordUrl = recordUrl {
+                audioView.superview!.isHidden = false
+                buttonsStackView.arrangedSubviews[1].isHidden = true
+                
+                audioView.setUrl(recordUrl) { [unowned self] in
+                    self.audioView.setShadow(offset: CGSize(width: 0, height: 0), radius: 4, cornerRadius: 22, shadowOpacity: 0.1, bounds: CGRect(x: 0, y: 0, width: self.audioView.waveformView.width + 70, height: 44))
+                }
+            } else {
+                if let url = oldValue {
+                    FilesHelper().deleteFile(url: url)
+                }
+                audioView.stopPlaying()
+                audioView.superview!.isHidden = true
+                buttonsStackView.arrangedSubviews[1].isHidden = false
+            }
+            updateUI()
+        }
+    }
     
     private var view: UIView!
     
@@ -109,6 +152,11 @@ class AddNoteView: UIView {
         mediaHolder.onReloadNeeded = { [weak self] indexes in
             self?.mediaCollectionView.reloadItems(at: indexes.map { IndexPath(row: $0 + 1, section: 0) })
         }
+        
+        place = nil
+        audioView.superview!.isHidden = true
+        
+        audioView.waveformView.maxWidth = Int(UIScreen.main.bounds.width - 114)
     }
     
     deinit {
@@ -123,25 +171,30 @@ class AddNoteView: UIView {
     }
     
     var hasData: Bool {
-        return !titleTextView.text.trim().isEmpty || !bodyTextView.text.trim().isEmpty || !mediaHolder.media.isEmpty || !emotions.isEmpty || !date!.isSameDay(Date())
+        return !titleTextView.text.trim().isEmpty || !bodyTextView.text.trim().isEmpty || !mediaHolder.media.isEmpty || !emotions.isEmpty || !date!.isSameDay(Date()) || place != nil || recordUrl != nil
     }
     
     func fillDefaultData() {
         if let step = step, let noteTitle = step.noteTitle {
-            let notes = step.block.notes
-//            if !notes.contains(where: { $0.name == noteTitle }) {
-                titleTextView.text = noteTitle
-                if let placeholder = step.block.textPlaceholder {
-                    bodyTextView.placeholder = placeholder
-                }
-//            }
+            titleTextView.text = noteTitle
+            if let placeholder = step.block.textPlaceholder {
+                bodyTextView.placeholder = placeholder
+            }
+        }
+    }
+    
+    private func updateUI() {
+        if !locationView.isHidden && !mediaCollectionView.isHidden && !audioView.superview!.isHidden {
+            okWidth.constant = frame.width - 24
+        } else {
+            okWidth.constant = 86
         }
     }
     
     private func checkArtefactsAndSave(step: MissionStep?) {
         let photoCount = mediaHolder.media.filter { $0.type == "image" }.count
         let hasVideo = mediaHolder.media.contains { $0.type == "video" }
-        if let message = step?.block.checkArtefacts(title: titleTextView.text, text: bodyTextView.text, photoCount: photoCount, hasVideo: hasVideo) {
+        if let message = step?.block.checkArtefacts(title: titleTextView.text, text: bodyTextView.text, photoCount: photoCount, hasVideo: hasVideo, hasGeoTag: place != nil) {
             parentViewController?.showHowToOpenNextStep(message: message) { [unowned self] in
                 save(step: step)
             }
@@ -161,6 +214,14 @@ class AddNoteView: UIView {
             let text = bodyTextView.text.trim()
             CoreDataStack.shared.performAndWait { [unowned self] context in
                 if let note = MissionNote.create(context: context, step: step, date: self.date ?? Date(), name: !name.isEmpty ? name : nil, text: !text.isEmpty ? text : nil, emotions: self.emotions, media: self.mediaHolder.media) {
+                    
+                    if let place = place {
+                        GeoTag.create(context: context, latitude: place.latitude, longitude: place.longitude, address: place.address, note: note)
+                    }
+                    if let recordUrl = recordUrl {
+                        note.audioSource = AudioSource.documents.rawValue
+                        note.audio = "audio/\(recordUrl.lastPathComponent)"
+                    }
                     
                     DispatchQueue.main.async { [unowned self] in
                         self.clear()
@@ -187,6 +248,7 @@ class AddNoteView: UIView {
         mediaCollectionView.reloadData()
         mediaCollectionView.isHidden = mediaHolder.media.count == 0
         buttonsStackView.arrangedSubviews.first!.isHidden = mediaHolder.media.count > 0
+        updateUI()
     }
     
     @IBAction func changeDateTapped(_ sender: UIButton) {
@@ -269,11 +331,25 @@ class AddNoteView: UIView {
     @IBAction func addLocationTapped(_ sender: Any) {
         endEditing(true)
         onTappedInside?()
+        parentViewController?.openPlaceViewController { [unowned self] place in
+            self.place = place
+        }
+    }
+    
+    @IBAction func removeLocationTapped(_ sender: Any) {
+        place = nil
     }
     
     @IBAction func addAudioTapped(_ sender: Any) {
         endEditing(true)
         onTappedInside?()
+        parentViewController?.openRecordAudioController() { [unowned self] url in
+            self.recordUrl = url
+        }
+    }
+    
+    @IBAction func removeAudioTapped(_ sender: Any) {
+        recordUrl = nil
     }
     
     @IBAction func okTapped(_ sender: Any) {
@@ -309,6 +385,12 @@ class AddNoteView: UIView {
         for v in buttonsStackView.arrangedSubviews {
             v.isHidden = false
         }
+        place = nil
+        recordUrl = nil
+    }
+    
+    func deleteRecord() {
+        recordUrl = nil
     }
 }
 
@@ -351,15 +433,14 @@ extension AddNoteView: PHPickerViewControllerDelegate, UIImagePickerControllerDe
         if media.count == 0 {
             return
         }
-        
-        let indexPaths = (0..<media.count).map { IndexPath(item: $0 + 1, section: 0) }
+     
         self.mediaCollectionView.isHidden = false
         
-        self.mediaCollectionView.performBatchUpdates({ [unowned self] in
-            self.mediaHolder.media.insert(contentsOf: media, at: 0)
-            self.buttonsStackView.arrangedSubviews.first!.isHidden = self.mediaHolder.media.count > 0
-            self.mediaCollectionView.insertItems(at: indexPaths)
-        }, completion: { _ in })
+        self.mediaHolder.media.insert(contentsOf: media, at: 0)
+        self.buttonsStackView.arrangedSubviews.first!.isHidden = self.mediaHolder.media.count > 0
+        self.mediaCollectionView.reloadData()
+        
+        updateUI()
     }
 }
 

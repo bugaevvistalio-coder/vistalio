@@ -16,6 +16,7 @@
 		C3100B56302A3771003CFF35 /* PlayerControlsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3100B55302A3771003CFF35 /* PlayerControlsView.xib */; };
 		C3100B58302A37BA003CFF35 /* PlayerControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3100B57302A37B7003CFF35 /* PlayerControlsView.swift */; };
 		C31593C6303222F300E2D18E /* NoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C31593C5303222F000E2D18E /* NoteViewController.swift */; };
+		C326BCEE309B593700976F3C /* SelectPlaceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C326BCED309B592900976F3C /* SelectPlaceViewController.swift */; };
 		C332CFCB2F8FB4A6002ABF15 /* MyMissionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C332CFCA2F8FB4A0002ABF15 /* MyMissionsViewController.swift */; };
 		C333212830514E9E00230DCB /* NotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C333212730514E9700230DCB /* NotificationsViewController.swift */; };
 		C333212A3051553800230DCB /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33321293051553500230DCB /* NotificationCell.swift */; };
@@ -43,6 +44,15 @@
 		C33F22C42F84C75300EF2A81 /* MenuItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22C32F84C74F00EF2A81 /* MenuItemView.swift */; };
 		C33F22C82F84C86500EF2A81 /* MenuView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C33F22C72F84C86500EF2A81 /* MenuView.xib */; };
 		C33F22CA2F84C8B400EF2A81 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33F22C92F84C8B000EF2A81 /* MenuView.swift */; };
+		C3413E3830A9C72100F5F5C7 /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3413E3730A9C71D00F5F5C7 /* WaveformView.swift */; };
+		C3413E3A30A9C7AF00F5F5C7 /* WaveformView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3413E3930A9C7AF00F5F5C7 /* WaveformView.xib */; };
+		C3413E3C30A9E68800F5F5C7 /* RecordAudioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3413E3B30A9E67D00F5F5C7 /* RecordAudioViewController.swift */; };
+		C3413E3E30AA1C8300F5F5C7 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3413E3D30AA1C7E00F5F5C7 /* AudioRecorder.swift */; };
+		C3413E4230AB2A7600F5F5C7 /* AudioWaveformExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3413E4130AB2A6800F5F5C7 /* AudioWaveformExtractor.swift */; };
+		C3413E4430AC715600F5F5C7 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3413E4330AC715300F5F5C7 /* AudioPlayer.swift */; };
+		C3413E4630AC71E200F5F5C7 /* AudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3413E4530AC71DF00F5F5C7 /* AudioView.swift */; };
+		C3413E4830AC74C400F5F5C7 /* TimeInterval+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3413E4730AC74C000F5F5C7 /* TimeInterval+Utils.swift */; };
+		C3413E4A30AC9C1F00F5F5C7 /* ApiKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3413E4930AC9C1D00F5F5C7 /* ApiKeys.swift */; };
 		C34472823019FA630034F2FA /* CreateNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34472813019FA5C0034F2FA /* CreateNoteViewController.swift */; };
 		C3447284301A1E150034F2FA /* EmotionsFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3447283301A1E0E0034F2FA /* EmotionsFlowView.swift */; };
 		C3447287301A1E830034F2FA /* EmotionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3447286301A1E830034F2FA /* EmotionView.xib */; };
@@ -81,6 +91,13 @@
 		C350235D302F61FA008DA96C /* WeekViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C350235C302F61FA008DA96C /* WeekViewCell.xib */; };
 		C35911D52F9F6C780015FDE6 /* UIStackView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C35911D42F9F6C740015FDE6 /* UIStackView+Utils.swift */; };
 		C35911D72F9F81750015FDE6 /* zombi_audio.ogg in Resources */ = {isa = PBXBuildFile; fileRef = C35911D62F9F81750015FDE6 /* zombi_audio.ogg */; };
+		C365DF7C309C440900D1E369 /* LocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C365DF7B309C440500D1E369 /* LocationProvider.swift */; };
+		C365DF7E309F4D7300D1E369 /* GeocodingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C365DF7D309F4D6C00D1E369 /* GeocodingService.swift */; };
+		C365DF8130A18CF000D1E369 /* AddressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C365DF8030A18CE700D1E369 /* AddressViewController.swift */; };
+		C365DF8430A1953C00D1E369 /* AddressCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C365DF8330A1953900D1E369 /* AddressCell.swift */; };
+		C365DF8630A4826700D1E369 /* Double+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C365DF8530A4826200D1E369 /* Double+Utils.swift */; };
+		C365DF8830A4C46D00D1E369 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = C365DF8730A4C46C00D1E369 /* Map.swift */; };
+		C365DF8A30A5D27B00D1E369 /* PlaceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C365DF8930A5D27800D1E369 /* PlaceViewController.swift */; };
 		C36B3D022F9692EA00976790 /* missions_list.json in Sources */ = {isa = PBXBuildFile; fileRef = C36B3D012F9692E400976790 /* missions_list.json */; };
 		C36B3D042F97A85100976790 /* MissionTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36B3D032F97A84D00976790 /* MissionTemplate.swift */; };
 		C36B3D062F97D71D00976790 /* TemplateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36B3D052F97D71900976790 /* TemplateCell.swift */; };
@@ -190,6 +207,7 @@
 		C3100B55302A3771003CFF35 /* PlayerControlsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayerControlsView.xib; sourceTree = "<group>"; };
 		C3100B57302A37B7003CFF35 /* PlayerControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlsView.swift; sourceTree = "<group>"; };
 		C31593C5303222F000E2D18E /* NoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteViewController.swift; sourceTree = "<group>"; };
+		C326BCED309B592900976F3C /* SelectPlaceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPlaceViewController.swift; sourceTree = "<group>"; };
 		C332CFCA2F8FB4A0002ABF15 /* MyMissionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMissionsViewController.swift; sourceTree = "<group>"; };
 		C333212730514E9700230DCB /* NotificationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewController.swift; sourceTree = "<group>"; };
 		C33321293051553500230DCB /* NotificationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
@@ -217,6 +235,15 @@
 		C33F22C32F84C74F00EF2A81 /* MenuItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemView.swift; sourceTree = "<group>"; };
 		C33F22C72F84C86500EF2A81 /* MenuView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MenuView.xib; sourceTree = "<group>"; };
 		C33F22C92F84C8B000EF2A81 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
+		C3413E3730A9C71D00F5F5C7 /* WaveformView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformView.swift; sourceTree = "<group>"; };
+		C3413E3930A9C7AF00F5F5C7 /* WaveformView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WaveformView.xib; sourceTree = "<group>"; };
+		C3413E3B30A9E67D00F5F5C7 /* RecordAudioViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordAudioViewController.swift; sourceTree = "<group>"; };
+		C3413E3D30AA1C7E00F5F5C7 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
+		C3413E4130AB2A6800F5F5C7 /* AudioWaveformExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioWaveformExtractor.swift; sourceTree = "<group>"; };
+		C3413E4330AC715300F5F5C7 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
+		C3413E4530AC71DF00F5F5C7 /* AudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioView.swift; sourceTree = "<group>"; };
+		C3413E4730AC74C000F5F5C7 /* TimeInterval+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+Utils.swift"; sourceTree = "<group>"; };
+		C3413E4930AC9C1D00F5F5C7 /* ApiKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiKeys.swift; sourceTree = "<group>"; };
 		C34472813019FA5C0034F2FA /* CreateNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNoteViewController.swift; sourceTree = "<group>"; };
 		C3447283301A1E0E0034F2FA /* EmotionsFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmotionsFlowView.swift; sourceTree = "<group>"; };
 		C3447286301A1E830034F2FA /* EmotionView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EmotionView.xib; sourceTree = "<group>"; };
@@ -256,6 +283,13 @@
 		C350235C302F61FA008DA96C /* WeekViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WeekViewCell.xib; sourceTree = "<group>"; };
 		C35911D42F9F6C740015FDE6 /* UIStackView+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Utils.swift"; sourceTree = "<group>"; };
 		C35911D62F9F81750015FDE6 /* zombi_audio.ogg */ = {isa = PBXFileReference; lastKnownFileType = file; path = zombi_audio.ogg; sourceTree = "<group>"; };
+		C365DF7B309C440500D1E369 /* LocationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationProvider.swift; sourceTree = "<group>"; };
+		C365DF7D309F4D6C00D1E369 /* GeocodingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeocodingService.swift; sourceTree = "<group>"; };
+		C365DF8030A18CE700D1E369 /* AddressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressViewController.swift; sourceTree = "<group>"; };
+		C365DF8330A1953900D1E369 /* AddressCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressCell.swift; sourceTree = "<group>"; };
+		C365DF8530A4826200D1E369 /* Double+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Utils.swift"; sourceTree = "<group>"; };
+		C365DF8730A4C46C00D1E369 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
+		C365DF8930A5D27800D1E369 /* PlaceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceViewController.swift; sourceTree = "<group>"; };
 		C36B3D012F9692E400976790 /* missions_list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = missions_list.json; sourceTree = "<group>"; };
 		C36B3D032F97A84D00976790 /* MissionTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionTemplate.swift; sourceTree = "<group>"; };
 		C36B3D052F97D71900976790 /* TemplateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateCell.swift; sourceTree = "<group>"; };
@@ -388,6 +422,10 @@
 			isa = PBXGroup;
 			children = (
 				C30C8689303DFA6F00297A4D /* MapViewController.swift */,
+				C326BCED309B592900976F3C /* SelectPlaceViewController.swift */,
+				C365DF8030A18CE700D1E369 /* AddressViewController.swift */,
+				C365DF8930A5D27800D1E369 /* PlaceViewController.swift */,
+				C365DF8230A1953300D1E369 /* Cells */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -407,12 +445,14 @@
 		C33F22982F80128600EF2A81 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				C3413E4930AC9C1D00F5F5C7 /* ApiKeys.swift */,
 				C333212B30515A1400230DCB /* AppNotification.swift */,
 				C3B7D71B2F9538FF00562DC2 /* Cover.swift */,
 				C33F229C2F80134A00EF2A81 /* Mission.swift */,
 				C3CABD722FF9708C0067CA73 /* MissionEmotion.swift */,
 				C3F47EC72F9FCAB100F17AC8 /* MissionNote.swift */,
 				C3F47EC42F9FCA1700F17AC8 /* MissionStep.swift */,
+				C365DF8730A4C46C00D1E369 /* Map.swift */,
 				C333212D3053F50600230DCB /* Reminder.swift */,
 				C37BB74530056123006BE7EA /* Helpers.swift */,
 				C3F47EC62F9FCA9F00F17AC8 /* Template */,
@@ -427,6 +467,11 @@
 				C3F47EC92FA0BB6600F17AC8 /* AppsFlyerHelper.swift */,
 				C37BB743300559DE006BE7EA /* MediaHelper.swift */,
 				C387579A304EAA7D008D3FFD /* NotificationsPresenter.swift */,
+				C365DF7B309C440500D1E369 /* LocationProvider.swift */,
+				C365DF7D309F4D6C00D1E369 /* GeocodingService.swift */,
+				C3413E3D30AA1C7E00F5F5C7 /* AudioRecorder.swift */,
+				C3413E4330AC715300F5F5C7 /* AudioPlayer.swift */,
+				C3413E4130AB2A6800F5F5C7 /* AudioWaveformExtractor.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -464,6 +509,16 @@
 			path = Menu;
 			sourceTree = "<group>";
 		};
+		C3413E3630A9C70800F5F5C7 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				C3413E3930A9C7AF00F5F5C7 /* WaveformView.xib */,
+				C3413E3730A9C71D00F5F5C7 /* WaveformView.swift */,
+				C3413E4530AC71DF00F5F5C7 /* AudioView.swift */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
 		C3447285301A1E240034F2FA /* Emotions */ = {
 			isa = PBXGroup;
 			children = (
@@ -481,6 +536,7 @@
 		C346659E2F783741008648C8 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				C3413E3630A9C70800F5F5C7 /* Audio */,
 				C3AE55D42FD490BE007A5E41 /* CalendarView */,
 				C346659A2F783741008648C8 /* CustomTabItem.swift */,
 				C3AE55C72FD1E8AF007A5E41 /* DropDownView */,
@@ -507,8 +563,10 @@
 			isa = PBXGroup;
 			children = (
 				C3AE55E12FD5E43C007A5E41 /* Date+Utils.swift */,
+				C365DF8530A4826200D1E369 /* Double+Utils.swift */,
 				C3D542552F9125330093D819 /* NotificationNames.swift */,
 				C33F22A22F80147000EF2A81 /* String+Utils.swift */,
+				C3413E4730AC74C000F5F5C7 /* TimeInterval+Utils.swift */,
 				C33F22BE2F84C37600EF2A81 /* UIApplication+Utils.swift */,
 				C33F22B62F83893B00EF2A81 /* UIColor+Utils.swift */,
 				C33F22A72F82376800EF2A81 /* UIImage+Utils.swift */,
@@ -597,6 +655,14 @@
 			path = WeeklyView;
 			sourceTree = "<group>";
 		};
+		C365DF8230A1953300D1E369 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				C365DF8330A1953900D1E369 /* AddressCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
 		C36B3D002F9692CB00976790 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -659,6 +725,7 @@
 				C34472813019FA5C0034F2FA /* CreateNoteViewController.swift */,
 				C37BB753300C9DB8006BE7EA /* MoveNoteViewController.swift */,
 				C31593C5303222F000E2D18E /* NoteViewController.swift */,
+				C3413E3B30A9E67D00F5F5C7 /* RecordAudioViewController.swift */,
 				C37BB755300C9E49006BE7EA /* Cells */,
 			);
 			path = Notes;
@@ -916,6 +983,7 @@
 				C3AE55DE2FD49BB4007A5E41 /* DayView.xib in Resources */,
 				C3AE55D82FD490DD007A5E41 /* CalendarView.xib in Resources */,
 				C3F47ECE2FA0F7DF00F17AC8 /* GalleryView.xib in Resources */,
+				C3413E3A30A9C7AF00F5F5C7 /* WaveformView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -930,9 +998,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Vistalio/Pods-Vistalio-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Vistalio/Pods-Vistalio-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -969,9 +1041,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Vistalio/Pods-Vistalio-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Vistalio/Pods-Vistalio-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1000,34 +1076,45 @@
 				C3CF26EE2F7929120008718D /* CoverCell.swift in Sources */,
 				C3CABD682FF5B94F0067CA73 /* AddNoteView.swift in Sources */,
 				C35911D52F9F6C780015FDE6 /* UIStackView+Utils.swift in Sources */,
+				C3413E4630AC71E200F5F5C7 /* AudioView.swift in Sources */,
 				C344729B301BB8210034F2FA /* CreateNoteNavigationController.swift in Sources */,
 				C33F22962F8011F000EF2A81 /* CoreDataStack.swift in Sources */,
 				C3AE55C92FD1E8BF007A5E41 /* DropDownItemView.swift in Sources */,
 				C3CABD712FF84DED0067CA73 /* SelectEmotionViewController.swift in Sources */,
 				C33F22B52F83872100EF2A81 /* SegmentedControlTab.swift in Sources */,
+				C365DF7C309C440900D1E369 /* LocationProvider.swift in Sources */,
+				C3413E3C30A9E68800F5F5C7 /* RecordAudioViewController.swift in Sources */,
+				C3413E3E30AA1C8300F5F5C7 /* AudioRecorder.swift in Sources */,
 				C33F22A62F80251F00EF2A81 /* SelectActionViewController.swift in Sources */,
 				C33F22CA2F84C8B400EF2A81 /* MenuView.swift in Sources */,
 				C34665C02F783741008648C8 /* GrowingTextView.swift in Sources */,
 				C3833B473073A9530072D302 /* EditTimeViewController.swift in Sources */,
+				C3413E4A30AC9C1F00F5F5C7 /* ApiKeys.swift in Sources */,
 				C33F22A32F80147300EF2A81 /* String+Utils.swift in Sources */,
 				C34665C12F783741008648C8 /* RoundedControls.swift in Sources */,
 				C37BB7413005227F006BE7EA /* NoteBigPhotoCell.swift in Sources */,
 				C36B3D042F97A85100976790 /* MissionTemplate.swift in Sources */,
 				C3833B493073ADDA0072D302 /* SelectTimeViewController.swift in Sources */,
 				C347A5842F98F4320068D5B3 /* HiddenMissionTemplate.swift in Sources */,
+				C326BCEE309B593700976F3C /* SelectPlaceViewController.swift in Sources */,
 				C33F22BB2F838D5800EF2A81 /* MissionViewController.swift in Sources */,
 				C3F47ECC2FA0F7D400F17AC8 /* GalleryView.swift in Sources */,
 				C3B7D71C2F95390200562DC2 /* Cover.swift in Sources */,
+				C3413E4430AC715600F5F5C7 /* AudioPlayer.swift in Sources */,
+				C3413E4830AC74C400F5F5C7 /* TimeInterval+Utils.swift in Sources */,
 				C3CABD642FF28F7C0067CA73 /* MoveStepViewController.swift in Sources */,
 				C34665C22F783741008648C8 /* StyledControls.swift in Sources */,
 				C3447289301A1EE40034F2FA /* EmotionView.swift in Sources */,
 				C3D542562F9125370093D819 /* NotificationNames.swift in Sources */,
+				C365DF8630A4826700D1E369 /* Double+Utils.swift in Sources */,
 				C350235B302F61F3008DA96C /* WeekViewCell.swift in Sources */,
 				C3AE55D62FD490D0007A5E41 /* CalendarView.swift in Sources */,
+				C365DF7E309F4D7300D1E369 /* GeocodingService.swift in Sources */,
 				C30C86833036C9EC00297A4D /* DayMissionCell.swift in Sources */,
 				C34665C32F783741008648C8 /* UITableView+Utils.swift in Sources */,
 				C37BB73D3003F47A006BE7EA /* EmotionsPanelViewController.swift in Sources */,
 				C3AE55C52FD09D12007A5E41 /* CreateStepViewController.swift in Sources */,
+				C365DF8830A4C46D00D1E369 /* Map.swift in Sources */,
 				C33F22C42F84C75300EF2A81 /* MenuItemView.swift in Sources */,
 				C3CABD6A2FF7D8920067CA73 /* SelectDateViewController.swift in Sources */,
 				C3CABD732FF9708C0067CA73 /* MissionEmotion.swift in Sources */,
@@ -1038,12 +1125,15 @@
 				C37BB74C300777A8006BE7EA /* NoteSmallPhotoCell.swift in Sources */,
 				C333212E3053F50900230DCB /* Reminder.swift in Sources */,
 				C3BEABC42F9BB0F200359CB6 /* mission_9.json in Sources */,
+				C365DF8430A1953C00D1E369 /* AddressCell.swift in Sources */,
 				C3BEABC62F9BB10600359CB6 /* mission_10.json in Sources */,
 				C3D5425E2F928C4F0093D819 /* NotificationView.swift in Sources */,
+				C3413E4230AB2A7600F5F5C7 /* AudioWaveformExtractor.swift in Sources */,
 				C37309D12FAE04A7004F7ED8 /* RecommendedStepCell.swift in Sources */,
 				C3BEABCE2F9BB23800359CB6 /* mission_14.json in Sources */,
 				C37BB73830035EB1006BE7EA /* EmotionSettingsViewController.swift in Sources */,
 				C30C8687303CA1DD00297A4D /* DayNotesViewController.swift in Sources */,
+				C3413E3830A9C72100F5F5C7 /* WaveformView.swift in Sources */,
 				C33F22B92F838A1200EF2A81 /* SegmentedControl.swift in Sources */,
 				C3B7D71A2F94A55400562DC2 /* CropImageViewController.swift in Sources */,
 				C37BB750300778D0006BE7EA /* NotePhotoCell.swift in Sources */,
@@ -1089,6 +1179,7 @@
 				C387579B304EAA81008D3FFD /* NotificationsPresenter.swift in Sources */,
 				C33F22BD2F83F48C00EF2A81 /* UILabel+Utils.swift in Sources */,
 				C3AE55E62FD879A5007A5E41 /* UIScrollView+Utils.swift in Sources */,
+				C365DF8130A18CF000D1E369 /* AddressViewController.swift in Sources */,
 				C3447291301A5F830034F2FA /* CounterView.swift in Sources */,
 				C3CF26F02F7929C00008718D /* CoverViewController.swift in Sources */,
 				C38757973041E673008D3FFD /* ImplementedStepViewController.swift in Sources */,
@@ -1101,6 +1192,7 @@
 				C3BEABB02F9A38ED00359CB6 /* TemplateHeaderCell.swift in Sources */,
 				C31593C6303222F300E2D18E /* NoteViewController.swift in Sources */,
 				C33F22B72F83893E00EF2A81 /* UIColor+Utils.swift in Sources */,
+				C365DF8A30A5D27B00D1E369 /* PlaceViewController.swift in Sources */,
 				C3CABD6F2FF844430067CA73 /* SelectEmotionCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1136,7 +1228,7 @@
 				CODE_SIGN_ENTITLEMENTS = Vistalio/Vistalio.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_TEAM = K3TB65CDP6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Vistalio/Info.plist;
@@ -1173,7 +1265,7 @@
 				CODE_SIGN_ENTITLEMENTS = Vistalio/Vistalio.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_TEAM = K3TB65CDP6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Vistalio/Info.plist;

@@ -8,6 +8,11 @@
 import Foundation
 import CoreData
 
+enum AudioSource: String, Codable {
+    case bundle
+    case documents
+}
+
 @objc(MissionNote)
 public class MissionNote: NSManagedObject {
     
@@ -22,6 +27,7 @@ extension MissionNote {
     @NSManaged public var name: String?
     @NSManaged public var text: String?
     @NSManaged public var audio: String?
+    @NSManaged public var audioSource: String?
     @NSManaged public var date: Date?
     @NSManaged public var byUser: Bool
     
@@ -29,6 +35,7 @@ extension MissionNote {
     
     @NSManaged public var images: NSSet?
     @NSManaged public var emotions: NSSet?
+    @NSManaged public var location: GeoTag?
     
     @discardableResult
     class func create(context: NSManagedObjectContext, step: MissionStep, date: Date, name: String?, text: String?, emotions: [MissionEmotion], media: [MediaData]) -> MissionNote? {
@@ -166,4 +173,51 @@ extension MissionNoteEmotion {
     @NSManaged public var date: Date
     @NSManaged public var emotion: String
     @NSManaged public var note: MissionNote
+}
+
+@objc(GeoTag)
+public class GeoTag: NSManagedObject {
+    
+    @discardableResult
+    class func create(context: NSManagedObjectContext, latitude: Double, longitude: Double, address: String?, note: MissionNote) -> GeoTag? {
+        if let geoTagEntity = NSEntityDescription.entity(forEntityName: "GeoTag", in: context) {
+            let geoTag = GeoTag(entity: geoTagEntity, insertInto: context)
+            geoTag.date = Date()
+            geoTag.latitude = latitude
+            geoTag.longitude = longitude
+            geoTag.address = address
+            geoTag.note = note
+            return geoTag
+        }
+        return nil
+    }
+    
+    class func fetchLatestRecord(context: NSManagedObjectContext) -> GeoTag? {
+        let request = GeoTag.fetchRequest()
+        
+        let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
+        request.sortDescriptors = [sortDescriptor]
+        request.fetchLimit = 1
+        
+        do {
+            return try context.fetch(request).first
+        } catch {
+            print("Ошибка получения записи: \(error)")
+            return nil
+        }
+    }
+}
+
+extension GeoTag {
+
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<GeoTag> {
+        return NSFetchRequest<GeoTag>(entityName: "GeoTag")
+    }
+
+    @NSManaged public var latitude: Double
+    @NSManaged public var longitude: Double
+    @NSManaged public var date: Date?
+    @NSManaged public var address: String?
+    @NSManaged public var note: MissionNote?
+
 }

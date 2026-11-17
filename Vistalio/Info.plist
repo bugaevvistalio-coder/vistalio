@@ -36,5 +36,14 @@
 	</dict>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Доступ к микрофону нужен для съёмки видео со звуком в приложении и добавления аудиозаписей.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Доступ к геопозиции нужен, чтобы вы могли видеть себя на карте.</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>yandexmaps</string>
+        <string>yandexnavi</string>
+        <string>dgis</string>
+        <string>comgooglemaps</string>
+    </array>
 </dict>
 </plist>

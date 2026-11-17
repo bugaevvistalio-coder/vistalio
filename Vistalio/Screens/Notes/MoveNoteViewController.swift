@@ -214,7 +214,7 @@ class MoveNoteViewController: UIViewController {
         
         let photoCount = nc.mediaHolder.media.filter { $0.type == "image" }.count
         let hasVideo = nc.mediaHolder.media.contains { $0.type == "video" }
-        if let message = selectedStep?.block.checkArtefacts(title: nc.noteTitle, text: nc.body, photoCount: photoCount, hasVideo: hasVideo) {
+        if let message = selectedStep?.block.checkArtefacts(title: nc.noteTitle, text: nc.body, photoCount: photoCount, hasVideo: hasVideo, hasGeoTag: nc.place != nil) {
             showHowToOpenNextStep(message: message) { [unowned self] in
                 save()
             }
@@ -233,6 +233,9 @@ class MoveNoteViewController: UIViewController {
         CoreDataStack.shared.performAndWait { [unowned self] context in
             if let step = getStep(context: context) {
                 note = MissionNote.create(context: context, step: step, date: nc.date ?? Date(), name: nc.noteTitle, text: nc.body, emotions: nc.emotions, media: nc.mediaHolder.media)
+                if let place = nc.place, let note = note {
+                    GeoTag.create(context: context, latitude: place.latitude, longitude: place.longitude, address: place.address, note: note)
+                }
             }
         }
         

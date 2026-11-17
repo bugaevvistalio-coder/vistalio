@@ -14,6 +14,7 @@ class CreateNoteNavigationController: UINavigationController {
     var noteTitle: String?
     var body: String?
     var mediaHolder = MediaHolder()
+    var place: Place?
     
     var stepDate: Date?
     var selectedMission: Mission?

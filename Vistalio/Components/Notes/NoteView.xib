@@ -11,6 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NoteView" customModule="Vistalio" customModuleProvider="target">
             <connections>
+                <outlet property="audioView" destination="iob-BR-mOL" id="S4h-Mk-PmV"/>
                 <outlet property="dateLabel" destination="cxl-yZ-leO" id="7Qk-kh-DT9"/>
                 <outlet property="emotion1View" destination="bhP-Yo-dGr" id="Mlv-7q-J1H"/>
                 <outlet property="emotion2View" destination="Plv-k4-n6D" id="oXP-LI-fUn"/>
@@ -19,6 +20,7 @@
                 <outlet property="emotionsCounterLabel" destination="Nik-0g-7Zo" id="F5o-uA-t6G"/>
                 <outlet property="emotionsCounterView" destination="SS2-oX-3JV" id="oa5-eN-qvL"/>
                 <outlet property="emotionsStackView" destination="5wh-2j-hRm" id="82z-2w-lOd"/>
+                <outlet property="locationView" destination="Og5-9v-QnJ" id="gWN-qn-awP"/>
                 <outlet property="mediaCollectionView" destination="6s4-nU-axP" id="lp5-KV-PNa"/>
                 <outlet property="mediaTop" destination="pMI-VO-aL6" id="eto-PD-9fF"/>
                 <outlet property="roundedView" destination="iN0-l3-epB" id="ijZ-7q-2dt"/>
@@ -146,8 +148,8 @@
                         <outlet property="delegate" destination="-1" id="leH-TT-biZ"/>
                     </connections>
                 </collectionView>
-                <stackView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KiZ-RQ-ScU">
-                    <rect key="frame" x="12" y="393" width="50" height="26"/>
+                <stackView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="KiZ-RQ-ScU">
+                    <rect key="frame" x="12" y="393" width="108" height="26"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HhX-E1-Mj2" customClass="RoundedView" customModule="Vistalio" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="0.0" width="50" height="26"/>
@@ -165,6 +167,54 @@
                                 <constraint firstAttribute="height" constant="26" id="T4L-2i-ryl"/>
                                 <constraint firstItem="cxl-yZ-leO" firstAttribute="leading" secondItem="HhX-E1-Mj2" secondAttribute="leading" constant="10" id="bOD-gd-Gee"/>
                                 <constraint firstAttribute="trailing" secondItem="cxl-yZ-leO" secondAttribute="trailing" constant="10" id="qpn-Md-DkF"/>
+                            </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                    <real key="value" value="13"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Og5-9v-QnJ" customClass="RoundedView" customModule="Vistalio" customModuleProvider="target">
+                            <rect key="frame" x="53" y="0.0" width="26" height="26"/>
+                            <subviews>
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="location_2" translatesAutoresizingMaskIntoConstraints="NO" id="rHU-hP-WC4">
+                                    <rect key="frame" x="6" y="6" width="14" height="14"/>
+                                    <color key="tintColor" name="textGrey30"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="14" id="EY0-kB-oXL"/>
+                                        <constraint firstAttribute="height" constant="14" id="ePb-ox-BmF"/>
+                                    </constraints>
+                                </imageView>
+                            </subviews>
+                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.040000000000000001" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstItem="rHU-hP-WC4" firstAttribute="centerX" secondItem="Og5-9v-QnJ" secondAttribute="centerX" id="NAi-E2-HLJ"/>
+                                <constraint firstItem="rHU-hP-WC4" firstAttribute="centerY" secondItem="Og5-9v-QnJ" secondAttribute="centerY" id="cO9-fO-kNR"/>
+                                <constraint firstAttribute="width" constant="26" id="wuK-Pq-QSJ"/>
+                            </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                    <real key="value" value="13"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iob-BR-mOL" customClass="RoundedView" customModule="Vistalio" customModuleProvider="target">
+                            <rect key="frame" x="82" y="0.0" width="26" height="26"/>
+                            <subviews>
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="microphone" translatesAutoresizingMaskIntoConstraints="NO" id="de6-5X-Dpc">
+                                    <rect key="frame" x="6" y="6" width="14" height="14"/>
+                                    <color key="tintColor" name="textGrey30"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="14" id="NUG-gE-bfw"/>
+                                        <constraint firstAttribute="width" constant="14" id="She-Df-jSC"/>
+                                    </constraints>
+                                </imageView>
+                            </subviews>
+                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.040000000000000001" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="26" id="1eS-LU-aV7"/>
+                                <constraint firstItem="de6-5X-Dpc" firstAttribute="centerX" secondItem="iob-BR-mOL" secondAttribute="centerX" id="Dhx-sD-4m4"/>
+                                <constraint firstItem="de6-5X-Dpc" firstAttribute="centerY" secondItem="iob-BR-mOL" secondAttribute="centerY" id="fEe-CB-6Aa"/>
                             </constraints>
                             <userDefinedRuntimeAttributes>
                                 <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -220,6 +270,8 @@
         </view>
     </objects>
     <resources>
+        <image name="location_2" width="14" height="14"/>
+        <image name="microphone" width="14" height="14"/>
         <namedColor name="textGrey30">
             <color red="0.019607843137254902" green="0.015686274509803921" blue="0.023529411764705882" alpha="0.30000001192092896" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

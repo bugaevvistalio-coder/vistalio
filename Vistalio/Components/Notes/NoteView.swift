@@ -31,6 +31,8 @@ class NoteView: UIView {
     @IBOutlet private weak var textTop: NSLayoutConstraint!
     
     @IBOutlet private weak var dateLabel: UILabel!
+    @IBOutlet private weak var locationView: UIView!
+    @IBOutlet private weak var audioView: UIView!
     
     var onLongGesture: ((MissionNote, UIImage, CGRect) -> ())?
     
@@ -117,6 +119,9 @@ class NoteView: UIView {
                 textTop.constant = top
                 textLabel.numberOfLines = Int(floor(availableHeight / textLabel.font.lineHeight))
             }
+            
+            locationView.isHidden = note.location == nil
+            audioView.isHidden = note.audio == nil
         }
     }
     

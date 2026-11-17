@@ -67,6 +67,16 @@ class FilesHelper {
         }
     }
     
+    func deleteFile(url: URL) {
+        guard FileManager.default.fileExists(atPath: url.path) else { return }
+        do {
+            try FileManager.default.removeItem(at: url)
+            print("FILE DELETED! \(url)")
+        } catch let error as NSError {
+            print("Error removing file: \(error.localizedDescription), \(url)")
+        }
+    }
+    
     func savePdf(document: PDFDocument, directory: String, filename: String) -> URL {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let dir = documentsDirectory.appendingPathComponent(directory)

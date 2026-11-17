@@ -308,6 +308,7 @@ class StepViewController: UIViewController {
         vc.popupTitle = "Недобавленная заметка будет удалена"
         vc.buttons = [
             ActionButton(type: .red, title: "Удалить и закрыть", action: { [unowned self] _ in
+                addNoteView.deleteRecord()
                 close(tabIndex: tabIndex)
             }),
             ActionButton(type: .blue, title: "Добавить и закрыть", action: { [unowned self] _ in
@@ -518,12 +519,7 @@ class StepViewController: UIViewController {
     }
     
     @objc func onNoteUpdated(notification: Notification) {
-        guard let note = notification.object as? MissionNote else {
-            return
-        }
-        if selectedDate == nil || selectedDate?.startOfDay == note.date?.startOfDay {
-            updateNotes()
-        }
+        updateNotes()
     }
     
     @objc func onStepUpdated(notification: Notification) {

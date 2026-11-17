@@ -31,8 +31,10 @@ class NotePhotoCell: UICollectionViewCell {
             if let media = media {
                 imageView.contentMode = .scaleAspectFill
                 if let image = media.image {
+                    print("Media 1")
                     imageView.image = image
                 } else if let path = media.path {
+                    print("Media 2")
                     if path.starts(with: "http") {
                         if let url = URL(string: path) {
                             imageView.kf.setImage(with: url)
@@ -62,6 +64,7 @@ class NotePhotoCell: UICollectionViewCell {
                         }
                     }
                 } else {
+                    print("Media 3")
                     imageView.image = nil
                 }
             } else {

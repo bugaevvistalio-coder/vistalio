@@ -59,8 +59,9 @@ func processPickerResults(_ results: [PHPickerResult], folder: String) -> [Media
             let m = MediaData(type: "image", image: nil, path: nil)
             media.append(m)
             
-            provider.loadObject(ofClass: UIImage.self) { (image, error) in
+            m.progress = provider.loadObject(ofClass: UIImage.self) { (image, error) in
                 m.loadedImage = image as? UIImage
+//                m.onLoaded?()
             }
         }
     }
