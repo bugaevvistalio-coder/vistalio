@@ -39,11 +39,12 @@ class CreateNoteViewController: UIViewController {
     
     @IBOutlet private weak var mediaCollectionView: UICollectionView!
     
+    @IBOutlet private weak var audioView: AudioView!
+    
     var emotions = [MissionEmotion]()
     var note: MissionNote?
     
     private var mediaHolder = MediaHolder()
-    
     
     var place: Place? {
         didSet {
@@ -54,6 +55,23 @@ class CreateNoteViewController: UIViewController {
             } else {
                 locationView.isHidden = true
                 buttonsStackView.arrangedSubviews[2].isHidden = false
+            }
+        }
+    }
+    
+    private var recordUrl: URL? {
+        didSet {
+            if let recordUrl = recordUrl {
+                audioView.superview!.isHidden = false
+                buttonsStackView.arrangedSubviews[1].isHidden = true
+                
+                audioView.setUrl(recordUrl) { [unowned self] in
+                    self.audioView.setShadow(offset: CGSize(width: 0, height: 0), radius: 8, cornerRadius: 28, shadowOpacity: 0.1, bounds: CGRect(x: 0, y: 0, width: self.audioView.waveformView.width + 88, height: 56))
+                }
+            } else {
+                audioView.stopPlaying()
+                audioView.superview!.isHidden = true
+                buttonsStackView.arrangedSubviews[1].isHidden = false
             }
         }
     }
@@ -91,6 +109,8 @@ class CreateNoteViewController: UIViewController {
         bodyTextView.textContainerInset = .zero
         bodyTextView.delegate = self
         
+        audioView.waveformView.maxWidth = Int(UIScreen.main.bounds.width - 140)
+        
         if let nc = navigationController as? CreateNoteNavigationController {
             titleTextView.text = nc.noteTitle
             bodyTextView.text = nc.body
@@ -99,6 +119,7 @@ class CreateNoteViewController: UIViewController {
             saveButton.isHidden = true
             addEmotionControl.removeFromSuperview()
             place = nc.place
+            recordUrl = nc.recordUrl
         } else if let note = note {
             emotionsFlowView.emotions = note.emotions?.allObjects.map { $0 as! MissionNoteEmotion }.sorted { $0.date > $1.date }.map { MissionEmotion(rawValue: ($0.emotion))! } ?? []
             titleTextView.text = note.name
@@ -113,6 +134,8 @@ class CreateNoteViewController: UIViewController {
             } else {
                 place = nil
             }
+            
+            recordUrl = note.audioURL
             
             finishButtonsStackView.isHidden = true
             
@@ -163,6 +186,7 @@ class CreateNoteViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         IQKeyboardManager.shared.isEnabled = true
+        audioView.stopPlaying()
         
         if let nc = navigationController as? CreateNoteNavigationController {
             nc.noteTitle = titleTextView.text.trim()
@@ -170,6 +194,7 @@ class CreateNoteViewController: UIViewController {
             nc.date = date
             nc.mediaHolder = mediaHolder
             nc.place = place
+            nc.recordUrl = recordUrl
         }
     }
     
@@ -241,6 +266,19 @@ class CreateNoteViewController: UIViewController {
         self.place = nil
     }
     
+    @IBAction func addAudioTapped(_ sender: Any) {
+        openRecordAudioController() { [unowned self] url in
+            self.recordUrl = url
+        }
+    }
+    
+    @IBAction func removeAudioTapped(_ sender: Any) {
+        if let url = recordUrl, note?.audioURL != url {
+            FilesHelper().deleteFile(url: url)
+        }
+        recordUrl = nil
+    }
+    
     @IBAction func saveTapped(_ sender: Any) {
         view.endEditing(true)
         
@@ -259,6 +297,10 @@ class CreateNoteViewController: UIViewController {
                 if let place = place, let note = note {
                     GeoTag.create(context: context, latitude: place.latitude, longitude: place.longitude, address: place.address, note: note)
                 }
+                if let recordUrl = recordUrl {
+                    note?.audioSource = AudioSource.documents.rawValue
+                    note?.audio = "audio/\(recordUrl.lastPathComponent)"
+                }
             }
         }
         mediaHolder.media.forEach { $0.saved = true }
@@ -272,6 +314,8 @@ class CreateNoteViewController: UIViewController {
             }
             
             note.step?.block.mission.checkEmotionsToOpenSpecialSteps()
+            
+            (navigationController as? CreateNoteNavigationController)?.recordingSaved = true
         }
         self.dismiss(animated: true)
     }
@@ -332,6 +376,18 @@ class CreateNoteViewController: UIViewController {
                 GeoTag.create(context: context, latitude: place.latitude, longitude: place.longitude, address: place.address, note: note)
             } else {
                 note.location = nil
+            }
+            
+            if let noteAudioUrl = note.audioURL, noteAudioUrl != recordUrl {
+                FilesHelper().deleteFile(url: noteAudioUrl)
+            }
+            
+            if let recordUrl = recordUrl {
+                note.audioSource = AudioSource.documents.rawValue
+                note.audio = "audio/\(recordUrl.lastPathComponent)"
+            } else {
+                note.audioSource = nil
+                note.audio = nil
             }
         }
         

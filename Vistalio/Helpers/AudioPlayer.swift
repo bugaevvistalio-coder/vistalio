@@ -33,10 +33,12 @@ final class AudioPlayer: NSObject, AVAudioPlayerDelegate {
         audioPlayer?.duration ?? 0
     }
     
+    private var lastDuration: TimeInterval?
+    
     // MARK: - Public Methods
     
     /// Запускает воспроизведение нового файла или снимает текущий с паузы
-    func play(url: URL) {
+    func play(url: URL, progress: Float = 0) {
         // Если тот же файл уже на паузе — просто продолжаем
         if currentURL == url, let player = audioPlayer {
             if !player.isPlaying {
@@ -54,10 +56,14 @@ final class AudioPlayer: NSObject, AVAudioPlayerDelegate {
             configureAudioSession()
             let player = try AVAudioPlayer(contentsOf: url)
             player.delegate = self
+            if progress > 0 && progress <= 1 {
+                player.currentTime = TimeInterval(progress) * player.duration
+            }
             player.prepareToPlay()
             player.play()
             
             audioPlayer = player
+            lastDuration = player.duration
             currentURL = url
             startProgressTracking()
         } catch {
@@ -89,10 +95,15 @@ final class AudioPlayer: NSObject, AVAudioPlayerDelegate {
     
     /// Перемотка на нужную позицию (progress от 0.0 до 1.0)
     func seek(to progress: Float) {
-        guard let player = audioPlayer else { return }
         let clamped = max(0.0, min(1.0, progress))
+        guard let player = audioPlayer else {
+            if let duration = lastDuration {
+                onProgressUpdate?(clamped, TimeInterval(clamped) * duration)
+            }
+            return
+        }
         player.currentTime = TimeInterval(clamped) * player.duration
-        onProgressUpdate?(clamped, player.currentTime)
+        onProgressUpdate?(clamped, clamped == 1 ? player.duration : player.currentTime)
     }
     
     // MARK: - Private Helpers

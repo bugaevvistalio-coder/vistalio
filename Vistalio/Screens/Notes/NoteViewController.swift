@@ -32,6 +32,8 @@ class NoteViewController: UIViewController {
     @IBOutlet private weak var locationView: UIView!
     @IBOutlet private weak var addressLabel: UILabel!
     
+    @IBOutlet private weak var audioView: AudioView!
+    
     var note: MissionNote!
     private var media = [MediaData]()
     
@@ -59,6 +61,8 @@ class NoteViewController: UIViewController {
         let nib = UINib(nibName: "NoteBiggerPhotoCell", bundle: nil)
         mediaCollectionView.register(nib, forCellWithReuseIdentifier: "NoteBiggerPhotoCell")
         
+        audioView.waveformView.maxWidth = Int(UIScreen.main.bounds.width - 120)
+        
         displayNote()
         
         NotificationCenter.default.addObserver(self, selector: #selector(onNoteUpdated(notification:)), name: .noteUpdated, object: nil)
@@ -66,6 +70,11 @@ class NoteViewController: UIViewController {
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: .noteUpdated, object: nil)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        audioView.stopPlaying()
     }
     
     private func displayNote() {
@@ -95,6 +104,18 @@ class NoteViewController: UIViewController {
             addressLabel.text = geoTag.address ?? "\(geoTag.latitude.formatToMaxDecimals(6)), \(geoTag.longitude.formatToMaxDecimals(6))"
         } else {
             locationView.isHidden = true
+        }
+        
+        if let audio = note.audio, let source = note.audioSource {
+            audioView.superview!.isHidden = false
+            
+            if let url = note.audioURL {
+                audioView.setUrl(url) { [unowned self] in
+                    self.audioView.setShadow(offset: CGSize(width: 0, height: 0), radius: 8, cornerRadius: 28, shadowOpacity: 0.1, bounds: CGRect(x: 0, y: 0, width: self.audioView.waveformView.width + 88, height: 56))
+                }
+            }
+        } else {
+            audioView.superview!.isHidden = true
         }
     }
     

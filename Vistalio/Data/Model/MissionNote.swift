@@ -58,6 +58,23 @@ extension MissionNote {
         
         return note
     }
+    
+    var audioURL: URL? {
+        guard let audio = audio, let source = audioSource else {
+            return nil
+        }
+        var url: URL? = nil
+        if source == AudioSource.bundle.rawValue {
+            let tempUrl = URL(fileURLWithPath: audio)
+            let name = tempUrl.deletingPathExtension().lastPathComponent
+            let ext = tempUrl.pathExtension
+            url = Bundle.main.url(forResource: name, withExtension: ext)
+        } else if source == AudioSource.documents.rawValue {
+            let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            url = documentsDirectory.appendingPathComponent(audio)
+        }
+        return url
+    }
 }
 
 extension MissionNote {

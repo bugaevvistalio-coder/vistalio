@@ -15,12 +15,18 @@ class CreateNoteNavigationController: UINavigationController {
     var body: String?
     var mediaHolder = MediaHolder()
     var place: Place?
+    var recordUrl: URL?
     
     var stepDate: Date?
     var selectedMission: Mission?
     var selectedStep: MissionStep?
     
+    var recordingSaved = false
+    
     deinit {
         mediaHolder.reset()
+        if let url = recordUrl, !recordingSaved {
+            FilesHelper().deleteFile(url: url)
+        }
     }
 }

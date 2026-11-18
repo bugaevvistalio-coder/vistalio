@@ -236,6 +236,10 @@ class MoveNoteViewController: UIViewController {
                 if let place = nc.place, let note = note {
                     GeoTag.create(context: context, latitude: place.latitude, longitude: place.longitude, address: place.address, note: note)
                 }
+                if let recordUrl = nc.recordUrl {
+                    note?.audioSource = AudioSource.documents.rawValue
+                    note?.audio = "audio/\(recordUrl.lastPathComponent)"
+                }
             }
         }
         
@@ -244,6 +248,7 @@ class MoveNoteViewController: UIViewController {
         if let note = note {
             NotificationCenter.default.post(name: .noteUpdated, object: note)
             note.step?.block.mission.checkEmotionsToOpenSpecialSteps()
+            (navigationController as? CreateNoteNavigationController)?.recordingSaved = true
         }
         let presenting = presentingViewController
         self.dismiss(animated: true) {

@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "Просто добавь воды.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

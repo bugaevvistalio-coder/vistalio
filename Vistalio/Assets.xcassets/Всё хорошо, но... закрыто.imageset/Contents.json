@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "Всё хорошо, но... закрыто.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

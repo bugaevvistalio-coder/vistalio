@@ -18,10 +18,39 @@ class AudioView: UIView {
     
     var url: URL!
     private var duration: TimeInterval = 0
+    private var seekProgress: Float?
+    
+    // Опционально: ставим звук на паузу на время ведения пальца, чтобы не было щелчков
+    private var wasPlayingBeforeScrub = false
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        
+        playPauseButton.setImage(nil, for: .normal)
+        playPauseButton.setBackgroundImage(.play1, for: .normal)
         setupPlayer()
+        
+        waveformView.onSeek = { [weak self] progress in
+            self?.player.seek(to: progress)
+            self?.seekProgress = progress
+        }
+
+        waveformView.onScrubbingStateChanged = { [weak self] isScrubbing in
+            guard let self = self else { return }
+            
+            if isScrubbing {
+                self.wasPlayingBeforeScrub = self.player.isPlaying
+                self.player.pause()
+            } else if self.wasPlayingBeforeScrub {
+                self.wasPlayingBeforeScrub = false
+                if seekProgress == 1 {
+                    self.playPauseButton.setBackgroundImage(.play1, for: .normal)
+                    self.durationLabel.text = self.duration.formattedMSS
+                } else {
+                    self.player.play(url: url)
+                }
+            }
+        }
     }
     
     func setUrl(_ url: URL, onReady: @escaping () -> ()) {
@@ -51,13 +80,15 @@ class AudioView: UIView {
     private func setupPlayer() {
         player.onProgressUpdate = { [weak self] progress, currentTime in
             // Передаем прогресс (0.0...1.0) в волну для перекрашивания палочек
-            self?.waveformView.updateProgress(progress)
+            self?.waveformView.progress = progress
             self?.durationLabel.text = currentTime.formattedMSS
         }
         
         player.onPlaybackStopped = { [weak self] didFinishToEnd in
             // Меняем иконку кнопки обратно на "Play"
-            self?.playPauseButton.setImage(.play1, for: .normal)
+            if self?.wasPlayingBeforeScrub != true {
+                self?.playPauseButton.setBackgroundImage(.play1, for: .normal)
+            }
             
             if didFinishToEnd {
                 self?.durationLabel.text = self?.duration.formattedMSS
@@ -68,17 +99,17 @@ class AudioView: UIView {
     
     @IBAction func playPauseTapped(_ sender: Any) {
         if player.isPlaying {
-            playPauseButton.setImage(.play1, for: .normal)
+            playPauseButton.setBackgroundImage(.play1, for: .normal)
             player.pause()
         } else {
-            playPauseButton.setImage(.pause1, for: .normal)
-            player.play(url: url)
+            playPauseButton.setBackgroundImage(.pause1, for: .normal)
+            player.play(url: url, progress: waveformView.progress)
         }
     }
     
     func stopPlaying() {
         if player.isPlaying {
-            playPauseButton.setImage(.play1, for: .normal)
+            playPauseButton.setBackgroundImage(.play1, for: .normal)
             player.pause()
         }
     }

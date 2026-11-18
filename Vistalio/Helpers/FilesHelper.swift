@@ -68,6 +68,9 @@ class FilesHelper {
     }
     
     func deleteFile(url: URL) {
+        if isBundleFile(url: url) {
+            return
+        }
         guard FileManager.default.fileExists(atPath: url.path) else { return }
         do {
             try FileManager.default.removeItem(at: url)
@@ -113,5 +116,12 @@ class FilesHelper {
         let dst = dir.appendingPathComponent(src.lastPathComponent)
         try? fileManager.copyItem(at: src, to: dst)
         return "\(dirName)/\(src.lastPathComponent)"
+    }
+    
+    func isBundleFile(url: URL) -> Bool {
+        // Приводим пути к единому виду (убираем ссылки вроде /private/var), чтобы сравнение было точным
+        let filePath = url.standardizedFileURL.path
+        let bundlePath = Bundle.main.bundleURL.standardizedFileURL.path
+        return filePath.hasPrefix(bundlePath)
     }
 }

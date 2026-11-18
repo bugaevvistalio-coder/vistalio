@@ -67,7 +67,7 @@
                         {
                             "name": "Вы оторвались… пока",
                             "preview": true,
-                            "audio": "zombi_audio.ogg"
+                            "audio": "zombi_audio.mp3"
                         }
                     ],
                     "disableEdit": true,

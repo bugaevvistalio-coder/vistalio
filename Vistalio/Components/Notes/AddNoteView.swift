@@ -89,6 +89,7 @@ class AddNoteView: UIView {
     private var recordUrl: URL? {
         didSet {
             if let recordUrl = recordUrl {
+                print("Save to URL: \(recordUrl)")
                 audioView.superview!.isHidden = false
                 buttonsStackView.arrangedSubviews[1].isHidden = true
                 
@@ -96,9 +97,6 @@ class AddNoteView: UIView {
                     self.audioView.setShadow(offset: CGSize(width: 0, height: 0), radius: 4, cornerRadius: 22, shadowOpacity: 0.1, bounds: CGRect(x: 0, y: 0, width: self.audioView.waveformView.width + 70, height: 44))
                 }
             } else {
-                if let url = oldValue {
-                    FilesHelper().deleteFile(url: url)
-                }
                 audioView.stopPlaying()
                 audioView.superview!.isHidden = true
                 buttonsStackView.arrangedSubviews[1].isHidden = false
@@ -349,6 +347,9 @@ class AddNoteView: UIView {
     }
     
     @IBAction func removeAudioTapped(_ sender: Any) {
+        if let url = recordUrl {
+            FilesHelper().deleteFile(url: url)
+        }
         recordUrl = nil
     }
     
@@ -390,6 +391,9 @@ class AddNoteView: UIView {
     }
     
     func deleteRecord() {
+        if let url = recordUrl {
+            FilesHelper().deleteFile(url: url)
+        }
         recordUrl = nil
     }
 }

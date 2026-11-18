@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "Начну с понедельника.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "В ресурсе.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
